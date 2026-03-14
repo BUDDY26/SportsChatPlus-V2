@@ -13,12 +13,12 @@ If the user specifies files or a diff, review those. Otherwise review all staged
 ## Review Checklist
 
 ### Router placement
-- API handlers belong in `src/pages/api/` — Pages Router pattern with `(req: NextApiRequest, res: NextApiResponse)` signature
+- API handlers belong in `pages/api/` — Pages Router pattern with `(req: NextApiRequest, res: NextApiResponse)` signature
 - Page components belong in `app/` — App Router pattern
 - Flag any new file in `app/api/` or any RSC being used as an API handler
 
 ### Auth guard (API routes)
-Every handler in `src/pages/api/` that accesses user data must:
+Every handler in `pages/api/` that accesses user data must:
 - Validate the user session via NextAuth (`getServerSession`) or Supabase token before any DB operation
 - Return `401` if the session or token is absent or invalid
 - Perform no DB operations before the auth check passes
@@ -50,7 +50,7 @@ For any new file in `supabase/migrations/`:
 - Flag any migration without a rollback file
 
 ### Odds and NCAA stubs
-- `src/pages/api/odds/by-game.ts` returns mock data — changes here should not be flagged as bugs
+- `pages/api/odds/by-game.ts` returns mock data — changes here should not be flagged as bugs
 - NCAA routes returning empty or stub data are expected — flag only if a stub breaks the response shape contract
 
 ### Old team codebase contamination

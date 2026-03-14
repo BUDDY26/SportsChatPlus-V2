@@ -1,19 +1,31 @@
 "use client";
 
+import { useState } from "react";
 import { useFavorites } from "@/hooks/useFavorites";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Star, Trash2, Plus } from "lucide-react";
-import { LEAGUES } from "@/lib/sports/types";
+import { LEAGUES, type LeagueId } from "@/lib/sports/types";
+import { cn } from "@/lib/utils";
 
 interface FavoritesClientProps {
   userId: string;
 }
 
 export function FavoritesClient({ userId }: FavoritesClientProps) {
-  const { favorites, isLoading, removeFavorite } = useFavorites(userId);
+  const { favorites, isLoading, addFavorite, removeFavorite } = useFavorites(userId);
+  const [selectedLeague, setSelectedLeague] = useState<LeagueId | null>(null);
+  const [teamName, setTeamName] = useState("");
+
+  const handleAdd = async () => {
+    if (!selectedLeague || !teamName.trim()) return;
+    await addFavorite({ teamName: teamName.trim(), league: selectedLeague });
+    setTeamName("");
+    setSelectedLeague(null);
+  };
 
   if (isLoading) {
     return (
@@ -27,7 +39,7 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
 
   return (
     <div className="space-y-6">
-      {/* Supported leagues hint */}
+      {/* Add favorites */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -35,21 +47,46 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
             Add Favorites
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-3">
           <div className="flex flex-wrap gap-2">
             {LEAGUES.map((league) => (
               <Badge
                 key={league.id}
-                variant="outline"
-                className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
+                variant={selectedLeague === league.id ? "default" : "outline"}
+                className={cn(
+                  "cursor-pointer",
+                  selectedLeague !== league.id &&
+                    "hover:bg-primary hover:text-primary-foreground"
+                )}
+                onClick={() =>
+                  setSelectedLeague((prev) =>
+                    prev === league.id ? null : league.id
+                  )
+                }
               >
                 {league.label}
               </Badge>
             ))}
           </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Team favoriting coming soon — you&apos;ll get alerts when your teams score.
-          </p>
+          {selectedLeague && (
+            <div className="flex gap-2">
+              <Input
+                placeholder="Team name"
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleAdd();
+                  }
+                }}
+                className="flex-1"
+              />
+              <Button onClick={handleAdd} disabled={!teamName.trim()}>
+                Add
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 

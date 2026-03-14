@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { createClient } from "@/lib/supabase";
 import type { ChatMessageType } from "@/lib/sports/types";
 
 interface SendMessagePayload {
@@ -27,11 +28,50 @@ export function useChat(room: string = "general") {
   }, [room]);
 
   useEffect(() => {
+    // Load existing history on mount / room change
     fetchMessages();
-    // Poll every 5 seconds — replace with Supabase realtime subscription in production
-    const interval = setInterval(fetchMessages, 5_000);
-    return () => clearInterval(interval);
-  }, [fetchMessages]);
+
+    // Subscribe to new messages via Supabase Realtime
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`chat:${room}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "chat_messages",
+          filter: `room=eq.${room}`,
+        },
+        (payload) => {
+          const row = payload.new as {
+            id: string;
+            user_id: string;
+            user_name: string;
+            content: string;
+            room: string;
+            created_at: string;
+          };
+          const msg: ChatMessageType = {
+            id: row.id,
+            userId: row.user_id,
+            userName: row.user_name,
+            content: row.content,
+            room: row.room,
+            createdAt: row.created_at,
+          };
+          // Deduplicate against the optimistic append in sendMessage
+          setMessages((prev) =>
+            prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchMessages, room]);
 
   const sendMessage = useCallback(
     async (payload: SendMessagePayload) => {

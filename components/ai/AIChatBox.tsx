@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ interface AIMessage {
 }
 
 export function AIChatBox() {
+  const { data: session } = useSession();
   const [messages, setMessages] = useState<AIMessage[]>([
     {
       role: "assistant",
@@ -37,7 +39,10 @@ export function AIChatBox() {
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [...messages, userMsg] }),
+        body: JSON.stringify({
+          messages: [...messages, userMsg],
+          userId: session?.user?.id,
+        }),
       });
 
       if (!res.ok) throw new Error("Failed");

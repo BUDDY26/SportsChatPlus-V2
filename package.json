@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -19,8 +19,6 @@
     "@radix-ui/react-scroll-area": "^1.2.1",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-separator": "^1.1.0",
-    "@radix-ui/react-sheet": "^1.0.0",
-    "@radix-ui/react-skeleton": "^1.0.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
     "@radix-ui/react-toast": "^1.2.2",
@@ -31,7 +29,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^11.13.1",
     "lucide-react": "^0.468.0",
-    "next": "14.2.18",
+    "next": "^16.1.6",
     "next-auth": "^4.24.11",
     "next-themes": "^0.4.4",
     "openai": "^4.77.0",

@@ -52,7 +52,7 @@ Until then: N/A — skip this section.
 
 ### 4. Auth guards
 
-For every new or modified file in `src/pages/api/` that accesses user data:
+For every new or modified file in `pages/api/` that accesses user data:
 
 - [ ] Session or token validated before any DB operation
 - [ ] `401` returned if session/token is absent or invalid

@@ -40,11 +40,18 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     try {
-      // TODO: wire to profile update API
-      await new Promise((r) => setTimeout(r, 800));
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, name: data.name }),
+      });
+      if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.error ?? "Update failed");
+      }
       toast.success("Profile updated!");
-    } catch {
-      toast.error("Failed to update profile.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update profile.");
     } finally {
       setIsLoading(false);
     }
