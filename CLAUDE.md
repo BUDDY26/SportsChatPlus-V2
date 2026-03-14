@@ -23,9 +23,9 @@ This project uses **two routers simultaneously**:
 | Router | Location | Purpose |
 |---|---|---|
 | App Router | `app/` | All pages (RSC + client components) |
-| Pages Router | `src/pages/api/` | All API routes — never move these |
+| Pages Router | `pages/api/` | All API routes — never move these |
 
-Never create API routes under `app/api/`. All backend handlers live in `src/pages/api/`.
+Never create API routes under `app/api/`. All backend handlers live in `pages/api/`.
 
 ---
 
@@ -52,7 +52,7 @@ Never create API routes under `app/api/`. All backend handlers live in `src/page
 |---|---|
 | `lib/supabase.ts` | Auth + DB client |
 | `lib/auth.ts` | NextAuth config — auth flow |
-| `src/pages/api/` | All API handlers |
+| `pages/api/` | All API handlers |
 | `components/ui/` | shadcn/ui primitives — auto-generated, never hand-edit |
 | `supabase/migrations/` | Applied DDL cannot be rolled back safely without rollback scripts |
 | `app/(auth)/` | Auth group layout and session gate |
@@ -74,7 +74,7 @@ NCAA data source: TODO — not yet implemented. BallDontLie covers NBA/NFL/MLB o
 
 ## Odds
 
-`src/pages/api/odds/by-game.ts` currently returns mock data.
+`pages/api/odds/by-game.ts` currently returns mock data.
 Swap for The Odds API when ready — do not break the response shape.
 
 ---
@@ -121,6 +121,24 @@ Never auto-run migrations. Always confirm with user before applying SQL to Supab
 There is no test suite configured in V2 yet. Do not assume tests exist.
 CI gates on `npm run lint` and `npm run typecheck` only.
 When a test framework is added, update `CLAUDE.md`, `docs/tooling.md`, and `.github/workflows/ci.yml`.
+
+---
+
+## Project Documentation
+
+The `docs/` folder contains the original SportsChat+ team deliverables. Use these as reference material when rebuilding features in V2 — they describe intended behavior, data models, and architecture decisions from the original project.
+
+| File | Contents |
+|---|---|
+| `Sports Chat Plus Proposal Working Copy .pdf` | Original project proposal — feature scope, goals, team responsibilities |
+| `Sports Chat Plus Final Report .pdf` | Final report — full feature description, implementation summary |
+| `SportsChatPlus Logical Design.docx` | Logical data model — entity relationships, schema decisions |
+| `SportsChatPlus_Tech_FAQ_and_Architecture.pdf` | Architecture notes and technical Q&A from the original build |
+| `SportsChatPlus_Tech_QA_Summary.pdf` | Technical QA summary from the original project |
+| `SportsChat_Presentation_Talking_Points.pdf` | Presentation talking points — high-level feature walkthrough |
+
+These are read-only reference documents. Do not modify them.
+The old team codebase is **not** the source of truth for V2 implementation — use these documents for feature intent and data design only, then implement cleanly in V2.
 
 ---
 

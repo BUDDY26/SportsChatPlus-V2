@@ -10,6 +10,7 @@ export const metadata: Metadata = { title: "Profile" };
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
   const user = session?.user;
+  if (!user) return null;
   const initials = user?.name
     ?.split(" ")
     .map((n) => n[0])

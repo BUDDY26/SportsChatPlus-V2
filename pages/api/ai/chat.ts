@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSportsAnswer } from "@/lib/ai/chat";
+import { createAdminClient } from "@/lib/supabase";
 import { z } from "zod";
 
 const schema = z.object({
@@ -9,6 +10,7 @@ const schema = z.object({
       content: z.string(),
     })
   ),
+  userId: z.string().optional(),
 });
 
 export default async function handler(
@@ -22,7 +24,7 @@ export default async function handler(
     return res.status(400).json({ error: "Invalid request" });
   }
 
-  const { messages } = parsed.data;
+  const { messages, userId } = parsed.data;
   const lastMessage = messages[messages.length - 1];
   if (!lastMessage || lastMessage.role !== "user") {
     return res.status(400).json({ error: "Last message must be from user" });
@@ -30,6 +32,23 @@ export default async function handler(
 
   try {
     const content = await getSportsAnswer(lastMessage.content, messages.slice(0, -1));
+
+    // Log interaction — failure must never block the response
+    if (userId) {
+      try {
+        await createAdminClient()
+          .from("ai_interactions")
+          .insert({
+            user_id: userId,
+            prompt: lastMessage.content,
+            response: content,
+            model: "gpt-4o-mini",
+          });
+      } catch (logError) {
+        console.error("AI interaction logging failed:", logError);
+      }
+    }
+
     return res.status(200).json({ content });
   } catch (error) {
     console.error("AI chat error:", error);

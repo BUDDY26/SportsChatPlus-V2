@@ -12,7 +12,7 @@ Perform a structured repository entry scan at the start of a new session or when
 - Flag anything unexpected (untracked migration files, staged changes, detached HEAD).
 
 ### 2. Router split integrity check
-- Confirm API routes exist only under `src/pages/api/` — not under `app/api/`.
+- Confirm API routes exist only under `pages/api/` — not under `app/api/`.
 - Confirm `app/(auth)/dashboard/` exists (primary authenticated section).
 - Confirm `components/ui/` is present and untouched (shadcn/ui primitives).
 
@@ -34,7 +34,7 @@ Confirm these files exist (do not read contents unless the task requires it):
 - `types/next-auth.d.ts`
 
 ### 6. Odds / NCAA stub check
-- Confirm `src/pages/api/odds/by-game.ts` exists (mock odds — not yet wired to The Odds API).
+- Confirm `pages/api/odds/by-game.ts` exists (mock odds — not yet wired to The Odds API).
 - Note that NCAA data source is TODO — BallDontLie covers NBA/NFL/MLB only.
 - Do not flag these as bugs; they are known stubs.
 
