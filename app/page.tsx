@@ -59,7 +59,12 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="flex flex-1 flex-col items-center justify-center px-4 py-24 text-center">
+      <section className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-4 py-24 text-center">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-10"
+          style={{ backgroundImage: "url('/images/logo.png')" }}
+          aria-hidden="true"
+        />
         <Badge variant="secondary" className="mb-4">
           Now in Beta
         </Badge>

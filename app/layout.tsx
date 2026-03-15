@@ -16,6 +16,14 @@ export const metadata: Metadata = {
     "Real-time sports scores, AI-powered insights, community chat, and betting odds — all in one dashboard.",
   keywords: ["sports", "scores", "NFL", "NBA", "MLB", "NCAA", "AI insights", "odds"],
   authors: [{ name: "SportsChatPlus" }],
+  icons: {
+    icon: [{ url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    other: [
+      { rel: "icon", url: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+      { rel: "icon", url: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "en_US",

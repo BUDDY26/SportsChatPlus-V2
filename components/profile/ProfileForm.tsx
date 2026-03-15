@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -23,6 +24,7 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ user }: ProfileFormProps) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -50,6 +52,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
         throw new Error(body.error ?? "Update failed");
       }
       toast.success("Profile updated!");
+      router.refresh();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to update profile.");
     } finally {
