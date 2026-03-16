@@ -15,7 +15,7 @@ interface ChatWindowProps {
 
 export function ChatWindow({ userId, userName }: ChatWindowProps) {
   const [input, setInput] = useState("");
-  const { messages, isLoading, sendMessage } = useChat();
+  const { messages, isLoading, error, sendMessage } = useChat();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom on new messages
@@ -41,6 +41,11 @@ export function ChatWindow({ userId, userName }: ChatWindowProps) {
           <div ref={bottomRef} />
         </div>
       </ScrollArea>
+
+      {/* Send error */}
+      {error && (
+        <p className="px-4 py-2 text-sm text-destructive">{error}</p>
+      )}
 
       {/* Input */}
       <form
