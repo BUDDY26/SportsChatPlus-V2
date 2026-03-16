@@ -10,6 +10,7 @@ import {
   User,
   Brain,
   TrendingUp,
+  Brackets,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,7 @@ const navItems = [
   { href: "/dashboard/favorites", label: "Favorites", icon: Star },
   { href: "/dashboard/ai-insights", label: "AI Insights", icon: Brain },
   { href: "/dashboard/odds", label: "Odds", icon: TrendingUp },
+  { href: "/dashboard/tournament", label: "Tournament Center", icon: Brackets },
   { href: "/dashboard/profile", label: "Profile", icon: User },
 ];
 
@@ -27,9 +29,9 @@ export function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-56 flex-shrink-0 border-r bg-muted/30 md:flex md:flex-col">
+    <aside className="hidden w-56 flex-shrink-0 border-r border-white/10 bg-[hsl(var(--shell-bg))] text-white md:flex md:flex-col">
       {/* Logo */}
-      <div className="flex h-14 items-center gap-2 border-b px-4">
+      <div className="flex h-14 items-center gap-2 border-b border-white/10 px-4">
         <Trophy className="h-5 w-5 text-primary" />
         <span className="font-display font-bold">SportsChatPlus</span>
       </div>
@@ -57,8 +59,8 @@ export function DashboardSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t p-4">
-        <p className="text-xs text-muted-foreground">
+      <div className="border-t border-white/10 p-4">
+        <p className="text-xs text-white/40">
           &copy; {new Date().getFullYear()} SportsChatPlus
         </p>
       </div>

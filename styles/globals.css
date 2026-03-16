@@ -6,6 +6,7 @@
 
 @layer base {
   :root {
+    --shell-bg: 222 47% 15%;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -29,6 +30,7 @@
   }
 
   .dark {
+    --shell-bg: 222 47% 15%;
     --background: 240 25% 8%;
     --foreground: 210 40% 98%;
     --card: 240 28% 14%;
@@ -73,7 +75,7 @@
     @apply rounded-lg border bg-card p-4 shadow-sm hover:shadow-md transition-shadow;
   }
   .sidebar-link {
-    @apply flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground;
+    @apply flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors text-white/70 hover:bg-white/10 hover:text-white;
   }
   .sidebar-link-active {
     @apply bg-primary text-primary-foreground;

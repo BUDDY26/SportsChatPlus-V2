@@ -28,12 +28,18 @@ export function DashboardNavbar({ session }: DashboardNavbarProps) {
     .join("")
     .toUpperCase() ?? "?";
 
+  const firstName = user?.name?.split(" ")[0] ?? "Fan";
+
   return (
-    <header className="flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm">
+    <header className="relative flex h-14 items-center justify-between border-b border-white/10 bg-[hsl(var(--shell-bg))] px-4">
       <div className="flex items-center gap-2">
         <span className="live-dot" />
-        <span className="text-xs text-muted-foreground">Live</span>
+        <span className="text-xs text-white/60">Live</span>
       </div>
+
+      <span className="absolute left-1/2 -translate-x-1/2 text-sm font-medium text-white/80">
+        Welcome, {firstName}!
+      </span>
 
       <div className="flex items-center gap-2">
         <ThemeToggle />
