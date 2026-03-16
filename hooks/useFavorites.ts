@@ -9,7 +9,10 @@ export function useFavorites(userId: string) {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchFavorites = useCallback(async () => {
-    if (!userId) return;
+    if (!userId) {
+      setIsLoading(false);
+      return;
+    }
     try {
       const res = await fetch(`/api/favorites?userId=${userId}`);
       if (!res.ok) throw new Error("Failed to fetch favorites");
