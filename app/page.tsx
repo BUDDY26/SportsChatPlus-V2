@@ -78,15 +78,6 @@ export default function HomePage() {
           Real-time scores, AI-powered insights, community chat, and live odds
           — all in one fast, beautiful dashboard.
         </p>
-        <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <Button asChild size="lg">
-            <Link href="/signup">Get Started Free</Link>
-          </Button>
-          <Button asChild variant="outline" size="lg">
-            <Link href="/login">Sign In</Link>
-          </Button>
-        </div>
-
         {/* League badges */}
         <div className="mt-12 flex flex-wrap justify-center gap-2">
           {leagues.map((league) => (
