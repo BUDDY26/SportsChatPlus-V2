@@ -1,7 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase";
-import { signIn } from "next-auth/react";
+import { createClient, createAdminClient } from "@/lib/supabase";
 import { z } from "zod";
 import { redirect } from "next/navigation";
 
@@ -56,13 +55,19 @@ export async function signUpAction(
     return { error: error.message };
   }
 
-  // Create profile row
+  // Create profile row using admin client — bypasses RLS so the insert succeeds
+  // regardless of whether email confirmation is enabled (session may be null at this point).
   if (data.user) {
-    await supabase.from("profiles").insert({
+    const adminSupabase = createAdminClient();
+    const { error: profileError } = await adminSupabase.from("profiles").insert({
       id: data.user.id,
       full_name: validated.data.name,
       email: validated.data.email,
     });
+    if (profileError) {
+      // Log but do not block — the auth account was created successfully.
+      console.error("Profile row insert failed for user", data.user.id, profileError.message);
+    }
   }
 
   return { success: true };
