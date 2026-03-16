@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     template: "%s | SportsChatPlus",
   },
   description:
-    "Real-time sports scores, AI-powered insights, community chat, and betting odds — all in one dashboard.",
+    "AI-powered sports analytics, real-time scores, odds, and community discussion across professional and NCAA leagues.",
   keywords: ["sports", "scores", "NFL", "NBA", "MLB", "NCAA", "AI insights", "odds"],
   authors: [{ name: "SportsChatPlus" }],
   icons: {
@@ -29,8 +29,10 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://sportschatplus.com",
     title: "SportsChatPlus",
-    description: "Your all-in-one sports intelligence platform.",
+    description:
+      "AI-powered sports analytics, real-time scores, odds, and community discussion across professional and NCAA leagues.",
     siteName: "SportsChatPlus",
+    images: [{ url: "/images/logo.png", width: 1792, height: 1024, alt: "SportsChatPlus" }],
   },
 };
 
