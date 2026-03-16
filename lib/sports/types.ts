@@ -62,3 +62,68 @@ export interface FavoriteTeam {
   league: LeagueId;
   teamId?: string;
 }
+
+// ─── Tournament ───────────────────────────────────────────────────────────────
+
+export const TOURNAMENT_ROUNDS = [
+  { round: 1, label: "First Round" },
+  { round: 2, label: "Second Round" },
+  { round: 3, label: "Sweet 16" },
+  { round: 4, label: "Elite Eight" },
+  { round: 5, label: "Final Four" },
+  { round: 6, label: "Championship" },
+] as const;
+
+export type TournamentRound = (typeof TOURNAMENT_ROUNDS)[number]["round"];
+
+export const TOURNAMENT_REGIONS = [
+  "East",
+  "West",
+  "South",
+  "Midwest",
+  "Final Four",
+] as const;
+
+export type TournamentRegion = (typeof TOURNAMENT_REGIONS)[number];
+
+/**
+ * A single matchup in the bracket.
+ * score-driven: winnerId is derived from scores once status === "final".
+ * progression-aware: nextMatchupId links this game to the game the winner advances to.
+ */
+export interface TournamentGame {
+  id: string;
+  round: TournamentRound;
+  roundLabel: string;
+  region: TournamentRegion;
+  /** 1-based position within this round+region */
+  slot: number;
+  topTeamId: string | null;    // null = TBD (winner not yet determined)
+  topTeamName: string;         // "TBD" when not yet known
+  topTeamSeed: number | null;
+  topScore: number;
+  bottomTeamId: string | null;
+  bottomTeamName: string;
+  bottomTeamSeed: number | null;
+  bottomScore: number;
+  status: GameStatus;
+  /** Team id of the winner; null while game is scheduled or live */
+  winnerId: string | null;
+  /** Which slot the winner occupied */
+  winnerSlot: "top" | "bottom" | null;
+  /** Id of the next TournamentGame the winner advances into */
+  nextMatchupId: string | null;
+  scheduledTime: string;
+}
+
+/**
+ * A team's tournament entry — tracks seed, region, and current standing.
+ */
+export interface BracketEntry {
+  teamId: string;
+  teamName: string;
+  seed: number;
+  region: TournamentRegion;
+  isEliminated: boolean;
+  currentRound: TournamentRound;
+}

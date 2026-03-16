@@ -22,11 +22,11 @@ export default async function DashboardLayout({
         <DashboardNavbar session={session} />
         <main className="relative flex-1 overflow-y-auto p-4 md:p-6">
           <div
-            className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden opacity-[0.04]"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden opacity-[0.06]"
             aria-hidden="true"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/logo.png" alt="" className="w-96 select-none" draggable={false} />
+            <img src="/images/logo.png" alt="" className="w-[70%] select-none" draggable={false} />
           </div>
           {children}
         </main>

@@ -32,7 +32,6 @@ export function DashboardSidebar() {
     <aside className="hidden w-56 flex-shrink-0 border-r border-white/10 bg-[hsl(var(--shell-bg))] text-white md:flex md:flex-col">
       {/* Logo */}
       <div className="flex h-14 items-center gap-2 border-b border-white/10 px-4">
-        <Trophy className="h-5 w-5 text-primary" />
         <span className="font-display font-bold">SportsChatPlus</span>
       </div>
 
@@ -58,12 +57,6 @@ export function DashboardSidebar() {
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="border-t border-white/10 p-4">
-        <p className="text-xs text-white/40">
-          &copy; {new Date().getFullYear()} SportsChatPlus
-        </p>
-      </div>
     </aside>
   );
 }
