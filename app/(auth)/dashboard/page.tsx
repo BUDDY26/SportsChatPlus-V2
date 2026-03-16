@@ -55,7 +55,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Welcome header */}
-      <div>
+      <div className="rounded-lg bg-card/80 backdrop-blur-sm px-5 py-4">
         <h1 className="font-display text-3xl font-bold">
           Welcome back, {name}!
         </h1>
@@ -77,7 +77,7 @@ export default async function DashboardPage() {
                 <CardTitle className="text-base">{link.label}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {link.description}
                 </p>
               </CardContent>
@@ -87,25 +87,23 @@ export default async function DashboardPage() {
       </div>
 
       {/* Leagues overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-display">Leagues Covered</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {LEAGUES.map((league) => (
-              <Link
-                key={league.id}
-                href={`/dashboard/scores?league=${league.id}`}
-              >
-                <Badge variant="outline" className="cursor-pointer hover:bg-accent">
-                  {league.label}
-                </Badge>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-2">
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          Leagues Covered
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {LEAGUES.map((league) => (
+            <Link
+              key={league.id}
+              href={`/dashboard/scores?league=${league.id}`}
+            >
+              <Badge variant="outline" className="cursor-pointer hover:bg-accent">
+                {league.label}
+              </Badge>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
