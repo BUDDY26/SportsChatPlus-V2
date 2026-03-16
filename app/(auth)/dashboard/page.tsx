@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, MessageSquare, Star, TrendingUp, Brain } from "lucide-react";
 import Link from "next/link";
+import { LEAGUES } from "@/lib/sports/types";
 import { LiveStatusBar } from "@/components/dashboard/LiveStatusBar";
 
 export const metadata: Metadata = { title: "Dashboard" };
@@ -92,19 +93,15 @@ export default async function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
-            {[
-              "NFL",
-              "NBA",
-              "MLB",
-              "NCAAF",
-              "NCAAB Men",
-              "NCAAB Women",
-              "NCAA Baseball",
-              "NCAA Softball",
-            ].map((league) => (
-              <Badge key={league} variant="outline">
-                {league}
-              </Badge>
+            {LEAGUES.map((league) => (
+              <Link
+                key={league.id}
+                href={`/dashboard/scores?league=${league.id}`}
+              >
+                <Badge variant="outline" className="cursor-pointer hover:bg-accent">
+                  {league.label}
+                </Badge>
+              </Link>
             ))}
           </div>
         </CardContent>
