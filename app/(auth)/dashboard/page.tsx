@@ -87,7 +87,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Leagues overview */}
-      <div className="space-y-2">
+      <div className="rounded-lg bg-card/70 backdrop-blur-sm px-4 py-3 space-y-2">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           Leagues Covered
         </span>
