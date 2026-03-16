@@ -20,7 +20,7 @@ export default async function DashboardLayout({
       <DashboardSidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
         <DashboardNavbar session={session} />
-        <main className="relative flex-1 overflow-y-auto p-4 md:p-6 bg-[url('/images/logo.png')] bg-cover bg-center bg-no-repeat">
+        <main className="relative flex-1 overflow-y-auto p-4 md:p-6 bg-[url('/images/dashboard-bg.png')] bg-cover bg-center bg-no-repeat">
           {children}
         </main>
       </div>
