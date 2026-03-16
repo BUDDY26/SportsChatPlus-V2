@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getNBALiveGames, getNFLGames, getMLBGames } from "@/lib/sports/balldontlie";
+import { getNCAAScorebord } from "@/lib/sports/ncaa";
 import type { GameScore, LeagueId } from "@/lib/sports/types";
 
 export default async function handler(
@@ -63,8 +64,7 @@ export default async function handler(
         }),
       }));
     } else {
-      // NCAA leagues — placeholder (integrate a dedicated NCAA data source)
-      scores = [];
+      scores = await getNCAAScorebord(league);
     }
 
     res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");

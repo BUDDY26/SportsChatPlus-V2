@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, MessageSquare, Star, TrendingUp, Brain } from "lucide-react";
 import Link from "next/link";
+import { LiveStatusBar } from "@/components/dashboard/LiveStatusBar";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
@@ -63,13 +64,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Status bar */}
-      <div className="flex items-center gap-2 rounded-lg border bg-card px-4 py-3">
-        <span className="live-dot" />
-        <span className="text-sm font-medium">Live games in progress</span>
-        <Badge variant="secondary" className="ml-auto">
-          Updated now
-        </Badge>
-      </div>
+      <LiveStatusBar />
 
       {/* Quick links */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">

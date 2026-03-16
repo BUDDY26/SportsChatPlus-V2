@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getNBALiveGames, getNFLGames, getMLBGames } from "@/lib/sports/balldontlie";
+import { getNCAAScorebord } from "@/lib/sports/ncaa";
 import type { GameScore, GameStatus } from "@/lib/sports/types";
 
 export default async function handler(
@@ -11,11 +12,17 @@ export default async function handler(
   }
 
   try {
-    const [nba, nfl, mlb] = await Promise.allSettled([
-      getNBALiveGames(),
-      getNFLGames(),
-      getMLBGames(),
-    ]);
+    const [nba, nfl, mlb, ncaaf, ncaabMen, ncaabWomen, ncaaBaseball, ncaaSoftball] =
+      await Promise.allSettled([
+        getNBALiveGames(),
+        getNFLGames(),
+        getMLBGames(),
+        getNCAAScorebord("NCAAF"),
+        getNCAAScorebord("NCAAB_MEN"),
+        getNCAAScorebord("NCAAB_WOMEN"),
+        getNCAAScorebord("NCAA_BASEBALL"),
+        getNCAAScorebord("NCAA_SOFTBALL"),
+      ]);
 
     const scores: GameScore[] = [];
 
@@ -88,6 +95,13 @@ export default async function handler(
         });
       });
     }
+
+    // NCAA
+    if (ncaaf.status === "fulfilled") scores.push(...ncaaf.value);
+    if (ncaabMen.status === "fulfilled") scores.push(...ncaabMen.value);
+    if (ncaabWomen.status === "fulfilled") scores.push(...ncaabWomen.value);
+    if (ncaaBaseball.status === "fulfilled") scores.push(...ncaaBaseball.value);
+    if (ncaaSoftball.status === "fulfilled") scores.push(...ncaaSoftball.value);
 
     // Sort: live first, then scheduled, then final
     const order: Record<string, number> = { live: 0, scheduled: 1, final: 2 };

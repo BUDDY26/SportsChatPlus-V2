@@ -61,18 +61,20 @@ export default function HomePage() {
       {/* Hero */}
       <section className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-4 py-24 text-center">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-10"
+          className="absolute inset-0 bg-cover bg-center opacity-20"
           style={{ backgroundImage: "url('/images/logo.png')" }}
           aria-hidden="true"
         />
-        <Badge variant="secondary" className="mb-4">
+        <Badge variant="secondary" className="mb-6">
           Now in Beta
         </Badge>
         <h1 className="font-display text-5xl font-bold tracking-tight sm:text-7xl">
-          Sports Intelligence{" "}
-          <span className="text-primary">Supercharged</span>
+          SportsChatPlus
         </h1>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+        <p className="mt-3 font-display text-xl font-semibold text-primary sm:text-2xl">
+          Sports Intelligence, Supercharged
+        </p>
+        <p className="mt-6 max-w-2xl text-base text-muted-foreground">
           Real-time scores, AI-powered insights, community chat, and live odds
           — all in one fast, beautiful dashboard.
         </p>
