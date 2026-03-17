@@ -97,7 +97,7 @@ export function DashboardSidebar() {
       {/* Sports browser */}
       <div className="flex-1 overflow-y-auto flex flex-col gap-2 p-2">
         {sportsBrowser.map((group) => (
-          <div key={group.label} className="rounded-lg border border-white/[0.06] overflow-hidden">
+          <div key={group.label} className="rounded-lg overflow-hidden">
             <p className="px-3 pb-1 pt-2.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/25">
               {group.label}
             </p>
