@@ -9,11 +9,12 @@ export const metadata: Metadata = {
 
 export default function SignupPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-muted/30 px-4">
+    <div className="dark tournament-rail flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <Link href="/" className="font-display text-2xl font-bold text-primary">
-            SportsChatPlus
+          <Link href="/">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/UPDATE_LOGO.png" alt="SportsChatPlus" className="h-12 w-auto select-none mb-2" draggable={false} />
           </Link>
           <h1 className="mt-4 text-2xl font-bold">Create your account</h1>
           <p className="mt-2 text-sm text-muted-foreground">

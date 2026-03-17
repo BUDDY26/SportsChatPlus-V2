@@ -6,7 +6,6 @@ import { signUpAction, type AuthState } from "@/app/(auth)/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -40,8 +39,8 @@ export function SignupForm() {
   }, [state, router]);
 
   return (
-    <Card>
-      <CardContent className="pt-6">
+    <div className="card-float rounded-xl">
+      <div className="pt-6 px-6 pb-6">
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
@@ -69,7 +68,7 @@ export function SignupForm() {
           )}
           <SubmitButton />
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

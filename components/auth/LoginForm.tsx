@@ -9,7 +9,6 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -47,8 +46,8 @@ export function LoginForm() {
   };
 
   return (
-    <Card>
-      <CardContent className="pt-6">
+    <div className="card-float rounded-xl">
+      <div className="pt-6 px-6 pb-6">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -79,7 +78,7 @@ export function LoginForm() {
             Sign In
           </Button>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
