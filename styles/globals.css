@@ -92,7 +92,7 @@
     border-color: rgba(255, 255, 255, 0.08);
   }
   .tournament-rail {
-    background: radial-gradient(ellipse at 70% 100%, #3d1a2e 0%, #1a0d1a 35%, #0e0a0e 70%);
+    background: radial-gradient(ellipse at 50% 100%, #4a1f38 0%, #2a0f22 30%, #0e0a0e 65%);
   }
 }
 
