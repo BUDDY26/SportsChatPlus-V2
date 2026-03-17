@@ -58,13 +58,13 @@ export function DashboardSidebar() {
       {/* Logo */}
       <Link
         href="/dashboard"
-        className="flex h-10 flex-shrink-0 items-center border-b border-white/[0.06] px-4"
+        className="flex h-16 flex-shrink-0 items-center border-b border-white/[0.06] px-4"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/images/logo.png"
           alt="SportsChatPlus"
-          className="h-6 w-auto select-none"
+          className="h-10 w-auto select-none"
           draggable={false}
         />
       </Link>
