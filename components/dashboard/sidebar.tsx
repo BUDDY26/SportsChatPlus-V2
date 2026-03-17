@@ -58,7 +58,7 @@ export function DashboardSidebar() {
       {/* Logo */}
       <Link
         href="/dashboard"
-        className="flex flex-shrink-0 items-center py-2"
+        className="flex w-full flex-shrink-0 items-center py-2"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
