@@ -119,7 +119,7 @@ export default async function DashboardPage({
       {/* ── Row 1, Cols 1-2: Favorite Teams Row ─────────────────────────────
           col-span-2 → occupies columns 1 and 2 only.
           Tournament Central (col-start-3) is unaffected.           ────── */}
-      <div className="col-span-2 px-4 py-2">
+      <div className="col-span-2 px-4 py-2 bg-white/[0.03]">
         <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/50">
           My Teams
         </p>
@@ -265,7 +265,7 @@ export default async function DashboardPage({
       {/* ── Row 2, Cols 1-2: Tab Filter Row ─────────────────────────────────
           col-span-2 → spans columns 1 and 2 only.
           Sits directly below Favorite Teams Row.                    ────── */}
-      <div className="col-span-2 flex items-center justify-between px-4 py-2">
+      <div className="col-span-2 flex items-center justify-between px-4 py-2 bg-white/[0.03]">
         <div className="flex items-center gap-1">
           {(["live", "upcoming", "recent"] as Tab[]).map((tab) => (
             <Link
@@ -295,7 +295,7 @@ export default async function DashboardPage({
       {/* ── Row 3, Col 1: Column A ───────────────────────────────────────────
           Auto-placed by CSS grid into row 3, column 1.
           Direct grid child — no parent/child relationship with Col B. ───── */}
-      <div className="flex flex-col gap-4 overflow-hidden p-3">
+      <div className="flex flex-col gap-4 overflow-hidden p-3 bg-white/[0.04]">
 
         {activeTab === "live" && liveGames.slice(0, 2).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
@@ -372,7 +372,7 @@ export default async function DashboardPage({
       {/* ── Row 3, Col 2: Column B ───────────────────────────────────────────
           Auto-placed by CSS grid into row 3, column 2.
           Direct grid child — no parent/child relationship with Col A. ───── */}
-      <div className="flex flex-col gap-4 overflow-hidden p-3">
+      <div className="flex flex-col gap-4 overflow-hidden p-3 bg-white/[0.04]">
 
         {activeTab === "live" && liveGames.slice(2, 4).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
