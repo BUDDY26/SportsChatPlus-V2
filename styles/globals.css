@@ -93,6 +93,11 @@
   }
 }
 
+/* Dashboard routes: suppress background image — solid surface only */
+.dashboard-main {
+  background-image: none;
+}
+
 /* Background image suppression: heavy dark overlay in all modes so the image
    acts as a subtle backdrop only — not a visible wallpaper bleeding through panels. */
 .dark main {

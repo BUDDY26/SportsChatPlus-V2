@@ -20,7 +20,7 @@ export default async function DashboardLayout({
       <DashboardNavbar session={session} />
       <div className="flex flex-1 overflow-hidden">
         <DashboardSidebar />
-        <main className="flex-1 overflow-hidden bg-background">
+        <main className="flex-1 overflow-hidden bg-background dashboard-main">
           {children}
         </main>
       </div>
