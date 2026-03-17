@@ -100,7 +100,7 @@ const recentGames: RecentGame[] = [
 // ─── Shared card class ───────────────────────────────────────────────────────
 
 const CARD =
-  "flex flex-1 flex-col rounded-xl border border-border/50 bg-card p-3 transition-colors hover:border-primary/30 hover:bg-accent";
+  "flex flex-1 flex-col rounded-xl bg-card p-3 transition-colors hover:bg-accent";
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
