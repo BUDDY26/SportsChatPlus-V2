@@ -16,7 +16,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="dark flex h-screen flex-col overflow-hidden bg-background">
+    <div className="dark flex h-screen flex-col overflow-hidden tournament-rail">
       <DashboardNavbar session={session} />
       <div className="flex flex-1 overflow-hidden">
         <DashboardSidebar />

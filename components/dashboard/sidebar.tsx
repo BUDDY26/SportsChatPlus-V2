@@ -53,7 +53,7 @@ export function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-52 flex-shrink-0 flex-col bg-[hsl(var(--shell-bg))] md:flex overflow-hidden">
+    <aside className="hidden w-52 flex-shrink-0 flex-col md:flex overflow-hidden">
 
       {/* Logo */}
       <Link
