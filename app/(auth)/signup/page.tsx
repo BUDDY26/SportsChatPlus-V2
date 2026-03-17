@@ -20,7 +20,7 @@ export default function SignupPage() {
       />
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <Link href="/" className="font-display text-4xl font-bold text-white sm:text-5xl hover:text-white/80 transition-colors">
+          <Link href="/" className="font-display text-5xl font-bold text-white sm:text-7xl hover:text-white/80 transition-colors">
             SportsChatPlus
           </Link>
           <h1 className="mt-4 text-2xl font-bold">Create your account</h1>

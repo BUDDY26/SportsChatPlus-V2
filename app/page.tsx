@@ -66,14 +66,6 @@ export default function HomePage() {
         <div className="relative z-10 flex flex-col items-center gap-6">
 
           {/* Logo */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/UPDATE_LOGO.png"
-            alt="SportsChatPlus"
-            className="h-16 w-auto select-none"
-            draggable={false}
-          />
-
           {/* Badge */}
           <span className="rounded-full border border-white/20 px-3 py-1 text-xs text-white/50">
             Now in Beta
