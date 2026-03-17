@@ -100,7 +100,7 @@ const recentGames: RecentGame[] = [
 // ─── Shared card class ───────────────────────────────────────────────────────
 
 const CARD =
-  "flex flex-1 flex-col rounded-xl bg-black/40 p-3 transition-colors hover:bg-black/50";
+  "flex flex-1 flex-col rounded-xl card-float p-3 transition-colors";
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
@@ -128,7 +128,7 @@ export default async function DashboardPage({
             <Link
               key={team.abbr}
               href="/dashboard/favorites"
-              className="flex h-11 w-12 flex-shrink-0 flex-col items-center justify-center gap-0.5 rounded-lg border border-border/50 bg-black/40 transition-colors hover:border-primary/40 hover:bg-black/50"
+              className="flex h-11 w-12 flex-shrink-0 flex-col items-center justify-center gap-0.5 rounded-lg card-float transition-colors hover:border-primary/40"
             >
               <span className="text-[11px] font-bold leading-none tabular-nums text-foreground">
                 {team.abbr}
@@ -182,7 +182,7 @@ export default async function DashboardPage({
           <p className="mb-2.5 text-[10px] text-muted-foreground/60">
             NCAA Men&apos;s Basketball · 3/29/2025
           </p>
-          <div className="rounded-xl border border-border/50 bg-black/40 p-3">
+          <div className="rounded-xl card-float p-3">
             <div className="mb-2 flex items-center justify-between">
               <span className="text-[9px] uppercase tracking-wide text-muted-foreground/50">Featured</span>
               <span className="text-[9px] font-medium text-muted-foreground">Elite Eight</span>
