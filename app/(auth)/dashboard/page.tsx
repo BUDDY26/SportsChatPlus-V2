@@ -82,7 +82,7 @@ export default async function DashboardPage({
               <Link
                 key={team.abbr}
                 href="/dashboard/favorites"
-                className="flex-shrink-0 flex flex-col items-center justify-center rounded-lg bg-card/60 border border-border/40 hover:bg-card/90 hover:border-primary/40 transition-colors w-14 h-12 gap-0.5"
+                className="flex-shrink-0 flex flex-col items-center justify-center rounded-sm bg-secondary border border-border/50 hover:bg-accent hover:border-primary/40 transition-colors w-14 h-12 gap-0.5"
               >
                 <span className="text-[11px] font-bold tabular-nums text-foreground">{team.abbr}</span>
                 <span className="text-[9px] text-muted-foreground truncate w-full text-center px-1">{team.label}</span>
@@ -90,7 +90,7 @@ export default async function DashboardPage({
             ))}
             <Link
               href="/dashboard/favorites"
-              className="flex-shrink-0 flex flex-col items-center justify-center rounded-lg border border-dashed border-border/40 hover:border-primary/40 text-muted-foreground hover:text-primary transition-colors w-14 h-12"
+              className="flex-shrink-0 flex flex-col items-center justify-center rounded-sm border border-dashed border-border/50 hover:border-primary/40 text-muted-foreground hover:text-primary transition-colors w-14 h-12"
             >
               <span className="text-base leading-none font-light">+</span>
               <span className="text-[9px]">Add</span>
@@ -129,7 +129,7 @@ export default async function DashboardPage({
 
           {/* Live tab */}
           {activeTab === "live" && (
-            <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden divide-y divide-border/30">
+            <div className="rounded-sm bg-card border border-border/50 overflow-hidden divide-y divide-border/40">
               {placeholderLive.length === 0 ? (
                 <div className="px-4 py-8 text-center text-sm text-muted-foreground">
                   No live games right now.{" "}
@@ -171,7 +171,7 @@ export default async function DashboardPage({
 
           {/* Upcoming tab */}
           {activeTab === "upcoming" && (
-            <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden divide-y divide-border/30">
+            <div className="rounded-sm bg-card border border-border/50 overflow-hidden divide-y divide-border/40">
               {placeholderUpcoming.map((match, i) => (
                 <Link
                   key={i}
@@ -198,7 +198,7 @@ export default async function DashboardPage({
 
           {/* Recent tab */}
           {activeTab === "recent" && (
-            <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden divide-y divide-border/30">
+            <div className="rounded-sm bg-card border border-border/50 overflow-hidden divide-y divide-border/40">
               {placeholderRecent.map((match, i) => (
                 <Link
                   key={i}
@@ -233,7 +233,7 @@ export default async function DashboardPage({
       </div>
 
       {/* ── Right rail: Tournament Central ─────────────────────────────────── */}
-      <div className="hidden lg:flex w-72 flex-shrink-0 flex-col border-l border-border/30 bg-card/40 backdrop-blur-sm overflow-y-auto">
+      <div className="hidden lg:flex w-72 flex-shrink-0 flex-col border-l border-border/50 bg-card overflow-y-auto">
 
         {/* Header */}
         <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-border/30">
@@ -255,7 +255,7 @@ export default async function DashboardPage({
           </p>
           <p className="text-[10px] text-muted-foreground/70 mb-3">Elite Eight · 3/29/2025</p>
 
-          <div className="rounded-lg bg-card border border-border/50 p-3 mb-3">
+          <div className="rounded-sm bg-secondary border border-border/50 p-3 mb-3">
             <div className="flex items-center justify-between mb-2">
               <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Featured</p>
               <span className="text-[10px] text-sports-green font-semibold">Final</span>

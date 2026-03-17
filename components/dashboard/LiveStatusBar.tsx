@@ -8,7 +8,7 @@ export function LiveStatusBar() {
   const liveCount = scores.filter((g) => g.status === "live").length;
 
   return (
-    <div className="flex items-center gap-2 rounded-lg border bg-card px-4 py-3">
+    <div className="flex items-center gap-2">
       <span
         className={
           liveCount > 0

@@ -93,8 +93,12 @@
   }
 }
 
-/* Light-mode only: soften the cover background image with a semi-transparent white overlay.
-   Dark mode is unaffected — next-themes adds .dark to <html>, so html:not(.dark) never matches. */
+/* Background image suppression: heavy dark overlay in all modes so the image
+   acts as a subtle backdrop only — not a visible wallpaper bleeding through panels. */
+.dark main {
+  background-image: linear-gradient(rgba(10, 12, 22, 0.93), rgba(10, 12, 22, 0.93)), url('/images/dashboard-bg.png');
+}
+
 html:not(.dark) main {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.25)), url('/images/dashboard-bg.png');
+  background-image: linear-gradient(rgba(10, 12, 22, 0.88), rgba(10, 12, 22, 0.88)), url('/images/dashboard-bg.png');
 }
