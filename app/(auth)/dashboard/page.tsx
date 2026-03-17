@@ -100,7 +100,7 @@ const recentGames: RecentGame[] = [
 // ─── Shared card class ───────────────────────────────────────────────────────
 
 const CARD =
-  "flex flex-1 flex-col rounded border border-border/50 bg-card p-3 transition-colors hover:border-primary/30 hover:bg-accent";
+  "flex flex-1 flex-col rounded-xl border border-border/50 bg-card p-3 transition-colors hover:border-primary/30 hover:bg-accent";
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
@@ -128,7 +128,7 @@ export default async function DashboardPage({
             <Link
               key={team.abbr}
               href="/dashboard/favorites"
-              className="flex h-11 w-12 flex-shrink-0 flex-col items-center justify-center gap-0.5 rounded border border-border/50 bg-card transition-colors hover:border-primary/40 hover:bg-accent"
+              className="flex h-11 w-12 flex-shrink-0 flex-col items-center justify-center gap-0.5 rounded-lg border border-border/50 bg-card transition-colors hover:border-primary/40 hover:bg-accent"
             >
               <span className="text-[11px] font-bold leading-none tabular-nums text-foreground">
                 {team.abbr}
@@ -140,7 +140,7 @@ export default async function DashboardPage({
           ))}
           <Link
             href="/dashboard/favorites"
-            className="flex h-11 w-12 flex-shrink-0 flex-col items-center justify-center gap-0.5 rounded border border-dashed border-border/40 text-muted-foreground/50 transition-colors hover:border-primary/40 hover:text-primary"
+            className="flex h-11 w-12 flex-shrink-0 flex-col items-center justify-center gap-0.5 rounded-lg border border-dashed border-border/40 text-muted-foreground/50 transition-colors hover:border-primary/40 hover:text-primary"
           >
             <span className="text-base font-light leading-none">+</span>
             <span className="text-[9px] leading-none">Add</span>
@@ -182,7 +182,7 @@ export default async function DashboardPage({
           <p className="mb-2.5 text-[10px] text-muted-foreground/60">
             NCAA Men&apos;s Basketball · 3/29/2025
           </p>
-          <div className="rounded border border-border/50 bg-secondary p-3">
+          <div className="rounded-xl border border-border/50 bg-secondary p-3">
             <div className="mb-2 flex items-center justify-between">
               <span className="text-[9px] uppercase tracking-wide text-muted-foreground/50">Featured</span>
               <span className="text-[9px] font-medium text-muted-foreground">Elite Eight</span>
@@ -240,7 +240,7 @@ export default async function DashboardPage({
               <Link
                 key={t.name}
                 href="/dashboard/tournament"
-                className="-mx-1.5 flex items-center justify-between rounded px-1.5 py-1.5 transition-colors hover:bg-accent/30"
+                className="-mx-1.5 flex items-center justify-between rounded-lg px-1.5 py-1.5 transition-colors hover:bg-accent/30"
               >
                 <span className="text-[11px] text-muted-foreground/70">{t.name}</span>
                 <span className="text-[10px] text-muted-foreground/40">{t.round}</span>
@@ -253,7 +253,7 @@ export default async function DashboardPage({
         <div className="flex-shrink-0 px-4 py-3">
           <Link
             href="/dashboard/tournament"
-            className="flex w-full items-center justify-center gap-2 rounded border border-primary/25 bg-primary/10 px-3 py-2.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/20"
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/20"
           >
             <Trophy className="h-3.5 w-3.5" />
             View Tournament Center
@@ -271,7 +271,7 @@ export default async function DashboardPage({
             <Link
               key={tab}
               href={`/dashboard?tab=${tab}`}
-              className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-[11px] font-medium transition-colors ${
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-medium transition-colors ${
                 activeTab === tab
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-accent hover:text-foreground"
