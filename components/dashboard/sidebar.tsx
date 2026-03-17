@@ -70,7 +70,7 @@ export function DashboardSidebar() {
       </Link>
 
       {/* 2×2 Control cluster */}
-      <div className="flex-shrink-0 border-b border-white/[0.06] px-2.5 py-2.5">
+      <div className="flex-shrink-0 px-2.5 py-2.5">
         <div className="grid grid-cols-2 gap-1">
           {controls.map((item) => {
             const isActive =
