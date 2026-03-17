@@ -9,12 +9,20 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="dark tournament-rail flex min-h-screen items-center justify-center px-4">
+    <div className="dark tournament-rail relative flex min-h-screen items-center justify-center px-4">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/hero-bg.png"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full object-cover opacity-20 select-none pointer-events-none"
+        draggable={false}
+      />
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <Link href="/">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/UPDATE_LOGO.png" alt="SportsChatPlus" className="h-12 w-auto select-none mb-2" draggable={false} />
+            <img src="/images/UPDATE_LOGO.png" alt="SportsChatPlus" className="h-16 w-auto select-none mx-auto block mb-4" draggable={false} />
           </Link>
           <h1 className="mt-4 text-2xl font-bold">Welcome back</h1>
           <p className="mt-2 text-sm text-muted-foreground">
