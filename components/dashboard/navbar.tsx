@@ -22,44 +22,38 @@ interface DashboardNavbarProps {
 
 export function DashboardNavbar({ session }: DashboardNavbarProps) {
   const user = session.user;
-  const initials = user?.name
-    ?.split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase() ?? "?";
+  const initials =
+    user?.name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase() ?? "?";
 
   return (
-    <header className="flex h-12 flex-shrink-0 items-center justify-between border-b border-white/10 bg-[hsl(var(--shell-bg))] px-4">
-      {/* Logo */}
-      <div className="flex items-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/logo.png"
-          alt="SportsChatPlus"
-          className="h-7 w-auto select-none"
-          draggable={false}
-        />
-      </div>
+    <header className="flex h-9 flex-shrink-0 items-center border-b border-white/[0.06] bg-[hsl(var(--shell-bg))] px-4">
 
-      {/* Center utility */}
-      <div className="flex items-center">
+      {/* Left: width spacer aligns with sidebar */}
+      <div className="w-52 flex-shrink-0" />
+
+      {/* Center: minimal utility link */}
+      <div className="flex flex-1 items-center justify-center">
         <Link
           href="/dashboard/support"
-          className="text-xs text-white/40 hover:text-white/70 transition-colors"
+          className="text-[11px] tracking-wide text-white/30 transition-colors hover:text-white/60"
         >
           Support
         </Link>
       </div>
 
       {/* Right: theme toggle + avatar */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <Avatar className="h-8 w-8">
+            <Button variant="ghost" className="relative h-7 w-7 rounded-full p-0">
+              <Avatar className="h-7 w-7">
                 <AvatarImage src={user?.image ?? ""} alt={user?.name ?? ""} />
-                <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -88,6 +82,7 @@ export function DashboardNavbar({ session }: DashboardNavbarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
     </header>
   );
 }

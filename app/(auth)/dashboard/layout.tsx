@@ -16,11 +16,11 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-[hsl(var(--shell-bg))]">
+    <div className="flex h-screen flex-col overflow-hidden bg-background">
       <DashboardNavbar session={session} />
       <div className="flex flex-1 overflow-hidden">
         <DashboardSidebar />
-        <main className="relative flex-1 overflow-hidden bg-[url('/images/dashboard-bg.png')] bg-cover bg-center bg-no-repeat">
+        <main className="flex-1 overflow-hidden bg-background">
           {children}
         </main>
       </div>
