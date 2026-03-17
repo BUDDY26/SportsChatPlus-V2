@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import Link from "next/link";
 
 interface DashboardNavbarProps {
@@ -29,19 +29,31 @@ export function DashboardNavbar({ session }: DashboardNavbarProps) {
     .toUpperCase() ?? "?";
 
   return (
-    <header className="relative flex h-14 items-center justify-between border-b border-white/10 bg-[hsl(var(--shell-bg))] px-4">
-      <div className="flex items-center gap-2">
-        <span className="live-dot" />
-        <span className="text-xs text-white/60">Live</span>
+    <header className="flex h-12 flex-shrink-0 items-center justify-between border-b border-white/10 bg-[hsl(var(--shell-bg))] px-4">
+      {/* Logo */}
+      <div className="flex items-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/logo.png"
+          alt="SportsChatPlus"
+          className="h-7 w-auto select-none"
+          draggable={false}
+        />
       </div>
 
-      <span className="absolute left-1/2 -translate-x-1/2 text-sm font-medium text-white/80">
-        Dashboard
-      </span>
+      {/* Center utility */}
+      <div className="flex items-center">
+        <Link
+          href="/dashboard/support"
+          className="text-xs text-white/40 hover:text-white/70 transition-colors"
+        >
+          Support
+        </Link>
+      </div>
 
+      {/* Right: theme toggle + avatar */}
       <div className="flex items-center gap-2">
         <ThemeToggle />
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">

@@ -1,53 +1,43 @@
 import { Metadata } from "next";
-import { Star, Brain, ChevronRight, Zap, Trophy, Clock } from "lucide-react";
+import { ChevronRight, Trophy } from "lucide-react";
 import Link from "next/link";
 import { LiveStatusBar } from "@/components/dashboard/LiveStatusBar";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
-// ─── Competition hierarchy — NCAA leads per product identity ──────────────────
+// ─── Placeholder team tiles ────────────────────────────────────────────────────
 
-const competitionGroups = [
-  {
-    label: "NCAA",
-    items: [
-      { label: "Football",           href: "/dashboard/scores?league=NCAAF" },
-      { label: "Men's Basketball",   href: "/dashboard/scores?league=NCAAB_MEN" },
-      { label: "Women's Basketball", href: "/dashboard/scores?league=NCAAB_WOMEN" },
-      { label: "Baseball",           href: "/dashboard/scores?league=NCAA_BASEBALL" },
-      { label: "Softball",           href: "/dashboard/scores?league=NCAA_SOFTBALL" },
-    ],
-  },
-  {
-    label: "Major Leagues",
-    items: [
-      { label: "NFL", href: "/dashboard/scores?league=NFL" },
-      { label: "NBA", href: "/dashboard/scores?league=NBA" },
-      { label: "MLB", href: "/dashboard/scores?league=MLB" },
-    ],
-  },
+const placeholderTeams = [
+  { label: "Lakers",  abbr: "LAL" },
+  { label: "Chiefs",  abbr: "KC"  },
+  { label: "Yankees", abbr: "NYY" },
+  { label: "Auburn",  abbr: "AU"  },
+  { label: "Heat",    abbr: "MIA" },
+  { label: "Eagles",  abbr: "PHI" },
+  { label: "Celtics", abbr: "BOS" },
+  { label: "Cowboys", abbr: "DAL" },
 ];
 
-// ─── Placeholder match data (Phase 3 will wire real useScores() output) ───────
+// ─── Placeholder match data ────────────────────────────────────────────────────
 
 const placeholderLive = [
-  { league: "NCAAB Men",  home: "Auburn",   away: "Michigan State", homeScore: 70,  awayScore: 64,  period: "Final"      },
-  { league: "NBA",        home: "Lakers",   away: "Celtics",        homeScore: 98,  awayScore: 102, period: "OT · 4:02"  },
-  { league: "NFL",        home: "Chiefs",   away: "Bills",          homeScore: 24,  awayScore: 17,  period: "Q4 · 2:15"  },
+  { league: "NCAAB Men", home: "Auburn",   away: "Michigan State", homeScore: 70,  awayScore: 64,  period: "Final"     },
+  { league: "NBA",       home: "Lakers",   away: "Celtics",        homeScore: 98,  awayScore: 102, period: "OT · 4:02" },
+  { league: "NFL",       home: "Chiefs",   away: "Bills",          homeScore: 24,  awayScore: 17,  period: "Q4 · 2:15" },
 ];
 
 const placeholderUpcoming = [
-  { league: "NCAAF",      home: "Alabama",  away: "Georgia",    time: "Sat · 7:00 PM ET"      },
-  { league: "NBA",        home: "Warriors", away: "Nuggets",    time: "Tonight · 9:30 PM ET"  },
-  { league: "MLB",        home: "Yankees",  away: "Red Sox",    time: "Tomorrow · 1:05 PM ET" },
-  { league: "NCAAB Men",  home: "Duke",     away: "UNC",        time: "Sat · 2:00 PM ET"      },
+  { league: "NCAAF",     home: "Alabama",  away: "Georgia",  time: "Sat · 7:00 PM ET"      },
+  { league: "NBA",       home: "Warriors", away: "Nuggets",  time: "Tonight · 9:30 PM ET"  },
+  { league: "MLB",       home: "Yankees",  away: "Red Sox",  time: "Tomorrow · 1:05 PM ET" },
+  { league: "NCAAB Men", home: "Duke",     away: "UNC",      time: "Sat · 2:00 PM ET"      },
 ];
 
 const placeholderRecent = [
-  { league: "NCAAB Men",  home: "Auburn",   away: "Florida",  homeScore: 79,  awayScore: 73  },
-  { league: "NFL",        home: "Eagles",   away: "Cowboys",  homeScore: 34,  awayScore: 17  },
-  { league: "NBA",        home: "Heat",     away: "Bulls",    homeScore: 112, awayScore: 105 },
-  { league: "MLB",        home: "Dodgers",  away: "Padres",   homeScore: 5,   awayScore: 3   },
+  { league: "NCAAB Men", home: "Auburn",  away: "Florida", homeScore: 79,  awayScore: 73  },
+  { league: "NFL",       home: "Eagles",  away: "Cowboys", homeScore: 34,  awayScore: 17  },
+  { league: "NBA",       home: "Heat",    away: "Bulls",   homeScore: 112, awayScore: 105 },
+  { league: "MLB",       home: "Dodgers", away: "Padres",  homeScore: 5,   awayScore: 3   },
 ];
 
 // ─── Tab types ─────────────────────────────────────────────────────────────────
@@ -72,51 +62,47 @@ export default async function DashboardPage({
     raw === "upcoming" || raw === "recent" ? raw : "live";
 
   return (
-    <div className="grid grid-cols-12 gap-3">
+    <div className="flex h-full">
 
-      {/* ── Left — sports & competition browser ───────────────────────────── */}
-      {/* order-2 on mobile: center (live data) renders first */}
-      <div className="col-span-12 md:col-span-3 order-2 md:order-1 h-full">
-        <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden h-full">
-          <div className="px-4 py-2.5 border-b border-border/40">
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Sports &amp; Competitions
-            </p>
-          </div>
-          <div>
-            {competitionGroups.map((group) => (
-              <div key={group.label}>
-                <p className="px-4 pt-2 pb-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                  {group.label}
-                </p>
-                {group.items.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="flex items-center justify-between px-4 py-1.5 text-sm text-foreground/80 hover:bg-muted/40 hover:text-foreground transition-colors group"
-                  >
-                    <span>{item.label}</span>
-                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground transition-colors" />
-                  </Link>
-                ))}
-              </div>
+      {/* ── Center: primary live workspace ─────────────────────────────────── */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+
+        {/* Live status bar */}
+        <div className="flex-shrink-0 border-b border-border/30 px-4 py-2">
+          <LiveStatusBar />
+        </div>
+
+        {/* Teams strip */}
+        <div className="flex-shrink-0 border-b border-border/30 px-4 py-2.5">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+            My Teams
+          </p>
+          <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
+            {placeholderTeams.map((team) => (
+              <Link
+                key={team.abbr}
+                href="/dashboard/favorites"
+                className="flex-shrink-0 flex flex-col items-center justify-center rounded-lg bg-card/60 border border-border/40 hover:bg-card/90 hover:border-primary/40 transition-colors w-14 h-12 gap-0.5"
+              >
+                <span className="text-[11px] font-bold tabular-nums text-foreground">{team.abbr}</span>
+                <span className="text-[9px] text-muted-foreground truncate w-full text-center px-1">{team.label}</span>
+              </Link>
             ))}
+            <Link
+              href="/dashboard/favorites"
+              className="flex-shrink-0 flex flex-col items-center justify-center rounded-lg border border-dashed border-border/40 hover:border-primary/40 text-muted-foreground hover:text-primary transition-colors w-14 h-12"
+            >
+              <span className="text-base leading-none font-light">+</span>
+              <span className="text-[9px]">Add</span>
+            </Link>
           </div>
         </div>
-      </div>
 
-      {/* ── Center — live data (primary) ──────────────────────────────────── */}
-      {/* order-1 on mobile: always renders first */}
-      <div className="col-span-12 md:col-span-6 order-1 md:order-2 space-y-3">
-
-        {/* Live status summary — real data via useScores */}
-        <LiveStatusBar />
-
-        {/* Tabbed match panel */}
-        <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden">
+        {/* Tabbed content — scrollable */}
+        <div className="flex-1 overflow-y-auto p-4">
 
           {/* Tab header */}
-          <div className="flex items-center gap-1 px-4 py-2.5 border-b border-border/40">
+          <div className="flex items-center gap-1 mb-3">
             {(["live", "upcoming", "recent"] as Tab[]).map((tab) => (
               <Link
                 key={tab}
@@ -143,7 +129,7 @@ export default async function DashboardPage({
 
           {/* Live tab */}
           {activeTab === "live" && (
-            <div className="divide-y divide-border/30">
+            <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden divide-y divide-border/30">
               {placeholderLive.length === 0 ? (
                 <div className="px-4 py-8 text-center text-sm text-muted-foreground">
                   No live games right now.{" "}
@@ -156,7 +142,7 @@ export default async function DashboardPage({
                   <Link
                     key={i}
                     href="/dashboard/scores"
-                    className="flex items-start gap-3 px-4 py-2 hover:bg-accent/40 transition-colors"
+                    className="flex items-start gap-3 px-4 py-2.5 hover:bg-accent/40 transition-colors"
                   >
                     <span className="live-dot mt-1.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
@@ -185,14 +171,13 @@ export default async function DashboardPage({
 
           {/* Upcoming tab */}
           {activeTab === "upcoming" && (
-            <div className="divide-y divide-border/30">
+            <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden divide-y divide-border/30">
               {placeholderUpcoming.map((match, i) => (
                 <Link
                   key={i}
                   href="/dashboard/scores"
-                  className="flex items-center gap-3 px-4 py-2 hover:bg-accent/40 transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 hover:bg-accent/40 transition-colors"
                 >
-                  <Clock className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground mb-0.5">
                       {match.league}
@@ -213,12 +198,12 @@ export default async function DashboardPage({
 
           {/* Recent tab */}
           {activeTab === "recent" && (
-            <div className="divide-y divide-border/30">
+            <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden divide-y divide-border/30">
               {placeholderRecent.map((match, i) => (
                 <Link
                   key={i}
                   href="/dashboard/scores"
-                  className="flex items-start gap-3 px-4 py-2 hover:bg-accent/40 transition-colors"
+                  className="flex items-start gap-3 px-4 py-2.5 hover:bg-accent/40 transition-colors"
                 >
                   <span className="mt-1.5 h-2 w-2 rounded-full bg-muted-foreground/30 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -247,92 +232,109 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      {/* ── Right — supporting panels ──────────────────────────────────────── */}
-      <div className="col-span-12 md:col-span-3 order-3 space-y-3">
+      {/* ── Right rail: Tournament Central ─────────────────────────────────── */}
+      <div className="hidden lg:flex w-72 flex-shrink-0 flex-col border-l border-border/30 bg-card/40 backdrop-blur-sm overflow-y-auto">
 
-        {/* Tournament Spotlight — always first, core feature */}
-        <div className="rounded-xl bg-gradient-to-br from-purple-500/10 to-transparent bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden">
-          <div className="px-4 py-3 border-b border-border/40 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Trophy className="h-3.5 w-3.5 text-sports-gold" />
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Tournament
-              </p>
-            </div>
-            <Link href="/dashboard/tournament" className="text-xs text-primary hover:underline">
-              Bracket →
-            </Link>
-          </div>
-          <div className="px-4 py-3">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-              NCAA Men&apos;s Basketball
+        {/* Header */}
+        <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-border/30">
+          <div className="flex items-center gap-2">
+            <Trophy className="h-3.5 w-3.5 text-sports-gold" />
+            <p className="text-xs font-semibold uppercase tracking-wider text-foreground">
+              Tournament Central
             </p>
-            <p className="text-sm font-semibold leading-snug">Auburn (1)</p>
-            <p className="text-sm text-muted-foreground leading-snug">Michigan State</p>
-            <p className="text-[10px] text-muted-foreground mt-1">Elite Eight · 3/29/2025</p>
-            <p className="text-lg font-bold mt-0.5 tabular-nums tracking-tight">70 – 64</p>
-            <Link
-              href="/dashboard/tournament"
-              className="mt-2 flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-            >
-              View full bracket <ChevronRight className="h-3 w-3" />
-            </Link>
+          </div>
+          <Link href="/dashboard/tournament" className="text-xs text-primary hover:underline">
+            Full bracket →
+          </Link>
+        </div>
+
+        {/* Featured matchup */}
+        <div className="px-4 py-3 border-b border-border/30">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">
+            NCAA Men&apos;s Basketball
+          </p>
+          <p className="text-[10px] text-muted-foreground/70 mb-3">Elite Eight · 3/29/2025</p>
+
+          <div className="rounded-lg bg-card border border-border/50 p-3 mb-3">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Featured</p>
+              <span className="text-[10px] text-sports-green font-semibold">Final</span>
+            </div>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold">Auburn (1)</span>
+                <span className="text-sm font-bold tabular-nums">70</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Michigan State</span>
+                <span className="text-sm tabular-nums text-muted-foreground">64</span>
+              </div>
+            </div>
+          </div>
+
+          <Link
+            href="/dashboard/tournament"
+            className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+          >
+            View full bracket <ChevronRight className="h-3 w-3" />
+          </Link>
+        </div>
+
+        {/* Round status */}
+        <div className="px-4 py-3 border-b border-border/30">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            Round Status
+          </p>
+          <div className="space-y-2">
+            {[
+              { round: "Elite Eight",  status: "In Progress", active: true  },
+              { round: "Final Four",   status: "Apr 5",       active: false },
+              { round: "Championship", status: "Apr 7",       active: false },
+            ].map((r) => (
+              <div key={r.round} className="flex items-center justify-between">
+                <span className={`text-xs ${r.active ? "text-foreground font-medium" : "text-muted-foreground"}`}>
+                  {r.round}
+                </span>
+                <span className={`text-[10px] ${r.active ? "text-sports-green font-semibold" : "text-muted-foreground"}`}>
+                  {r.status}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* My Teams */}
-        <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden">
-          <div className="px-4 py-3 border-b border-border/40 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Star className="h-3.5 w-3.5 text-sports-gold" />
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                My Teams
-              </p>
-            </div>
-            <Link href="/dashboard/favorites" className="text-xs text-primary hover:underline">
-              Manage
-            </Link>
-          </div>
-          <div className="px-4 py-3 text-center">
-            <Star className="h-6 w-6 text-sports-gold mx-auto mb-2 opacity-40" />
-            <p className="text-sm font-medium">No favorites yet</p>
-            <p className="text-xs text-muted-foreground mt-0.5 mb-3 leading-relaxed">
-              Follow teams for live alerts
-            </p>
-            <Link
-              href="/dashboard/favorites"
-              className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-            >
-              Add teams <ChevronRight className="h-3 w-3" />
-            </Link>
+        {/* Other active tournaments */}
+        <div className="px-4 py-3 border-b border-border/30">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            Other Active
+          </p>
+          <div className="space-y-1.5">
+            {[
+              { name: "NCAA Women's Basketball", round: "Elite Eight"    },
+              { name: "NCAA Baseball",           round: "Regionals"      },
+              { name: "NCAA Softball",           round: "Super Regionals"},
+            ].map((t) => (
+              <Link
+                key={t.name}
+                href="/dashboard/tournament"
+                className="flex items-center justify-between hover:bg-accent/40 rounded px-1 py-0.5 -mx-1 transition-colors"
+              >
+                <span className="text-xs text-muted-foreground">{t.name}</span>
+                <span className="text-[10px] text-muted-foreground/60">{t.round}</span>
+              </Link>
+            ))}
           </div>
         </div>
 
-        {/* AI Insights — teaser only */}
-        <div className="rounded-xl bg-gradient-to-br from-blue-500/10 to-transparent bg-card/80 backdrop-blur-sm border border-border/40 overflow-hidden">
-          <div className="px-4 py-3 border-b border-border/40 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Brain className="h-3.5 w-3.5 text-primary" />
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                AI Insights
-              </p>
-            </div>
-            <Link href="/dashboard/ai-insights" className="text-xs text-primary hover:underline">
-              Open
-            </Link>
-          </div>
-          <div className="px-4 py-3">
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              GPT-powered predictions and analysis across all leagues.
-            </p>
-            <Link
-              href="/dashboard/ai-insights"
-              className="mt-2 flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
-            >
-              <Zap className="h-3 w-3" />
-              Explore insights
-            </Link>
-          </div>
+        {/* CTA */}
+        <div className="px-4 py-3">
+          <Link
+            href="/dashboard/tournament"
+            className="flex items-center justify-center gap-1.5 w-full rounded-md bg-primary/10 border border-primary/30 px-3 py-2 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+          >
+            <Trophy className="h-3 w-3" />
+            Tournament Center
+          </Link>
         </div>
 
       </div>

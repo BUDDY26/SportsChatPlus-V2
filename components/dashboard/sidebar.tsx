@@ -2,66 +2,105 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Trophy,
-  LayoutDashboard,
-  MessageSquare,
-  Star,
-  User,
-  Brain,
-  TrendingUp,
-  Brackets,
-} from "lucide-react";
+import { Radio, TrendingUp, MessageSquare, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const navItems = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/dashboard/scores", label: "Live Scores", icon: Trophy },
-  { href: "/dashboard/chat", label: "Chat", icon: MessageSquare },
-  { href: "/dashboard/favorites", label: "Favorites", icon: Star },
+const controls = [
+  { href: "/dashboard/scores", label: "Live",        icon: Radio },
+  { href: "/dashboard/odds",   label: "Odds",        icon: TrendingUp },
+  { href: "/dashboard/chat",   label: "Chat",        icon: MessageSquare },
   { href: "/dashboard/ai-insights", label: "AI Insights", icon: Brain },
-  { href: "/dashboard/odds", label: "Odds", icon: TrendingUp },
-  { href: "/dashboard/tournament", label: "Tournament Center", icon: Brackets },
-  { href: "/dashboard/profile", label: "Profile", icon: User },
+];
+
+const sportsBrowser = [
+  {
+    label: "Football",
+    items: [
+      { label: "NCAA Football", href: "/dashboard/scores?league=NCAAF" },
+      { label: "NFL",           href: "/dashboard/scores?league=NFL" },
+    ],
+  },
+  {
+    label: "Basketball",
+    items: [
+      { label: "NCAA Men's Basketball",   href: "/dashboard/scores?league=NCAAB_MEN" },
+      { label: "NCAA Women's Basketball", href: "/dashboard/scores?league=NCAAB_WOMEN" },
+      { label: "NBA",                     href: "/dashboard/scores?league=NBA" },
+    ],
+  },
+  {
+    label: "Baseball",
+    items: [
+      { label: "NCAA Baseball", href: "/dashboard/scores?league=NCAA_BASEBALL" },
+      { label: "MLB",           href: "/dashboard/scores?league=MLB" },
+    ],
+  },
+  {
+    label: "Softball",
+    items: [
+      { label: "NCAA Softball", href: "/dashboard/scores?league=NCAA_SOFTBALL" },
+    ],
+  },
+  {
+    label: "Motorsport",
+    items: [
+      { label: "F1", href: "/dashboard/scores?league=F1" },
+    ],
+  },
 ];
 
 export function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-56 flex-shrink-0 border-r border-white/10 bg-[hsl(var(--shell-bg))] text-white md:flex md:flex-col">
-      {/* Logo */}
-      <div className="flex h-14 items-center border-b border-white/10 px-4">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/logo.png"
-          alt="SportsChatPlus"
-          className="h-8 w-auto select-none"
-          draggable={false}
-        />
+    <aside className="hidden w-52 flex-shrink-0 border-r border-white/10 bg-[hsl(var(--shell-bg))] text-white md:flex md:flex-col overflow-hidden">
+
+      {/* 2×2 Control cluster */}
+      <div className="flex-shrink-0 p-3 border-b border-white/10">
+        <div className="grid grid-cols-2 gap-1.5">
+          {controls.map((item) => {
+            const baseHref = item.href;
+            const isActive =
+              pathname === baseHref ||
+              pathname?.startsWith(baseHref + "/");
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center justify-center gap-1.5 rounded-md px-2 py-2 text-xs font-medium transition-colors",
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-white/10 text-white/70 hover:bg-white/15 hover:text-white"
+                )}
+              >
+                <item.icon className="h-3.5 w-3.5 flex-shrink-0" />
+                <span className="truncate">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 space-y-1 p-3">
-        {navItems.map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== "/dashboard" && pathname?.startsWith(item.href));
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "sidebar-link",
-                isActive && "sidebar-link-active"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+      {/* Sports browser */}
+      <div className="flex-1 overflow-y-auto py-1">
+        {sportsBrowser.map((group) => (
+          <div key={group.label} className="mb-0.5">
+            <p className="px-3 pt-2.5 pb-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/30">
+              {group.label}
+            </p>
+            {group.items.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center px-3 py-1.5 text-xs text-white/60 hover:bg-white/10 hover:text-white transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        ))}
+      </div>
 
     </aside>
   );
