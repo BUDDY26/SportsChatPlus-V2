@@ -31,8 +31,14 @@ export function DashboardSidebar() {
   return (
     <aside className="hidden w-56 flex-shrink-0 border-r border-white/10 bg-[hsl(var(--shell-bg))] text-white md:flex md:flex-col">
       {/* Logo */}
-      <div className="flex h-14 items-center gap-2 border-b border-white/10 px-4">
-        <span className="font-display font-bold">SportsChatPlus</span>
+      <div className="flex h-14 items-center border-b border-white/10 px-4">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/logo.png"
+          alt="SportsChatPlus"
+          className="h-8 w-auto select-none"
+          draggable={false}
+        />
       </div>
 
       {/* Nav */}
