@@ -62,7 +62,7 @@ export function DashboardSidebar() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/NEW_LOGO.png"
+          src="/images/UPDATE_LOGO.png"
           alt="SportsChatPlus"
           className="w-full h-auto select-none"
           draggable={false}
