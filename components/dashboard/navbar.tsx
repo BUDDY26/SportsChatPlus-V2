@@ -30,7 +30,7 @@ export function DashboardNavbar({ session }: DashboardNavbarProps) {
       .toUpperCase() ?? "?";
 
   return (
-    <header className="flex h-9 flex-shrink-0 items-center border-b border-white/[0.06] bg-[hsl(var(--shell-bg))] px-4">
+    <header className="flex h-9 flex-shrink-0 items-center bg-[hsl(var(--shell-bg))] px-4">
 
       {/* Left: width spacer aligns with sidebar */}
       <div className="w-52 flex-shrink-0" />

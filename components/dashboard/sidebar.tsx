@@ -53,12 +53,12 @@ export function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-52 flex-shrink-0 flex-col border-r border-white/[0.06] bg-[hsl(var(--shell-bg))] md:flex overflow-hidden">
+    <aside className="hidden w-52 flex-shrink-0 flex-col bg-[hsl(var(--shell-bg))] md:flex overflow-hidden">
 
       {/* Logo */}
       <Link
         href="/dashboard"
-        className="flex h-16 flex-shrink-0 items-center border-b border-white/[0.06] px-4"
+        className="flex h-16 flex-shrink-0 items-center px-4"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

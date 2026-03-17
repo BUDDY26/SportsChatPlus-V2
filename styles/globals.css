@@ -30,10 +30,10 @@
   }
 
   .dark {
-    --shell-bg: 222 47% 15%;
-    --background: 240 25% 8%;
+    --shell-bg: 0 0% 9%;
+    --background: 0 0% 7%;
     --foreground: 210 40% 98%;
-    --card: 240 28% 14%;
+    --card: 0 0% 12%;
     --card-foreground: 210 40% 98%;
     --popover: 240 28% 14%;
     --popover-foreground: 210 40% 98%;
