@@ -151,7 +151,7 @@ export default async function DashboardPage({
       {/* ── Col 3, Rows 1-3: Tournament Central ─────────────────────────────
           col-start-3 row-start-1 row-span-3 → independent right rail.
           Does not sit under the Teams Row or Tab Filter bands.      ────── */}
-      <div className="col-start-3 row-start-1 row-span-3 flex flex-col overflow-y-auto">
+      <div className="col-start-3 row-start-1 row-span-3 flex flex-col overflow-y-auto card-float">
 
         {/* Spotlight header */}
         <div className="flex-shrink-0 border-b border-border/40 px-4 py-3">
