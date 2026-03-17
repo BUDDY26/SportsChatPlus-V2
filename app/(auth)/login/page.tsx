@@ -20,9 +20,8 @@ export default function LoginPage() {
       />
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <Link href="/">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/UPDATE_LOGO.png" alt="SportsChatPlus" className="h-16 w-auto select-none mx-auto block mb-4" draggable={false} />
+          <Link href="/" className="font-display text-4xl font-bold text-white sm:text-5xl hover:text-white/80 transition-colors">
+            SportsChatPlus
           </Link>
           <h1 className="mt-4 text-2xl font-bold">Welcome back</h1>
           <p className="mt-2 text-sm text-muted-foreground">
