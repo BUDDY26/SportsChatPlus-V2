@@ -64,7 +64,7 @@ export function DashboardSidebar() {
         <img
           src="/images/New_LOGO.png"
           alt="SportsChatPlus"
-          className="w-full h-auto select-none"
+          className="w-full h-auto max-h-16 object-contain select-none"
           draggable={false}
         />
       </Link>
