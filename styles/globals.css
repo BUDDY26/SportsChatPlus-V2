@@ -91,5 +91,8 @@
     background: rgba(15, 15, 25, 0.6);
     border-color: rgba(255, 255, 255, 0.08);
   }
+  .tournament-rail {
+    background: radial-gradient(ellipse at 60% 80%, #3d1a2e 0%, #1a0d1a 40%, #0e0a0e 100%);
+  }
 }
 
