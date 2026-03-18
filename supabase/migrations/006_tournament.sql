@@ -10,6 +10,15 @@
 -- Reuses set_updated_at() trigger function defined in migration 001.
 -- tournament_games is added to supabase_realtime for live score pushes.
 
+-- ─── set_updated_at trigger function (safe to redefine) ─────────────────────
+CREATE OR REPLACE FUNCTION public.set_updated_at()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$;
+
 -- ─── tournaments ──────────────────────────────────────────────────────────────
 
 CREATE TABLE IF NOT EXISTS public.tournaments (
