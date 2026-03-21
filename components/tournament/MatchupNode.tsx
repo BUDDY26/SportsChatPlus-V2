@@ -137,7 +137,7 @@ function TeamRow({
       {showScore && !isTbd && (
         <span
           className={cn(
-            "flex-shrink-0 text-xl font-bold tabular-nums",
+            "flex-shrink-0 text-2xl font-bold tabular-nums",
             isWinner ? "text-foreground" : "text-muted-foreground",
           )}
         >
