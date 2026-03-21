@@ -384,10 +384,10 @@ export default async function DashboardPage({
           <div className="space-y-2">
             {roundStatuses.length > 0 ? roundStatuses.map((r) => (
               <div key={r.label} className="flex items-center justify-between py-0.5">
-                <span className={`text-[11px] ${r.status === "active" ? "font-semibold text-on-surface" : "text-on-surface-variant/60"}`}>
+                <span className={`text-[11px] ${r.status === "active" ? "font-semibold text-on-surface" : "text-foreground/70"}`}>
                   {r.label}
                 </span>
-                <span className={`text-[10px] ${r.status === "active" ? "font-semibold text-sports-green" : r.status === "complete" ? "text-on-surface-variant/60" : "text-on-surface-variant/60"}`}>
+                <span className={`text-[10px] ${r.status === "active" ? "font-semibold text-sports-green" : r.status === "complete" ? "text-foreground/70" : "text-foreground/70"}`}>
                   {r.status === "active" ? "In Progress" : r.status === "complete" ? "Complete" : "Upcoming"}
                 </span>
               </div>
@@ -486,8 +486,8 @@ export default async function DashboardPage({
               {/* Game clock */}
               <div className="flex items-center justify-center gap-1.5">
                 <span className="text-[11px] font-bold tabular-nums text-on-surface">12:24</span>
-                <span className="text-xs text-on-surface-variant/60">·</span>
-                <span className="text-xs text-on-surface-variant/60">2nd Qtr</span>
+                <span className="text-xs text-foreground/70">·</span>
+                <span className="text-xs text-foreground/70">2nd Qtr</span>
               </div>
 
               {/* Team rows with inline records */}
@@ -500,17 +500,17 @@ export default async function DashboardPage({
                       <span className="ml-1 text-[9px] font-normal text-on-surface-variant/40">(25-8)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-white">{game.homeScore}</span>
+                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-foreground">{game.homeScore}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
-                    <span className="truncate pr-2 text-base font-semibold text-foreground/80">
+                    <span className="truncate pr-2 text-base font-semibold text-foreground">
                       {game.away}
                       <span className="ml-1 text-[9px] text-on-surface-variant/30">(22-11)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-white/70">{game.awayScore}</span>
+                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-foreground">{game.awayScore}</span>
                 </div>
               </div>
 
@@ -518,31 +518,31 @@ export default async function DashboardPage({
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
                 <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-center text-xs">
                   <span className="text-on-surface-variant/30" />
-                  <span className="text-on-surface-variant/60">Q1</span>
-                  <span className="text-on-surface-variant/60">Q2</span>
-                  <span className="text-on-surface-variant/60">Q3</span>
-                  <span className="text-on-surface-variant/60">Q4</span>
-                  <span className="text-on-surface-variant/60">T</span>
+                  <span className="text-foreground/70">Q1</span>
+                  <span className="text-foreground/70">Q2</span>
+                  <span className="text-foreground/70">Q3</span>
+                  <span className="text-foreground/70">Q4</span>
+                  <span className="text-foreground/70">T</span>
 
-                  <span className="text-[9px] font-medium text-on-surface-variant/80">AUB</span>
-                  <span className="tabular-nums text-on-surface/80">18</span>
-                  <span className="tabular-nums text-on-surface/80">21</span>
-                  <span className="tabular-nums text-on-surface/80">16</span>
-                  <span className="tabular-nums text-on-surface/80">15</span>
+                  <span className="text-[9px] font-medium text-foreground">AUB</span>
+                  <span className="tabular-nums text-foreground">18</span>
+                  <span className="tabular-nums text-foreground">21</span>
+                  <span className="tabular-nums text-foreground">16</span>
+                  <span className="tabular-nums text-foreground">15</span>
                   <span className="tabular-nums font-bold text-on-surface">70</span>
 
-                  <span className="text-[9px] font-medium text-on-surface-variant/80">MSU</span>
-                  <span className="tabular-nums text-on-surface-variant/70">14</span>
-                  <span className="tabular-nums text-on-surface-variant/70">18</span>
-                  <span className="tabular-nums text-on-surface-variant/70">17</span>
-                  <span className="tabular-nums text-on-surface-variant/70">15</span>
-                  <span className="tabular-nums font-bold text-on-surface-variant">64</span>
+                  <span className="text-[9px] font-medium text-foreground">MSU</span>
+                  <span className="tabular-nums text-foreground">14</span>
+                  <span className="tabular-nums text-foreground">18</span>
+                  <span className="tabular-nums text-foreground">17</span>
+                  <span className="tabular-nums text-foreground">15</span>
+                  <span className="tabular-nums font-bold text-foreground">64</span>
                 </div>
               </div>
 
               {/* Venue + broadcast */}
               <div className="flex items-center justify-between">
-                <span className="text-xs text-on-surface-variant/60">Viejas Arena · San Diego, CA</span>
+                <span className="text-xs text-foreground/70">Viejas Arena · San Diego, CA</span>
                 <span className="rounded px-1.5 py-0.5 text-[8px] font-bold bg-sports-blue/20 text-sports-blue">
                   ESPN
                 </span>
@@ -550,7 +550,7 @@ export default async function DashboardPage({
 
               {/* Key stats */}
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
-                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs text-on-surface-variant/60">
+                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs text-foreground/70">
                   <span />
                   <span className="text-center">FG%</span>
                   <span className="text-center">3P%</span>
@@ -558,18 +558,18 @@ export default async function DashboardPage({
                   <span className="text-center">TO</span>
                 </div>
                 <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs">
-                  <span className="text-on-surface-variant/60">AUB</span>
-                  <span className="tabular-nums text-center text-on-surface/80">48.2</span>
-                  <span className="tabular-nums text-center text-on-surface/80">38.5</span>
-                  <span className="tabular-nums text-center text-on-surface/80">32</span>
-                  <span className="tabular-nums text-center text-on-surface/80">11</span>
+                  <span className="text-foreground">AUB</span>
+                  <span className="tabular-nums text-center text-foreground">48.2</span>
+                  <span className="tabular-nums text-center text-foreground">38.5</span>
+                  <span className="tabular-nums text-center text-foreground">32</span>
+                  <span className="tabular-nums text-center text-foreground">11</span>
                 </div>
                 <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs">
-                  <span className="text-on-surface-variant/80">MSU</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/80">41.7</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/80">32.1</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/80">28</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/80">14</span>
+                  <span className="text-foreground">MSU</span>
+                  <span className="tabular-nums text-center text-foreground">41.7</span>
+                  <span className="tabular-nums text-center text-foreground">32.1</span>
+                  <span className="tabular-nums text-center text-foreground">28</span>
+                  <span className="tabular-nums text-center text-foreground">14</span>
                 </div>
               </div>
 
@@ -604,7 +604,7 @@ export default async function DashboardPage({
               <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/80">
                 {game.league}
               </span>
-              <span className="text-xs text-on-surface-variant/60">Final</span>
+              <span className="text-xs text-foreground/70">Final</span>
             </div>
             <div className="my-auto flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
@@ -646,8 +646,8 @@ export default async function DashboardPage({
               {/* Game clock */}
               <div className="flex items-center justify-center gap-1.5">
                 <span className="text-[11px] font-bold tabular-nums text-on-surface">12:24</span>
-                <span className="text-xs text-on-surface-variant/60">·</span>
-                <span className="text-xs text-on-surface-variant/60">2nd Qtr</span>
+                <span className="text-xs text-foreground/70">·</span>
+                <span className="text-xs text-foreground/70">2nd Qtr</span>
               </div>
 
               {/* Team rows with inline records */}
@@ -660,17 +660,17 @@ export default async function DashboardPage({
                       <span className="ml-1 text-[9px] font-normal text-on-surface-variant/40">(25-8)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-white">{game.homeScore}</span>
+                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-foreground">{game.homeScore}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
-                    <span className="truncate pr-2 text-base font-semibold text-foreground/80">
+                    <span className="truncate pr-2 text-base font-semibold text-foreground">
                       {game.away}
                       <span className="ml-1 text-[9px] text-on-surface-variant/30">(22-11)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-white/70">{game.awayScore}</span>
+                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-foreground">{game.awayScore}</span>
                 </div>
               </div>
 
@@ -678,31 +678,31 @@ export default async function DashboardPage({
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
                 <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-center text-xs">
                   <span className="text-on-surface-variant/30" />
-                  <span className="text-on-surface-variant/60">Q1</span>
-                  <span className="text-on-surface-variant/60">Q2</span>
-                  <span className="text-on-surface-variant/60">Q3</span>
-                  <span className="text-on-surface-variant/60">Q4</span>
-                  <span className="text-on-surface-variant/60">T</span>
+                  <span className="text-foreground/70">Q1</span>
+                  <span className="text-foreground/70">Q2</span>
+                  <span className="text-foreground/70">Q3</span>
+                  <span className="text-foreground/70">Q4</span>
+                  <span className="text-foreground/70">T</span>
 
-                  <span className="text-[9px] font-medium text-on-surface-variant/80">AUB</span>
-                  <span className="tabular-nums text-on-surface/80">18</span>
-                  <span className="tabular-nums text-on-surface/80">21</span>
-                  <span className="tabular-nums text-on-surface/80">16</span>
-                  <span className="tabular-nums text-on-surface/80">15</span>
+                  <span className="text-[9px] font-medium text-foreground">AUB</span>
+                  <span className="tabular-nums text-foreground">18</span>
+                  <span className="tabular-nums text-foreground">21</span>
+                  <span className="tabular-nums text-foreground">16</span>
+                  <span className="tabular-nums text-foreground">15</span>
                   <span className="tabular-nums font-bold text-on-surface">70</span>
 
-                  <span className="text-[9px] font-medium text-on-surface-variant/80">MSU</span>
-                  <span className="tabular-nums text-on-surface-variant/70">14</span>
-                  <span className="tabular-nums text-on-surface-variant/70">18</span>
-                  <span className="tabular-nums text-on-surface-variant/70">17</span>
-                  <span className="tabular-nums text-on-surface-variant/70">15</span>
-                  <span className="tabular-nums font-bold text-on-surface-variant">64</span>
+                  <span className="text-[9px] font-medium text-foreground">MSU</span>
+                  <span className="tabular-nums text-foreground">14</span>
+                  <span className="tabular-nums text-foreground">18</span>
+                  <span className="tabular-nums text-foreground">17</span>
+                  <span className="tabular-nums text-foreground">15</span>
+                  <span className="tabular-nums font-bold text-foreground">64</span>
                 </div>
               </div>
 
               {/* Venue + broadcast */}
               <div className="flex items-center justify-between">
-                <span className="text-xs text-on-surface-variant/60">Viejas Arena · San Diego, CA</span>
+                <span className="text-xs text-foreground/70">Viejas Arena · San Diego, CA</span>
                 <span className="rounded px-1.5 py-0.5 text-[8px] font-bold bg-sports-blue/20 text-sports-blue">
                   ESPN
                 </span>
@@ -710,7 +710,7 @@ export default async function DashboardPage({
 
               {/* Key stats */}
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
-                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs text-on-surface-variant/60">
+                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs text-foreground/70">
                   <span />
                   <span className="text-center">FG%</span>
                   <span className="text-center">3P%</span>
@@ -718,18 +718,18 @@ export default async function DashboardPage({
                   <span className="text-center">TO</span>
                 </div>
                 <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs">
-                  <span className="text-on-surface-variant/60">AUB</span>
-                  <span className="tabular-nums text-center text-on-surface/80">48.2</span>
-                  <span className="tabular-nums text-center text-on-surface/80">38.5</span>
-                  <span className="tabular-nums text-center text-on-surface/80">32</span>
-                  <span className="tabular-nums text-center text-on-surface/80">11</span>
+                  <span className="text-foreground">AUB</span>
+                  <span className="tabular-nums text-center text-foreground">48.2</span>
+                  <span className="tabular-nums text-center text-foreground">38.5</span>
+                  <span className="tabular-nums text-center text-foreground">32</span>
+                  <span className="tabular-nums text-center text-foreground">11</span>
                 </div>
                 <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs">
-                  <span className="text-on-surface-variant/80">MSU</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/80">41.7</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/80">32.1</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/80">28</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/80">14</span>
+                  <span className="text-foreground">MSU</span>
+                  <span className="tabular-nums text-center text-foreground">41.7</span>
+                  <span className="tabular-nums text-center text-foreground">32.1</span>
+                  <span className="tabular-nums text-center text-foreground">28</span>
+                  <span className="tabular-nums text-center text-foreground">14</span>
                 </div>
               </div>
 
@@ -764,7 +764,7 @@ export default async function DashboardPage({
               <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/80">
                 {game.league}
               </span>
-              <span className="text-xs text-on-surface-variant/60">Final</span>
+              <span className="text-xs text-foreground/70">Final</span>
             </div>
             <div className="my-auto flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
