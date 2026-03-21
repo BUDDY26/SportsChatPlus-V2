@@ -23,7 +23,7 @@ export function StatusBadge({ status, period, className }: StatusBadgeProps) {
 
   if (status === "final") {
     return (
-      <span className={cn("text-xs font-medium text-on-surface-variant/60", className)}>
+      <span className={cn("text-[9px] font-medium text-on-surface-variant/60", className)}>
         Final
       </span>
     );
@@ -31,7 +31,7 @@ export function StatusBadge({ status, period, className }: StatusBadgeProps) {
 
   if (status === "postponed") {
     return (
-      <span className={cn("text-xs font-medium text-on-surface-variant/40", className)}>
+      <span className={cn("text-[9px] font-medium text-on-surface-variant/40", className)}>
         Postponed
       </span>
     );
@@ -39,7 +39,7 @@ export function StatusBadge({ status, period, className }: StatusBadgeProps) {
 
   // scheduled
   return (
-    <span className={cn("text-xs font-medium text-on-surface-variant/50", className)}>
+    <span className={cn("text-[9px] font-medium text-on-surface-variant/50", className)}>
       Upcoming
     </span>
   );
