@@ -51,7 +51,7 @@ const TOURNAMENT_CONFIGS = [
     supabaseGender: "mens",
     name: "2026 DI Men's Basketball Championship",
     season_year: 2025,
-    dates: ["2026/03/19", "2026/03/20"],
+    dates: ["2026/03/19", "2026/03/20", "2026/03/21", "2026/03/22"],
   },
   {
     sport: "basketball-women",
@@ -59,7 +59,7 @@ const TOURNAMENT_CONFIGS = [
     supabaseGender: "womens",
     name: "2026 DI Women's Basketball Championship",
     season_year: 2025,
-    dates: ["2026/03/20", "2026/03/21"],
+    dates: ["2026/03/20", "2026/03/21", "2026/03/22", "2026/03/23"],
   },
 ] as const;
 
