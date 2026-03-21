@@ -440,6 +440,9 @@ export default async function handler(
             winner_slot,
             next_game_id,
             scheduled_time,
+            tv_channel,
+            venue_name,
+            venue_city,
             top_team:tournament_teams!top_team_id(id, name, seed),
             bottom_team:tournament_teams!bottom_team_id(id, name, seed),
             round:tournament_rounds!round_id(round_number, name),
@@ -482,6 +485,10 @@ export default async function handler(
                     timeZoneName: "short",
                   })
                 : "TBD",
+              tvChannel: (r.tv_channel as string | null) ?? undefined,
+              venue: r.venue_name
+                ? `${r.venue_name as string} · ${(r.venue_city as string | null) ?? ""}`
+                : undefined,
             };
           });
 

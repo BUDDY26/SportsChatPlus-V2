@@ -106,6 +106,8 @@ export interface TournamentGame {
   /** Id of the next TournamentGame the winner advances into */
   nextMatchupId: string | null;
   scheduledTime: string;
+  tvChannel?: string;
+  venue?: string;
 }
 
 /**

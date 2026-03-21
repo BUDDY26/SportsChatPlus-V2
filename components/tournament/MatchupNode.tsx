@@ -60,6 +60,14 @@ export function MatchupNode({ game }: MatchupNodeProps) {
               {game.scheduledTime}
             </span>
           )}
+          {game.venue && (
+            <p className="text-[9px] text-foreground/70">{game.venue}</p>
+          )}
+          {game.tvChannel && (
+            <span className="rounded px-1.5 py-0.5 text-[8px] font-bold bg-sports-blue/20 text-sports-blue">
+              {game.tvChannel}
+            </span>
+          )}
           {isFinal && game.nextMatchupId && (
             <span className="flex items-center gap-1 text-xs font-medium text-sports-green">
               <ArrowRight className="h-3 w-3" />
