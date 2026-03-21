@@ -7,6 +7,7 @@ import type { BracketApiResponse } from "@/pages/api/tournament/bracket";
 import { createClient } from "@/lib/supabase";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BracketView } from "./BracketView";
+import { BracketViewFull } from "./BracketViewFull";
 import { LiveScoreStrip } from "./LiveScoreStrip";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +18,7 @@ export function TournamentClientWrapper() {
   const [tournamentId, setTournamentId] = useState<string | null>(null);
   const [selectedRound, setSelectedRound] = useState<TournamentRound>(1);
   const [sport, setSport] = useState<"mens" | "womens">("mens");
+  const [viewMode, setViewMode] = useState<"round" | "bracket">("round");
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -166,51 +168,75 @@ export function TournamentClientWrapper() {
       {/* Live strip — only shown when there are live games */}
       <LiveScoreStrip games={games} />
 
-      {/* Round selector */}
-      <div className="space-y-2">
-        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          Select Round
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {TOURNAMENT_ROUNDS.map(({ round, label }) => {
-            const hasLive = games.some(
-              (g) => g.round === round && g.status === "live",
-            );
-            return (
-              <button
-                key={round}
-                onClick={() => setSelectedRound(round as TournamentRound)}
-                className={cn(
-                  "relative rounded-md border px-4 py-2 text-sm font-semibold transition-all",
-                  selectedRound === round
-                    ? "border-primary bg-primary text-primary-foreground shadow"
-                    : "border-border bg-background text-foreground hover:border-primary/50 hover:bg-muted",
-                )}
-              >
-                {label}
-                {hasLive && (
-                  <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-sports-green ring-2 ring-background" />
-                )}
-              </button>
-            );
-          })}
-        </div>
+      {/* View mode toggle */}
+      <div className="flex items-center gap-2">
+        {(["round", "bracket"] as const).map((mode) => (
+          <button
+            key={mode}
+            onClick={() => setViewMode(mode)}
+            className={cn(
+              "rounded-md border px-3 py-1.5 text-xs font-semibold transition-all",
+              viewMode === mode
+                ? "border-primary bg-primary text-primary-foreground shadow"
+                : "border-border bg-background text-foreground hover:border-primary/50 hover:bg-muted",
+            )}
+          >
+            {mode === "round" ? "Round View" : "Full Bracket"}
+          </button>
+        ))}
       </div>
 
-      {/* Current round heading */}
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h2 className="font-display text-2xl font-bold">{currentRoundLabel}</h2>
-          {liveCount > 0 && selectedRound === games.find((g) => g.status === "live")?.round && (
-            <p className="mt-0.5 text-sm text-sports-green">
-              {liveCount} game{liveCount !== 1 ? "s" : ""} in progress
+      {viewMode === "round" && (
+        <>
+          {/* Round selector */}
+          <div className="space-y-2">
+            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+              Select Round
             </p>
-          )}
-        </div>
-      </div>
+            <div className="flex flex-wrap gap-2">
+              {TOURNAMENT_ROUNDS.map(({ round, label }) => {
+                const hasLive = games.some(
+                  (g) => g.round === round && g.status === "live",
+                );
+                return (
+                  <button
+                    key={round}
+                    onClick={() => setSelectedRound(round as TournamentRound)}
+                    className={cn(
+                      "relative rounded-md border px-4 py-2 text-sm font-semibold transition-all",
+                      selectedRound === round
+                        ? "border-primary bg-primary text-primary-foreground shadow"
+                        : "border-border bg-background text-foreground hover:border-primary/50 hover:bg-muted",
+                    )}
+                  >
+                    {label}
+                    {hasLive && (
+                      <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-sports-green ring-2 ring-background" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-      {/* Bracket grid for the selected round */}
-      <BracketView games={games} selectedRound={selectedRound} />
+          {/* Current round heading */}
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="font-display text-2xl font-bold">{currentRoundLabel}</h2>
+              {liveCount > 0 && selectedRound === games.find((g) => g.status === "live")?.round && (
+                <p className="mt-0.5 text-sm text-sports-green">
+                  {liveCount} game{liveCount !== 1 ? "s" : ""} in progress
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Bracket grid for the selected round */}
+          <BracketView games={games} selectedRound={selectedRound} />
+        </>
+      )}
+
+      {viewMode === "bracket" && <BracketViewFull games={games} />}
     </div>
   );
 }
