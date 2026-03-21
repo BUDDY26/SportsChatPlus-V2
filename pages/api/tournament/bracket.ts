@@ -416,7 +416,6 @@ export default async function handler(
 
   if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const supabase = createAdminClient() as any;
 
       const { data: tournament } = await supabase
@@ -449,7 +448,7 @@ export default async function handler(
           .order("slot_number");
 
         if (rows && rows.length > 0) {
-          const games: TournamentGame[] = rows.map((r) => {
+          const games: TournamentGame[] = rows.map((r: any) => {
             const top = Array.isArray(r.top_team) ? r.top_team[0] : r.top_team;
             const bottom = Array.isArray(r.bottom_team) ? r.bottom_team[0] : r.bottom_team;
             const round = Array.isArray(r.round) ? r.round[0] : r.round;
