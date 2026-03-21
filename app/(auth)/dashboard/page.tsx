@@ -495,7 +495,7 @@ export default async function DashboardPage({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
-                    <span className="truncate pr-2 text-base font-bold text-white">
+                    <span className="truncate pr-2 text-base font-bold text-foreground">
                       {game.home}
                       <span className="ml-1 text-[9px] font-normal text-on-surface-variant/40">(25-8)</span>
                     </span>
@@ -505,7 +505,7 @@ export default async function DashboardPage({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
-                    <span className="truncate pr-2 text-base font-semibold text-white/80">
+                    <span className="truncate pr-2 text-base font-semibold text-foreground/80">
                       {game.away}
                       <span className="ml-1 text-[9px] text-on-surface-variant/30">(22-11)</span>
                     </span>
@@ -655,7 +655,7 @@ export default async function DashboardPage({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
-                    <span className="truncate pr-2 text-base font-bold text-white">
+                    <span className="truncate pr-2 text-base font-bold text-foreground">
                       {game.home}
                       <span className="ml-1 text-[9px] font-normal text-on-surface-variant/40">(25-8)</span>
                     </span>
@@ -665,7 +665,7 @@ export default async function DashboardPage({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
-                    <span className="truncate pr-2 text-base font-semibold text-white/80">
+                    <span className="truncate pr-2 text-base font-semibold text-foreground/80">
                       {game.away}
                       <span className="ml-1 text-[9px] text-on-surface-variant/30">(22-11)</span>
                     </span>
