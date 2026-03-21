@@ -25,7 +25,7 @@ export function BracketView({ games, selectedRound }: BracketViewProps) {
 
   if (isFlatRound) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 overflow-y-auto sm:grid-cols-2">
         {roundGames.map((game) => (
           <MatchupNode key={game.id} game={game} />
         ))}
@@ -40,7 +40,7 @@ export function BracketView({ games, selectedRound }: BracketViewProps) {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 overflow-y-auto">
       {regions.map((region) => {
         const regionGames = roundGames
           .filter((g) => g.region === region)

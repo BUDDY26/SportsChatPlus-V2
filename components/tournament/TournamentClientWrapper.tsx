@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { TournamentGame, TournamentRound } from "@/lib/sports/types";
 import { TOURNAMENT_ROUNDS } from "@/lib/sports/types";
 import type { BracketApiResponse } from "@/pages/api/tournament/bracket";
@@ -14,24 +14,52 @@ export function TournamentClientWrapper() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selectedRound, setSelectedRound] = useState<TournamentRound>(1);
+  const [sport, setSport] = useState<"mens" | "womens">("mens");
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
+    if (pollRef.current) clearInterval(pollRef.current);
+    setSelectedRound(1 as TournamentRound);
+    setGames([]);
     setIsLoading(true);
     setError(false);
-    fetch("/api/tournament/bracket")
+    fetch(`/api/tournament/bracket?sport=${sport}`)
       .then((r) => {
         if (!r.ok) throw new Error("Failed to fetch");
         return r.json() as Promise<BracketApiResponse>;
       })
       .then((data) => {
         setGames(data.games);
-        // Auto-select the earliest round that has live or upcoming games
+        if (data.games.some((g) => g.status === "live")) {
+          pollRef.current = setInterval(() => {
+            fetch(`/api/tournament/bracket?sport=${sport}`)
+              .then((r) => r.ok ? r.json() as Promise<BracketApiResponse> : null)
+              .then((d) => { if (d) setGames(d.games); })
+              .catch(() => {});
+          }, 30_000);
+        }
         const liveRound = data.games.find((g) => g.status === "live")?.round;
-        if (liveRound) setSelectedRound(liveRound);
+        if (liveRound) {
+          setSelectedRound(liveRound);
+        } else {
+          const scheduledRounds = data.games
+            .filter((g) => g.status === "scheduled")
+            .map((g) => g.round);
+          if (scheduledRounds.length > 0) {
+            setSelectedRound(Math.min(...scheduledRounds) as TournamentRound);
+          } else {
+            const allRounds = data.games.map((g) => g.round);
+            if (allRounds.length > 0) {
+              setSelectedRound(Math.max(...allRounds) as TournamentRound);
+            }
+          }
+        }
       })
       .catch(() => setError(true))
       .finally(() => setIsLoading(false));
-  }, []);
+
+    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+  }, [sport]);
 
   if (isLoading) {
     return (
@@ -67,6 +95,29 @@ export function TournamentClientWrapper() {
 
   return (
     <div className="space-y-6">
+      {/* Sport toggle */}
+      <div className="space-y-2">
+        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+          Select Tournament
+        </p>
+        <div className="flex gap-2">
+          {(["mens", "womens"] as const).map((s) => (
+            <button
+              key={s}
+              onClick={() => setSport(s)}
+              className={cn(
+                "rounded-md border px-4 py-2 text-sm font-semibold transition-all",
+                sport === s
+                  ? "border-primary bg-primary text-primary-foreground shadow"
+                  : "border-border bg-background text-foreground hover:border-primary/50 hover:bg-muted",
+              )}
+            >
+              {s === "mens" ? "Men's Basketball" : "Women's Basketball"}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Live strip — only shown when there are live games */}
       <LiveScoreStrip games={games} />
 
