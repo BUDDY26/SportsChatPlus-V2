@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Trophy, Zap, Circle, Gauge } from "lucide-react";
 import Link from "next/link";
+import { createAdminClient } from "@/lib/supabase";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
@@ -127,6 +128,113 @@ export default async function DashboardPage({
   const activeTab: Tab =
     raw === "upcoming" || raw === "recent" ? raw : "live";
 
+  // ─── Tournament Central data ────────────────────────────────────────────────
+
+  type SpotlightGame = {
+    topTeamName: string; topTeamSeed: number | null; topScore: number;
+    bottomTeamName: string; bottomTeamSeed: number | null; bottomScore: number;
+    roundLabel: string; status: string; winnerSlot: string | null;
+  };
+  type RoundStatus = { label: string; status: "complete" | "active" | "upcoming" };
+
+  let spotlight: SpotlightGame | null = null;
+  let roundStatuses: RoundStatus[] = [];
+  let womensRoundLabel = "First Round";
+
+  try {
+    const supabase = createAdminClient() as any;
+
+    // Men's
+    const { data: mensTournament } = await supabase
+      .from("tournaments").select("id")
+      .eq("sport", "basketball").eq("gender", "mens").eq("season_year", 2025)
+      .single();
+
+    if (mensTournament) {
+      const { data: mensGames } = await supabase
+        .from("tournament_games")
+        .select(`status, top_score, bottom_score, winner_slot,
+          top_team:tournament_teams!top_team_id(name, seed),
+          bottom_team:tournament_teams!bottom_team_id(name, seed),
+          round:tournament_rounds!round_id(round_number, name)`)
+        .eq("tournament_id", mensTournament.id)
+        .order("slot_number");
+
+      if (mensGames?.length > 0) {
+        const resolved = mensGames.map((g: any) => ({
+          status: g.status as string,
+          topScore: g.top_score as number,
+          bottomScore: g.bottom_score as number,
+          winnerSlot: g.winner_slot as string | null,
+          top: (Array.isArray(g.top_team) ? g.top_team[0] : g.top_team) as { name: string; seed: number | null } | null,
+          bottom: (Array.isArray(g.bottom_team) ? g.bottom_team[0] : g.bottom_team) as { name: string; seed: number | null } | null,
+          round: (Array.isArray(g.round) ? g.round[0] : g.round) as { round_number: number; name: string } | null,
+        }));
+
+        const spotlightRaw = resolved
+          .filter(g => g.status === "final" || g.status === "live")
+          .sort((a, b) => (b.round?.round_number ?? 0) - (a.round?.round_number ?? 0))[0];
+
+        if (spotlightRaw) {
+          spotlight = {
+            topTeamName: spotlightRaw.top?.name ?? "TBD",
+            topTeamSeed: spotlightRaw.top?.seed ?? null,
+            topScore: spotlightRaw.topScore,
+            bottomTeamName: spotlightRaw.bottom?.name ?? "TBD",
+            bottomTeamSeed: spotlightRaw.bottom?.seed ?? null,
+            bottomScore: spotlightRaw.bottomScore,
+            roundLabel: spotlightRaw.round?.name ?? "",
+            status: spotlightRaw.status,
+            winnerSlot: spotlightRaw.winnerSlot,
+          };
+        }
+
+        const roundMap: Record<number, { label: string; total: number; final: number; live: number }> = {};
+        for (const g of resolved) {
+          const rn = g.round?.round_number ?? 0;
+          if (!roundMap[rn]) roundMap[rn] = { label: g.round?.name ?? "", total: 0, final: 0, live: 0 };
+          roundMap[rn].total++;
+          if (g.status === "final") roundMap[rn].final++;
+          if (g.status === "live") roundMap[rn].live++;
+        }
+        roundStatuses = Object.entries(roundMap)
+          .sort(([a], [b]) => Number(a) - Number(b))
+          .map(([, v]) => ({
+            label: v.label,
+            status: v.live > 0 ? "active" : v.final === v.total ? "complete" : "upcoming",
+          }));
+      }
+    }
+
+    // Women's
+    const { data: womensTournament } = await supabase
+      .from("tournaments").select("id")
+      .eq("sport", "basketball").eq("gender", "womens").eq("season_year", 2025)
+      .single();
+
+    if (womensTournament) {
+      const { data: womensGames } = await supabase
+        .from("tournament_games")
+        .select(`status, round:tournament_rounds!round_id(round_number, name)`)
+        .eq("tournament_id", womensTournament.id);
+
+      if (womensGames?.length > 0) {
+        const wr = womensGames.map((g: any) => {
+          const r = Array.isArray(g.round) ? g.round[0] : g.round;
+          return { status: g.status as string, rn: r?.round_number ?? 0, name: r?.name ?? "" };
+        });
+        const activeLow = wr.filter(g => g.status === "scheduled" || g.status === "live")
+          .sort((a, b) => a.rn - b.rn)[0];
+        if (activeLow) {
+          womensRoundLabel = activeLow.name;
+        } else {
+          const highFinal = wr.filter(g => g.status === "final").sort((a, b) => b.rn - a.rn)[0];
+          if (highFinal) womensRoundLabel = highFinal.name;
+        }
+      }
+    }
+  } catch {}
+
   return (
     <div className="grid h-full overflow-hidden grid-cols-[1fr_1fr_18rem] grid-rows-[auto_auto_auto_1fr]">
 
@@ -232,28 +340,38 @@ export default async function DashboardPage({
           <p className="mb-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
             Tournament Spotlight
           </p>
-          <p className="mb-2.5 text-[10px] text-on-surface-variant/60">
-            NCAA Men&apos;s Basketball · 3/29/2025
-          </p>
-          <div className="rounded-xl card-float p-3 border border-white/[0.05]">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-[9px] uppercase tracking-wide text-on-surface-variant/50">Featured</span>
-              <span className="text-[9px] font-medium text-on-surface-variant">Elite Eight</span>
-            </div>
-            <div className="mb-2 space-y-1.5">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-on-surface">Auburn (1)</span>
-                <span className="text-sm font-bold tabular-nums text-on-surface">70</span>
+          {spotlight ? (
+            <>
+              <p className="mb-2.5 text-[10px] text-on-surface-variant/60">
+                NCAA Men&apos;s Basketball · {spotlight.roundLabel}
+              </p>
+              <div className="rounded-xl card-float p-3 border border-white/[0.05]">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[9px] uppercase tracking-wide text-on-surface-variant/50">Featured</span>
+                  <span className="text-[9px] font-medium text-on-surface-variant">{spotlight.roundLabel}</span>
+                </div>
+                <div className="mb-2 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm ${spotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+                      {spotlight.topTeamName}{spotlight.topTeamSeed != null ? ` (${spotlight.topTeamSeed})` : ""}
+                    </span>
+                    <span className={`text-sm tabular-nums ${spotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{spotlight.topScore}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm ${spotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+                      {spotlight.bottomTeamName}{spotlight.bottomTeamSeed != null ? ` (${spotlight.bottomTeamSeed})` : ""}
+                    </span>
+                    <span className={`text-sm tabular-nums ${spotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{spotlight.bottomScore}</span>
+                  </div>
+                </div>
+                <div className="border-t border-white/[0.06] pt-2">
+                  <span className="text-[9px] text-on-surface-variant/50 capitalize">{spotlight.status}</span>
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-on-surface-variant">Michigan State</span>
-                <span className="text-sm tabular-nums text-on-surface-variant">64</span>
-              </div>
-            </div>
-            <div className="border-t border-white/[0.06] pt-2">
-              <span className="text-[9px] text-on-surface-variant/50">Final</span>
-            </div>
-          </div>
+            </>
+          ) : (
+            <p className="text-[10px] text-on-surface-variant/50">No games available.</p>
+          )}
         </div>
 
         {/* Round Status */}
@@ -262,20 +380,16 @@ export default async function DashboardPage({
             Round Status
           </p>
           <div className="space-y-2">
-            {[
-              { round: "Elite Eight",  status: "In Progress", active: true  },
-              { round: "Final Four",   status: "Apr 5",       active: false },
-              { round: "Championship", status: "Apr 7",       active: false },
-            ].map((r) => (
-              <div key={r.round} className="flex items-center justify-between py-0.5">
-                <span className={`text-[11px] ${r.active ? "font-semibold text-on-surface" : "text-on-surface-variant/60"}`}>
-                  {r.round}
+            {roundStatuses.length > 0 ? roundStatuses.map((r) => (
+              <div key={r.label} className="flex items-center justify-between py-0.5">
+                <span className={`text-[11px] ${r.status === "active" ? "font-semibold text-on-surface" : "text-on-surface-variant/60"}`}>
+                  {r.label}
                 </span>
-                <span className={`text-[10px] ${r.active ? "font-semibold text-sports-green" : "text-on-surface-variant/40"}`}>
-                  {r.status}
+                <span className={`text-[10px] ${r.status === "active" ? "font-semibold text-sports-green" : r.status === "complete" ? "text-on-surface-variant/60" : "text-on-surface-variant/40"}`}>
+                  {r.status === "active" ? "In Progress" : r.status === "complete" ? "Complete" : "Upcoming"}
                 </span>
               </div>
-            ))}
+            )) : <p className="text-[10px] text-on-surface-variant/40">No data</p>}
           </div>
         </div>
 
@@ -286,7 +400,7 @@ export default async function DashboardPage({
           </p>
           <div className="space-y-0.5">
             {[
-              { name: "NCAA Women's Basketball", round: "Elite Eight"     },
+              { name: "NCAA Women's Basketball", round: womensRoundLabel  },
               { name: "NCAA Baseball",           round: "Regionals"       },
               { name: "NCAA Softball",           round: "Super Regionals" },
             ].map((t) => (
