@@ -1,7 +1,6 @@
 "use client";
 
 import type { TournamentGame, TournamentRegion } from "@/lib/sports/types";
-import { TOURNAMENT_REGIONS } from "@/lib/sports/types";
 import { MatchupNode } from "./MatchupNode";
 
 interface BracketViewProps {
@@ -64,6 +63,3 @@ export function BracketView({ games, selectedRound }: BracketViewProps) {
   );
 }
 
-// Suppress unused import warning — TOURNAMENT_REGIONS is exported from types
-// and may be used by parent components; re-export for convenience.
-export { TOURNAMENT_REGIONS };
