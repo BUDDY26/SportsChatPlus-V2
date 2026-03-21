@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "sync:tournament": "ts-node -r dotenv/config scripts/sync-tournament.ts"
+    "sync:tournament": "tsx -r dotenv/config scripts/sync-tournament.ts"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.5.0",
@@ -54,6 +54,7 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.2"
   }
 }
