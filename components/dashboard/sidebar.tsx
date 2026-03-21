@@ -53,7 +53,7 @@ export function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-52 flex-shrink-0 flex-col md:flex overflow-hidden card-float">
+    <aside className="hidden w-52 flex-shrink-0 flex-col md:flex overflow-hidden card-float border-r border-white/[0.06]">
 
       {/* Logo */}
       <Link
@@ -83,7 +83,7 @@ export function DashboardSidebar() {
                   "flex items-center justify-center gap-1.5 rounded px-2 py-2 text-[11px] font-medium transition-colors",
                   isActive
                     ? "bg-primary text-primary-foreground"
-                    : "bg-white/[0.07] text-white/60 hover:bg-white/[0.12] hover:text-white"
+                    : "bg-white/[0.05] text-on-surface-variant/60 hover:bg-white/[0.09] hover:text-on-surface"
                 )}
               >
                 <item.icon className="h-3.5 w-3.5 flex-shrink-0" />
@@ -98,14 +98,14 @@ export function DashboardSidebar() {
       <div className="flex-1 overflow-y-auto flex flex-col gap-2 p-2">
         {sportsBrowser.map((group) => (
           <div key={group.label} className="rounded-lg overflow-hidden">
-            <p className="px-3 pb-1 pt-2.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/25">
+            <p className="px-3 pb-1 pt-2.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/30">
               {group.label}
             </p>
             {group.items.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center px-3 py-[7px] text-[11px] text-white/50 transition-colors hover:bg-white/[0.05] hover:text-white/80"
+                className="flex items-center px-3 py-[7px] text-[11px] text-on-surface-variant/60 transition-colors hover:bg-white/[0.05] hover:text-on-surface"
               >
                 {item.label}
               </Link>

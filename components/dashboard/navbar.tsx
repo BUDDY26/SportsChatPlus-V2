@@ -30,7 +30,7 @@ export function DashboardNavbar({ session }: DashboardNavbarProps) {
       .toUpperCase() ?? "?";
 
   return (
-    <header className="flex h-9 flex-shrink-0 items-center px-4">
+    <header className="flex h-9 flex-shrink-0 items-center border-b border-white/[0.06] px-4">
 
       {/* Left: width spacer aligns with sidebar */}
       <div className="w-52 flex-shrink-0" />
@@ -39,7 +39,7 @@ export function DashboardNavbar({ session }: DashboardNavbarProps) {
       <div className="flex flex-1 items-center justify-center">
         <Link
           href="/dashboard/support"
-          className="text-[11px] tracking-wide text-white/30 transition-colors hover:text-white/60"
+          className="text-[11px] tracking-wide text-on-surface-variant/30 transition-colors hover:text-on-surface-variant/70"
         >
           Support
         </Link>
@@ -61,7 +61,7 @@ export function DashboardNavbar({ session }: DashboardNavbarProps) {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium">{user?.name}</p>
-                <p className="text-xs text-muted-foreground">{user?.email}</p>
+                <p className="text-xs text-on-surface-variant/60">{user?.email}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
