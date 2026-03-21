@@ -17,7 +17,7 @@ export function MatchupNode({ game }: MatchupNodeProps) {
   return (
     <Card
       className={cn(
-        "transition-all hover:shadow-md",
+        "card-float transition-all hover:shadow-md",
         isLive && "border-sports-green/50 shadow-sm shadow-sports-green/10",
       )}
     >
