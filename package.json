@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sync:tournament": "ts-node -r dotenv/config scripts/sync-tournament.ts"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.5.0",
