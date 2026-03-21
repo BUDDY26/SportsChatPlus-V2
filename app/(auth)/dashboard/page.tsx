@@ -172,8 +172,8 @@ export default async function DashboardPage({
         }));
 
         const spotlightRaw = resolved
-          .filter(g => g.status === "final" || g.status === "live")
-          .sort((a, b) => (b.round?.round_number ?? 0) - (a.round?.round_number ?? 0))[0];
+          .filter((g: any) => g.status === "final" || g.status === "live")
+          .sort((a: any, b: any) => (b.round?.round_number ?? 0) - (a.round?.round_number ?? 0))[0];
 
         if (spotlightRaw) {
           spotlight = {
@@ -223,12 +223,12 @@ export default async function DashboardPage({
           const r = Array.isArray(g.round) ? g.round[0] : g.round;
           return { status: g.status as string, rn: r?.round_number ?? 0, name: r?.name ?? "" };
         });
-        const activeLow = wr.filter(g => g.status === "scheduled" || g.status === "live")
-          .sort((a, b) => a.rn - b.rn)[0];
+        const activeLow = wr.filter((g: any) => g.status === "scheduled" || g.status === "live")
+          .sort((a: any, b: any) => a.rn - b.rn)[0];
         if (activeLow) {
           womensRoundLabel = activeLow.name;
         } else {
-          const highFinal = wr.filter(g => g.status === "final").sort((a, b) => b.rn - a.rn)[0];
+          const highFinal = wr.filter((g: any) => g.status === "final").sort((a: any, b: any) => b.rn - a.rn)[0];
           if (highFinal) womensRoundLabel = highFinal.name;
         }
       }
