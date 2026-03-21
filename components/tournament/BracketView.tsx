@@ -34,10 +34,7 @@ export function BracketView({ games, selectedRound }: BracketViewProps) {
   }
 
   // Rounds 1–4: group by region in the bracket order
-  const regionOrder: TournamentRegion[] = ["East", "West", "South", "Midwest"];
-  const regions = regionOrder.filter((r) =>
-    roundGames.some((g) => g.region === r),
-  );
+  const regions = [...new Set(roundGames.map((g) => g.region).filter((r): r is TournamentRegion => r !== null))].sort();
 
   return (
     <div className="space-y-8 overflow-y-auto">
