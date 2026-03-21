@@ -114,7 +114,7 @@ const sportChips = [
 // ─── Shared card class ───────────────────────────────────────────────────────
 
 const CARD =
-  "flex flex-1 flex-col rounded-xl card-float p-3 transition-colors hover:bg-white/[0.03]";
+  "flex h-[340px] flex-shrink-0 flex-col overflow-hidden rounded-xl card-float p-3 transition-colors hover:bg-white/[0.03]";
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
@@ -134,13 +134,13 @@ export default async function DashboardPage({
           col-span-2 → occupies columns 1 and 2 only.
           Tournament Central (col-start-3) is unaffected.           ────── */}
       <div
-        className="col-span-2 flex justify-start gap-2 overflow-x-auto px-4 py-3 border-b border-white/[0.06]"
+        className="col-span-2 flex gap-2 overflow-x-auto px-4 py-3 border-b border-white/[0.06]"
         style={{ scrollbarWidth: "none" }}
       >
         {sportChips.map((chip) => (
           <button
             key={chip.id}
-            className={`flex-shrink-0 flex flex-col items-center justify-center gap-1.5 h-[64px] w-[72px] rounded-xl border transition-all relative ${
+            className={`flex-1 min-w-[60px] flex flex-col items-center justify-center gap-1.5 h-[64px] rounded-xl border transition-all relative ${
               chip.active
                 ? "bg-[linear-gradient(135deg,rgba(100,50,180,0.5),rgba(60,30,140,0.4))] border-[rgba(130,80,220,0.4)]"
                 : "border-white/[0.08] bg-[#1e1f25] hover:bg-[#24252b]"
@@ -164,32 +164,41 @@ export default async function DashboardPage({
       {/* ── Row 2, Cols 1-2: Favorite Teams Row ─────────────────────────────
           col-span-2 → occupies columns 1 and 2 only.
           Tournament Central (col-start-3) is unaffected.           ────── */}
-      <div className="col-span-2 px-4 py-2 border-b border-white/[0.06]">
-        <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
+      <div className="col-span-2 flex items-center gap-2 px-4 py-2 border-b border-white/[0.06]">
+        <span className="flex-shrink-0 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/40">
           My Teams
-        </p>
-        <div className="flex items-center gap-1.5 overflow-x-auto">
+        </span>
+        <div
+          className="flex flex-1 items-center gap-1.5 overflow-x-auto"
+          style={{ scrollbarWidth: "none" }}
+        >
           {placeholderTeams.map((team) => (
-            <div
+            <button
               key={team.abbr}
-              className="flex flex-shrink-0 flex-col items-center gap-1 cursor-pointer"
+              className="flex-1 min-w-[72px] flex items-center gap-1.5 rounded-full bg-white/[0.05] px-2 py-1 transition-colors hover:bg-white/[0.09]"
             >
               <div
-                className="w-11 h-11 rounded-full flex items-center justify-center text-[10px] font-bold border border-white/[0.1] transition-colors hover:border-primary/40"
+                className="w-5 h-5 flex-shrink-0 rounded-full flex items-center justify-center text-[8px] font-bold"
                 style={{ background: team.bg, color: team.color }}
               >
                 {team.abbr}
               </div>
-              <span className="text-[9px] text-on-surface-variant/60">{team.label}</span>
-            </div>
+              <span className="truncate text-[10px] font-medium text-on-surface-variant/80">
+                {team.label}
+              </span>
+            </button>
           ))}
-          <div className="flex flex-shrink-0 flex-col items-center gap-1 cursor-pointer">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center border border-dashed border-white/[0.12] text-on-surface-variant/40 transition-colors hover:border-primary/40 hover:text-primary">
-              <span className="text-base font-light leading-none">+</span>
-            </div>
-            <span className="text-[9px] text-on-surface-variant/40">Add</span>
-          </div>
+          <button className="flex-shrink-0 flex items-center gap-1 rounded-full border border-dashed border-white/[0.12] px-2.5 py-1 text-[10px] text-on-surface-variant/40 transition-colors hover:border-primary/40 hover:text-primary">
+            <span className="text-sm font-light leading-none">+</span>
+            Add
+          </button>
         </div>
+        <Link
+          href="/dashboard/favorites"
+          className="flex-shrink-0 text-[10px] text-primary/60 transition-colors hover:text-primary"
+        >
+          All Teams →
+        </Link>
       </div>
 
       {/* ── Col 3, Rows 1-3: Tournament Central ─────────────────────────────
@@ -339,7 +348,7 @@ export default async function DashboardPage({
       {/* ── Row 3, Col 1: Column A ───────────────────────────────────────────
           Auto-placed by CSS grid into row 3, column 1.
           Direct grid child — no parent/child relationship with Col B. ───── */}
-      <div className="flex flex-col gap-4 overflow-hidden min-h-0 h-full p-3 bg-white/[0.04]">
+      <div className="flex flex-col gap-4 overflow-y-auto p-3 bg-white/[0.04]">
 
         {activeTab === "live" && liveGames.slice(0, 2).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
@@ -356,15 +365,98 @@ export default async function DashboardPage({
                 <span className="text-[9px] font-medium text-on-surface-variant">{game.period}</span>
               )}
             </div>
-            <div className="flex-1 flex flex-col justify-center gap-1.5">
-              <div className="flex items-center justify-between">
-                <span className="truncate pr-2 text-sm font-semibold text-on-surface">{game.home}</span>
-                <span className="flex-shrink-0 text-sm font-bold tabular-nums">{game.homeScore}</span>
+            <div className="my-auto flex flex-col gap-1.5">
+
+              {/* Game clock */}
+              <div className="flex items-center justify-center gap-1.5">
+                <span className="text-[11px] font-bold tabular-nums text-on-surface">12:24</span>
+                <span className="text-[9px] text-on-surface-variant/40">·</span>
+                <span className="text-[9px] text-on-surface-variant/60">2nd Qtr</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="truncate pr-2 text-sm text-on-surface-variant">{game.away}</span>
-                <span className="flex-shrink-0 text-sm tabular-nums text-on-surface-variant">{game.awayScore}</span>
+
+              {/* Team rows with inline records */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
+                    <span className="truncate pr-2 text-base font-semibold text-on-surface">
+                      {game.home}
+                      <span className="ml-1 text-[9px] font-normal text-on-surface-variant/40">(25-8)</span>
+                    </span>
+                  </div>
+                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums">{game.homeScore}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
+                    <span className="truncate pr-2 text-base text-on-surface-variant">
+                      {game.away}
+                      <span className="ml-1 text-[9px] text-on-surface-variant/30">(22-11)</span>
+                    </span>
+                  </div>
+                  <span className="flex-shrink-0 text-2xl tabular-nums text-on-surface-variant">{game.awayScore}</span>
+                </div>
               </div>
+
+              {/* Quarter breakdown */}
+              <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-center text-[9px]">
+                  <span className="text-on-surface-variant/30" />
+                  <span className="text-on-surface-variant/40">Q1</span>
+                  <span className="text-on-surface-variant/40">Q2</span>
+                  <span className="text-on-surface-variant/40">Q3</span>
+                  <span className="text-on-surface-variant/40">Q4</span>
+                  <span className="text-on-surface-variant/40">T</span>
+
+                  <span className="text-[9px] font-medium text-on-surface-variant/60">AUB</span>
+                  <span className="tabular-nums text-on-surface/80">18</span>
+                  <span className="tabular-nums text-on-surface/80">21</span>
+                  <span className="tabular-nums text-on-surface/80">16</span>
+                  <span className="tabular-nums text-on-surface/80">15</span>
+                  <span className="tabular-nums font-bold text-on-surface">70</span>
+
+                  <span className="text-[9px] font-medium text-on-surface-variant/60">MSU</span>
+                  <span className="tabular-nums text-on-surface-variant/70">14</span>
+                  <span className="tabular-nums text-on-surface-variant/70">18</span>
+                  <span className="tabular-nums text-on-surface-variant/70">17</span>
+                  <span className="tabular-nums text-on-surface-variant/70">15</span>
+                  <span className="tabular-nums text-on-surface-variant">64</span>
+                </div>
+              </div>
+
+              {/* Venue + broadcast */}
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] text-on-surface-variant/40">Viejas Arena · San Diego, CA</span>
+                <span className="rounded px-1.5 py-0.5 text-[8px] font-bold bg-sports-blue/20 text-sports-blue">
+                  ESPN
+                </span>
+              </div>
+
+              {/* Key stats */}
+              <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
+                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px] text-on-surface-variant/40">
+                  <span />
+                  <span className="text-center">FG%</span>
+                  <span className="text-center">3P%</span>
+                  <span className="text-center">REB</span>
+                  <span className="text-center">TO</span>
+                </div>
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px]">
+                  <span className="text-on-surface-variant/60">AUB</span>
+                  <span className="tabular-nums text-center text-on-surface/80">48.2</span>
+                  <span className="tabular-nums text-center text-on-surface/80">38.5</span>
+                  <span className="tabular-nums text-center text-on-surface/80">32</span>
+                  <span className="tabular-nums text-center text-on-surface/80">11</span>
+                </div>
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px]">
+                  <span className="text-on-surface-variant/60">MSU</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/60">41.7</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/60">32.1</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/60">28</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/60">14</span>
+                </div>
+              </div>
+
             </div>
             <div className="mt-2.5 border-t border-white/[0.06] pt-2">
               <span className="text-[10px] text-on-surface-variant/50">
@@ -382,7 +474,7 @@ export default async function DashboardPage({
               </span>
               <span className="text-[9px] text-on-surface-variant/70">{game.time}</span>
             </div>
-            <div className="flex-1 flex flex-col justify-center gap-1.5">
+            <div className="my-auto flex flex-col gap-1.5">
               <p className="text-sm font-semibold text-on-surface">{game.home}</p>
               <p className="text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant/30">vs</p>
               <p className="text-sm text-on-surface-variant">{game.away}</p>
@@ -398,7 +490,7 @@ export default async function DashboardPage({
               </span>
               <span className="text-[9px] text-on-surface-variant/60">Final</span>
             </div>
-            <div className="flex-1 flex flex-col justify-center gap-1.5">
+            <div className="my-auto flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-on-surface">{game.home}</span>
                 <span className="text-sm font-bold tabular-nums">{game.homeScore}</span>
@@ -416,7 +508,7 @@ export default async function DashboardPage({
       {/* ── Row 3, Col 2: Column B ───────────────────────────────────────────
           Auto-placed by CSS grid into row 3, column 2.
           Direct grid child — no parent/child relationship with Col A. ───── */}
-      <div className="flex flex-col gap-4 overflow-hidden min-h-0 h-full p-3 bg-white/[0.04]">
+      <div className="flex flex-col gap-4 overflow-y-auto p-3 bg-white/[0.04]">
 
         {activeTab === "live" && liveGames.slice(2, 4).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
@@ -433,15 +525,98 @@ export default async function DashboardPage({
                 <span className="text-[9px] font-medium text-on-surface-variant">{game.period}</span>
               )}
             </div>
-            <div className="flex-1 flex flex-col justify-center gap-1.5">
-              <div className="flex items-center justify-between">
-                <span className="truncate pr-2 text-sm font-semibold text-on-surface">{game.home}</span>
-                <span className="flex-shrink-0 text-sm font-bold tabular-nums">{game.homeScore}</span>
+            <div className="my-auto flex flex-col gap-1.5">
+
+              {/* Game clock */}
+              <div className="flex items-center justify-center gap-1.5">
+                <span className="text-[11px] font-bold tabular-nums text-on-surface">12:24</span>
+                <span className="text-[9px] text-on-surface-variant/40">·</span>
+                <span className="text-[9px] text-on-surface-variant/60">2nd Qtr</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="truncate pr-2 text-sm text-on-surface-variant">{game.away}</span>
-                <span className="flex-shrink-0 text-sm tabular-nums text-on-surface-variant">{game.awayScore}</span>
+
+              {/* Team rows with inline records */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
+                    <span className="truncate pr-2 text-base font-semibold text-on-surface">
+                      {game.home}
+                      <span className="ml-1 text-[9px] font-normal text-on-surface-variant/40">(25-8)</span>
+                    </span>
+                  </div>
+                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums">{game.homeScore}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
+                    <span className="truncate pr-2 text-base text-on-surface-variant">
+                      {game.away}
+                      <span className="ml-1 text-[9px] text-on-surface-variant/30">(22-11)</span>
+                    </span>
+                  </div>
+                  <span className="flex-shrink-0 text-2xl tabular-nums text-on-surface-variant">{game.awayScore}</span>
+                </div>
               </div>
+
+              {/* Quarter breakdown */}
+              <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-center text-[9px]">
+                  <span className="text-on-surface-variant/30" />
+                  <span className="text-on-surface-variant/40">Q1</span>
+                  <span className="text-on-surface-variant/40">Q2</span>
+                  <span className="text-on-surface-variant/40">Q3</span>
+                  <span className="text-on-surface-variant/40">Q4</span>
+                  <span className="text-on-surface-variant/40">T</span>
+
+                  <span className="text-[9px] font-medium text-on-surface-variant/60">AUB</span>
+                  <span className="tabular-nums text-on-surface/80">18</span>
+                  <span className="tabular-nums text-on-surface/80">21</span>
+                  <span className="tabular-nums text-on-surface/80">16</span>
+                  <span className="tabular-nums text-on-surface/80">15</span>
+                  <span className="tabular-nums font-bold text-on-surface">70</span>
+
+                  <span className="text-[9px] font-medium text-on-surface-variant/60">MSU</span>
+                  <span className="tabular-nums text-on-surface-variant/70">14</span>
+                  <span className="tabular-nums text-on-surface-variant/70">18</span>
+                  <span className="tabular-nums text-on-surface-variant/70">17</span>
+                  <span className="tabular-nums text-on-surface-variant/70">15</span>
+                  <span className="tabular-nums text-on-surface-variant">64</span>
+                </div>
+              </div>
+
+              {/* Venue + broadcast */}
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] text-on-surface-variant/40">Viejas Arena · San Diego, CA</span>
+                <span className="rounded px-1.5 py-0.5 text-[8px] font-bold bg-sports-blue/20 text-sports-blue">
+                  ESPN
+                </span>
+              </div>
+
+              {/* Key stats */}
+              <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
+                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px] text-on-surface-variant/40">
+                  <span />
+                  <span className="text-center">FG%</span>
+                  <span className="text-center">3P%</span>
+                  <span className="text-center">REB</span>
+                  <span className="text-center">TO</span>
+                </div>
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px]">
+                  <span className="text-on-surface-variant/60">AUB</span>
+                  <span className="tabular-nums text-center text-on-surface/80">48.2</span>
+                  <span className="tabular-nums text-center text-on-surface/80">38.5</span>
+                  <span className="tabular-nums text-center text-on-surface/80">32</span>
+                  <span className="tabular-nums text-center text-on-surface/80">11</span>
+                </div>
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px]">
+                  <span className="text-on-surface-variant/60">MSU</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/60">41.7</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/60">32.1</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/60">28</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/60">14</span>
+                </div>
+              </div>
+
             </div>
             <div className="mt-2.5 border-t border-white/[0.06] pt-2">
               <span className="text-[10px] text-on-surface-variant/50">
@@ -459,7 +634,7 @@ export default async function DashboardPage({
               </span>
               <span className="text-[9px] text-on-surface-variant/70">{game.time}</span>
             </div>
-            <div className="flex-1 flex flex-col justify-center gap-1.5">
+            <div className="my-auto flex flex-col gap-1.5">
               <p className="text-sm font-semibold text-on-surface">{game.home}</p>
               <p className="text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant/30">vs</p>
               <p className="text-sm text-on-surface-variant">{game.away}</p>
@@ -475,7 +650,7 @@ export default async function DashboardPage({
               </span>
               <span className="text-[9px] text-on-surface-variant/60">Final</span>
             </div>
-            <div className="flex-1 flex flex-col justify-center gap-1.5">
+            <div className="my-auto flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-on-surface">{game.home}</span>
                 <span className="text-sm font-bold tabular-nums">{game.homeScore}</span>
