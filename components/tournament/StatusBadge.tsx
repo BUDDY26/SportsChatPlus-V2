@@ -23,24 +23,24 @@ export function StatusBadge({ status, period, className }: StatusBadgeProps) {
 
   if (status === "final") {
     return (
-      <Badge variant="secondary" className={cn("font-semibold", className)}>
+      <span className={cn("text-xs font-medium text-on-surface-variant/60", className)}>
         Final
-      </Badge>
+      </span>
     );
   }
 
   if (status === "postponed") {
     return (
-      <Badge variant="outline" className={cn("text-muted-foreground", className)}>
+      <span className={cn("text-xs font-medium text-on-surface-variant/40", className)}>
         Postponed
-      </Badge>
+      </span>
     );
   }
 
   // scheduled
   return (
-    <Badge variant="outline" className={cn("text-muted-foreground", className)}>
+    <span className={cn("text-xs font-medium text-on-surface-variant/50", className)}>
       Upcoming
-    </Badge>
+    </span>
   );
 }
