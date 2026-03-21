@@ -387,7 +387,7 @@ export default async function DashboardPage({
                 <span className={`text-[11px] ${r.status === "active" ? "font-semibold text-on-surface" : "text-on-surface-variant/60"}`}>
                   {r.label}
                 </span>
-                <span className={`text-[10px] ${r.status === "active" ? "font-semibold text-sports-green" : r.status === "complete" ? "text-on-surface-variant/60" : "text-on-surface-variant/40"}`}>
+                <span className={`text-[10px] ${r.status === "active" ? "font-semibold text-sports-green" : r.status === "complete" ? "text-on-surface-variant/60" : "text-on-surface-variant/60"}`}>
                   {r.status === "active" ? "In Progress" : r.status === "complete" ? "Complete" : "Upcoming"}
                 </span>
               </div>
@@ -486,7 +486,7 @@ export default async function DashboardPage({
               {/* Game clock */}
               <div className="flex items-center justify-center gap-1.5">
                 <span className="text-[11px] font-bold tabular-nums text-on-surface">12:24</span>
-                <span className="text-[9px] text-on-surface-variant/40">·</span>
+                <span className="text-[9px] text-on-surface-variant/60">·</span>
                 <span className="text-[9px] text-on-surface-variant/60">2nd Qtr</span>
               </div>
 
@@ -518,31 +518,31 @@ export default async function DashboardPage({
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
                 <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-center text-[9px]">
                   <span className="text-on-surface-variant/30" />
-                  <span className="text-on-surface-variant/40">Q1</span>
-                  <span className="text-on-surface-variant/40">Q2</span>
-                  <span className="text-on-surface-variant/40">Q3</span>
-                  <span className="text-on-surface-variant/40">Q4</span>
-                  <span className="text-on-surface-variant/40">T</span>
+                  <span className="text-on-surface-variant/60">Q1</span>
+                  <span className="text-on-surface-variant/60">Q2</span>
+                  <span className="text-on-surface-variant/60">Q3</span>
+                  <span className="text-on-surface-variant/60">Q4</span>
+                  <span className="text-on-surface-variant/60">T</span>
 
-                  <span className="text-[9px] font-medium text-on-surface-variant/60">AUB</span>
+                  <span className="text-[9px] font-medium text-on-surface-variant/80">AUB</span>
                   <span className="tabular-nums text-on-surface/80">18</span>
                   <span className="tabular-nums text-on-surface/80">21</span>
                   <span className="tabular-nums text-on-surface/80">16</span>
                   <span className="tabular-nums text-on-surface/80">15</span>
                   <span className="tabular-nums font-bold text-on-surface">70</span>
 
-                  <span className="text-[9px] font-medium text-on-surface-variant/60">MSU</span>
+                  <span className="text-[9px] font-medium text-on-surface-variant/80">MSU</span>
                   <span className="tabular-nums text-on-surface-variant/70">14</span>
                   <span className="tabular-nums text-on-surface-variant/70">18</span>
                   <span className="tabular-nums text-on-surface-variant/70">17</span>
                   <span className="tabular-nums text-on-surface-variant/70">15</span>
-                  <span className="tabular-nums text-on-surface-variant">64</span>
+                  <span className="tabular-nums font-bold text-on-surface-variant">64</span>
                 </div>
               </div>
 
               {/* Venue + broadcast */}
               <div className="flex items-center justify-between">
-                <span className="text-[9px] text-on-surface-variant/40">Viejas Arena · San Diego, CA</span>
+                <span className="text-[9px] text-on-surface-variant/60">Viejas Arena · San Diego, CA</span>
                 <span className="rounded px-1.5 py-0.5 text-[8px] font-bold bg-sports-blue/20 text-sports-blue">
                   ESPN
                 </span>
@@ -550,7 +550,7 @@ export default async function DashboardPage({
 
               {/* Key stats */}
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
-                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px] text-on-surface-variant/40">
+                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px] text-on-surface-variant/60">
                   <span />
                   <span className="text-center">FG%</span>
                   <span className="text-center">3P%</span>
@@ -565,11 +565,11 @@ export default async function DashboardPage({
                   <span className="tabular-nums text-center text-on-surface/80">11</span>
                 </div>
                 <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px]">
-                  <span className="text-on-surface-variant/60">MSU</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/60">41.7</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/60">32.1</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/60">28</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/60">14</span>
+                  <span className="text-on-surface-variant/80">MSU</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/80">41.7</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/80">32.1</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/80">28</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/80">14</span>
                 </div>
               </div>
 
@@ -646,7 +646,7 @@ export default async function DashboardPage({
               {/* Game clock */}
               <div className="flex items-center justify-center gap-1.5">
                 <span className="text-[11px] font-bold tabular-nums text-on-surface">12:24</span>
-                <span className="text-[9px] text-on-surface-variant/40">·</span>
+                <span className="text-[9px] text-on-surface-variant/60">·</span>
                 <span className="text-[9px] text-on-surface-variant/60">2nd Qtr</span>
               </div>
 
@@ -678,31 +678,31 @@ export default async function DashboardPage({
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
                 <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-center text-[9px]">
                   <span className="text-on-surface-variant/30" />
-                  <span className="text-on-surface-variant/40">Q1</span>
-                  <span className="text-on-surface-variant/40">Q2</span>
-                  <span className="text-on-surface-variant/40">Q3</span>
-                  <span className="text-on-surface-variant/40">Q4</span>
-                  <span className="text-on-surface-variant/40">T</span>
+                  <span className="text-on-surface-variant/60">Q1</span>
+                  <span className="text-on-surface-variant/60">Q2</span>
+                  <span className="text-on-surface-variant/60">Q3</span>
+                  <span className="text-on-surface-variant/60">Q4</span>
+                  <span className="text-on-surface-variant/60">T</span>
 
-                  <span className="text-[9px] font-medium text-on-surface-variant/60">AUB</span>
+                  <span className="text-[9px] font-medium text-on-surface-variant/80">AUB</span>
                   <span className="tabular-nums text-on-surface/80">18</span>
                   <span className="tabular-nums text-on-surface/80">21</span>
                   <span className="tabular-nums text-on-surface/80">16</span>
                   <span className="tabular-nums text-on-surface/80">15</span>
                   <span className="tabular-nums font-bold text-on-surface">70</span>
 
-                  <span className="text-[9px] font-medium text-on-surface-variant/60">MSU</span>
+                  <span className="text-[9px] font-medium text-on-surface-variant/80">MSU</span>
                   <span className="tabular-nums text-on-surface-variant/70">14</span>
                   <span className="tabular-nums text-on-surface-variant/70">18</span>
                   <span className="tabular-nums text-on-surface-variant/70">17</span>
                   <span className="tabular-nums text-on-surface-variant/70">15</span>
-                  <span className="tabular-nums text-on-surface-variant">64</span>
+                  <span className="tabular-nums font-bold text-on-surface-variant">64</span>
                 </div>
               </div>
 
               {/* Venue + broadcast */}
               <div className="flex items-center justify-between">
-                <span className="text-[9px] text-on-surface-variant/40">Viejas Arena · San Diego, CA</span>
+                <span className="text-[9px] text-on-surface-variant/60">Viejas Arena · San Diego, CA</span>
                 <span className="rounded px-1.5 py-0.5 text-[8px] font-bold bg-sports-blue/20 text-sports-blue">
                   ESPN
                 </span>
@@ -710,7 +710,7 @@ export default async function DashboardPage({
 
               {/* Key stats */}
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
-                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px] text-on-surface-variant/40">
+                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px] text-on-surface-variant/60">
                   <span />
                   <span className="text-center">FG%</span>
                   <span className="text-center">3P%</span>
@@ -725,11 +725,11 @@ export default async function DashboardPage({
                   <span className="tabular-nums text-center text-on-surface/80">11</span>
                 </div>
                 <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px]">
-                  <span className="text-on-surface-variant/60">MSU</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/60">41.7</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/60">32.1</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/60">28</span>
-                  <span className="tabular-nums text-center text-on-surface-variant/60">14</span>
+                  <span className="text-on-surface-variant/80">MSU</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/80">41.7</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/80">32.1</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/80">28</span>
+                  <span className="tabular-nums text-center text-on-surface-variant/80">14</span>
                 </div>
               </div>
 
