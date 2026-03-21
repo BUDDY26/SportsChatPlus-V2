@@ -3,6 +3,8 @@ import { Trophy, Zap, Circle, Gauge } from "lucide-react";
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase";
 
+export const revalidate = 0;
+
 export const metadata: Metadata = { title: "Dashboard" };
 
 // ─── Types ──────────────────────────────────────────────────────────────────
