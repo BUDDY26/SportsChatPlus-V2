@@ -76,15 +76,7 @@ export const TOURNAMENT_ROUNDS = [
 
 export type TournamentRound = (typeof TOURNAMENT_ROUNDS)[number]["round"];
 
-export const TOURNAMENT_REGIONS = [
-  "East",
-  "West",
-  "South",
-  "Midwest",
-  "Final Four",
-] as const;
-
-export type TournamentRegion = (typeof TOURNAMENT_REGIONS)[number];
+export type TournamentRegion = string;
 
 /**
  * A single matchup in the bracket.
@@ -95,7 +87,7 @@ export interface TournamentGame {
   id: string;
   round: TournamentRound;
   roundLabel: string;
-  region: TournamentRegion;
+  region: string | null;
   /** 1-based position within this round+region */
   slot: number;
   topTeamId: string | null;    // null = TBD (winner not yet determined)
@@ -123,7 +115,7 @@ export interface BracketEntry {
   teamId: string;
   teamName: string;
   seed: number;
-  region: TournamentRegion;
+  region: string | null;
   isEliminated: boolean;
   currentRound: TournamentRound;
 }
