@@ -469,7 +469,7 @@ export default async function DashboardPage({
         {activeTab === "live" && liveGames.slice(0, 2).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
             <div className="mb-2.5 flex items-center justify-between">
-              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/60">
+              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/80">
                 {game.league} · {game.competition}
               </span>
               {game.live ? (
@@ -495,22 +495,22 @@ export default async function DashboardPage({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
-                    <span className="truncate pr-2 text-base font-semibold text-on-surface">
+                    <span className="truncate pr-2 text-base font-bold text-white">
                       {game.home}
                       <span className="ml-1 text-[9px] font-normal text-on-surface-variant/40">(25-8)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums">{game.homeScore}</span>
+                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-white">{game.homeScore}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
-                    <span className="truncate pr-2 text-base text-on-surface-variant">
+                    <span className="truncate pr-2 text-base font-semibold text-white/80">
                       {game.away}
                       <span className="ml-1 text-[9px] text-on-surface-variant/30">(22-11)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl tabular-nums text-on-surface-variant">{game.awayScore}</span>
+                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-white/70">{game.awayScore}</span>
                 </div>
               </div>
 
@@ -585,7 +585,7 @@ export default async function DashboardPage({
         {activeTab === "upcoming" && upcomingGames.slice(0, 2).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
             <div className="mb-2.5 flex items-center justify-between">
-              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/60">
+              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/80">
                 {game.league}
               </span>
               <span className="text-[9px] text-on-surface-variant/70">{game.time}</span>
@@ -601,7 +601,7 @@ export default async function DashboardPage({
         {activeTab === "recent" && recentGames.slice(0, 2).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
             <div className="mb-2.5 flex items-center justify-between">
-              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/60">
+              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/80">
                 {game.league}
               </span>
               <span className="text-[9px] text-on-surface-variant/60">Final</span>
@@ -629,7 +629,7 @@ export default async function DashboardPage({
         {activeTab === "live" && liveGames.slice(2, 4).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
             <div className="mb-2.5 flex items-center justify-between">
-              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/60">
+              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/80">
                 {game.league} · {game.competition}
               </span>
               {game.live ? (
@@ -655,22 +655,22 @@ export default async function DashboardPage({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
-                    <span className="truncate pr-2 text-base font-semibold text-on-surface">
+                    <span className="truncate pr-2 text-base font-bold text-white">
                       {game.home}
                       <span className="ml-1 text-[9px] font-normal text-on-surface-variant/40">(25-8)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums">{game.homeScore}</span>
+                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-white">{game.homeScore}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 flex-shrink-0 rounded-full bg-white/[0.08] border border-white/[0.1]" />
-                    <span className="truncate pr-2 text-base text-on-surface-variant">
+                    <span className="truncate pr-2 text-base font-semibold text-white/80">
                       {game.away}
                       <span className="ml-1 text-[9px] text-on-surface-variant/30">(22-11)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl tabular-nums text-on-surface-variant">{game.awayScore}</span>
+                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-white/70">{game.awayScore}</span>
                 </div>
               </div>
 
@@ -745,7 +745,7 @@ export default async function DashboardPage({
         {activeTab === "upcoming" && upcomingGames.slice(2, 4).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
             <div className="mb-2.5 flex items-center justify-between">
-              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/60">
+              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/80">
                 {game.league}
               </span>
               <span className="text-[9px] text-on-surface-variant/70">{game.time}</span>
@@ -761,7 +761,7 @@ export default async function DashboardPage({
         {activeTab === "recent" && recentGames.slice(2, 4).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
             <div className="mb-2.5 flex items-center justify-between">
-              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/60">
+              <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/80">
                 {game.league}
               </span>
               <span className="text-[9px] text-on-surface-variant/60">Final</span>
