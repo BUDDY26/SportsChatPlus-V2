@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { TournamentGame, TournamentRound } from "@/lib/sports/types";
 import { TOURNAMENT_ROUNDS } from "@/lib/sports/types";
 import type { BracketApiResponse } from "@/pages/api/tournament/bracket";
+import { createClient } from "@/lib/supabase";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BracketView } from "./BracketView";
 import { LiveScoreStrip } from "./LiveScoreStrip";
@@ -13,6 +14,7 @@ export function TournamentClientWrapper() {
   const [games, setGames] = useState<TournamentGame[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [tournamentId, setTournamentId] = useState<string | null>(null);
   const [selectedRound, setSelectedRound] = useState<TournamentRound>(1);
   const [sport, setSport] = useState<"mens" | "womens">("mens");
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -30,6 +32,7 @@ export function TournamentClientWrapper() {
       })
       .then((data) => {
         setGames(data.games);
+        setTournamentId(data.tournamentId);
         if (data.games.some((g) => g.status === "live")) {
           pollRef.current = setInterval(() => {
             fetch(`/api/tournament/bracket?sport=${sport}`)
@@ -60,6 +63,48 @@ export function TournamentClientWrapper() {
 
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, [sport]);
+
+  useEffect(() => {
+    if (!tournamentId) return;
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`tournament_games:${tournamentId}:${sport}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "tournament_games",
+          filter: `tournament_id=eq.${tournamentId}`,
+        },
+        (payload) => {
+          const row = payload.new as {
+            id: string;
+            top_score: number;
+            bottom_score: number;
+            status: TournamentGame["status"];
+            winner_id: string | null;
+            winner_slot: "top" | "bottom" | null;
+          };
+          setGames((prev) =>
+            prev.map((g) =>
+              g.id === row.id
+                ? {
+                    ...g,
+                    topScore: row.top_score,
+                    bottomScore: row.bottom_score,
+                    status: row.status,
+                    winnerId: row.winner_id,
+                    winnerSlot: row.winner_slot,
+                  }
+                : g,
+            ),
+          );
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [tournamentId, sport]);
 
   if (isLoading) {
     return (

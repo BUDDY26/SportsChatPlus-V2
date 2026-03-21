@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase";
 
 export interface BracketApiResponse {
   tournamentName: string;
+  tournamentId: string | null;
   season: string;
   lastUpdated: string;
   games: TournamentGame[];
@@ -487,6 +488,7 @@ export default async function handler(
           res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
           return res.status(200).json({
             tournamentName: tournament.name,
+            tournamentId: tournament.id,
             season: "2025",
             lastUpdated: new Date().toISOString(),
             games,
@@ -501,6 +503,7 @@ export default async function handler(
   res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
   return res.status(200).json({
     tournamentName: fallbackName,
+    tournamentId: null,
     season: "2025",
     lastUpdated: new Date().toISOString(),
     games: MOCK_BRACKET,
