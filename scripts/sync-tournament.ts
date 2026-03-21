@@ -188,7 +188,7 @@ async function syncTournament(
 
   // ── Phase 1: collect bracket gameIDs from scoreboard ──────────────────────
 
-  const gameIds: string[] = [];
+  const gameIds = new Map<string, string>();
 
   for (const date of config.dates) {
     const url = `${BASE_URL}/scoreboard/${config.sport}/d1/${date}/all-conf`;
@@ -198,7 +198,9 @@ async function syncTournament(
       const bracketGames = (data.games ?? []).filter((e) =>
         hasBracketRound(e.game.bracketRound)
       );
-      bracketGames.forEach((e) => gameIds.push(e.game.gameID));
+      bracketGames.forEach((e) =>
+        gameIds.set(e.game.gameID, mapGameState(e.game.gameState))
+      );
       console.log(`  → ${bracketGames.length} bracket games found`);
     } catch (err) {
       console.error(`  FETCH ERROR (scoreboard ${date}):`, err);
@@ -207,8 +209,8 @@ async function syncTournament(
     await sleep(RATE_LIMIT_MS);
   }
 
-  console.log(`Total bracket gameIDs collected: ${gameIds.length}`);
-  if (gameIds.length === 0) {
+  console.log(`Total bracket gameIDs collected: ${gameIds.size}`);
+  if (gameIds.size === 0) {
     console.warn("No games found — skipping tournament");
     return;
   }
@@ -217,7 +219,7 @@ async function syncTournament(
 
   const gameDataList: GameData[] = [];
 
-  for (const gameId of gameIds) {
+  for (const gameId of gameIds.keys()) {
     const url = `${BASE_URL}/game/${gameId}`;
     console.log(`Fetching game: ${url}`);
     try {
@@ -234,6 +236,13 @@ async function syncTournament(
       const loc = contest.location;
 
       const status = mapGameState(contest.gameState);
+
+      const scoreboardStatus = gameIds.get(gameId);
+      const finalStatus =
+        (scoreboardStatus === "live" || scoreboardStatus === "final") &&
+        status === "scheduled"
+          ? scoreboardStatus
+          : status;
 
       let isUpset = false;
       let upsetSeedDiff: number | null = null;
@@ -256,7 +265,7 @@ async function syncTournament(
         roundNumber: henryRoundToAppRound(round?.roundNumber ?? 2),
         homeTeam,
         awayTeam,
-        status,
+        status: finalStatus,
         tvChannel: contest.network ?? "",
         venueName: loc?.venue ?? "",
         venueCity: loc ? `${loc.city}, ${loc.stateUsps}` : "",
