@@ -486,8 +486,8 @@ export default async function DashboardPage({
               {/* Game clock */}
               <div className="flex items-center justify-center gap-1.5">
                 <span className="text-[11px] font-bold tabular-nums text-on-surface">12:24</span>
-                <span className="text-[9px] text-on-surface-variant/60">·</span>
-                <span className="text-[9px] text-on-surface-variant/60">2nd Qtr</span>
+                <span className="text-xs text-on-surface-variant/60">·</span>
+                <span className="text-xs text-on-surface-variant/60">2nd Qtr</span>
               </div>
 
               {/* Team rows with inline records */}
@@ -516,7 +516,7 @@ export default async function DashboardPage({
 
               {/* Quarter breakdown */}
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
-                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-center text-[9px]">
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-center text-xs">
                   <span className="text-on-surface-variant/30" />
                   <span className="text-on-surface-variant/60">Q1</span>
                   <span className="text-on-surface-variant/60">Q2</span>
@@ -542,7 +542,7 @@ export default async function DashboardPage({
 
               {/* Venue + broadcast */}
               <div className="flex items-center justify-between">
-                <span className="text-[9px] text-on-surface-variant/60">Viejas Arena · San Diego, CA</span>
+                <span className="text-xs text-on-surface-variant/60">Viejas Arena · San Diego, CA</span>
                 <span className="rounded px-1.5 py-0.5 text-[8px] font-bold bg-sports-blue/20 text-sports-blue">
                   ESPN
                 </span>
@@ -550,21 +550,21 @@ export default async function DashboardPage({
 
               {/* Key stats */}
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
-                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px] text-on-surface-variant/60">
+                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs text-on-surface-variant/60">
                   <span />
                   <span className="text-center">FG%</span>
                   <span className="text-center">3P%</span>
                   <span className="text-center">REB</span>
                   <span className="text-center">TO</span>
                 </div>
-                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px]">
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs">
                   <span className="text-on-surface-variant/60">AUB</span>
                   <span className="tabular-nums text-center text-on-surface/80">48.2</span>
                   <span className="tabular-nums text-center text-on-surface/80">38.5</span>
                   <span className="tabular-nums text-center text-on-surface/80">32</span>
                   <span className="tabular-nums text-center text-on-surface/80">11</span>
                 </div>
-                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px]">
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs">
                   <span className="text-on-surface-variant/80">MSU</span>
                   <span className="tabular-nums text-center text-on-surface-variant/80">41.7</span>
                   <span className="tabular-nums text-center text-on-surface-variant/80">32.1</span>
@@ -604,7 +604,7 @@ export default async function DashboardPage({
               <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/80">
                 {game.league}
               </span>
-              <span className="text-[9px] text-on-surface-variant/60">Final</span>
+              <span className="text-xs text-on-surface-variant/60">Final</span>
             </div>
             <div className="my-auto flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
@@ -646,8 +646,8 @@ export default async function DashboardPage({
               {/* Game clock */}
               <div className="flex items-center justify-center gap-1.5">
                 <span className="text-[11px] font-bold tabular-nums text-on-surface">12:24</span>
-                <span className="text-[9px] text-on-surface-variant/60">·</span>
-                <span className="text-[9px] text-on-surface-variant/60">2nd Qtr</span>
+                <span className="text-xs text-on-surface-variant/60">·</span>
+                <span className="text-xs text-on-surface-variant/60">2nd Qtr</span>
               </div>
 
               {/* Team rows with inline records */}
@@ -676,7 +676,7 @@ export default async function DashboardPage({
 
               {/* Quarter breakdown */}
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
-                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-center text-[9px]">
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-center text-xs">
                   <span className="text-on-surface-variant/30" />
                   <span className="text-on-surface-variant/60">Q1</span>
                   <span className="text-on-surface-variant/60">Q2</span>
@@ -702,7 +702,7 @@ export default async function DashboardPage({
 
               {/* Venue + broadcast */}
               <div className="flex items-center justify-between">
-                <span className="text-[9px] text-on-surface-variant/60">Viejas Arena · San Diego, CA</span>
+                <span className="text-xs text-on-surface-variant/60">Viejas Arena · San Diego, CA</span>
                 <span className="rounded px-1.5 py-0.5 text-[8px] font-bold bg-sports-blue/20 text-sports-blue">
                   ESPN
                 </span>
@@ -710,21 +710,21 @@ export default async function DashboardPage({
 
               {/* Key stats */}
               <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
-                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px] text-on-surface-variant/60">
+                <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs text-on-surface-variant/60">
                   <span />
                   <span className="text-center">FG%</span>
                   <span className="text-center">3P%</span>
                   <span className="text-center">REB</span>
                   <span className="text-center">TO</span>
                 </div>
-                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px]">
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs">
                   <span className="text-on-surface-variant/60">AUB</span>
                   <span className="tabular-nums text-center text-on-surface/80">48.2</span>
                   <span className="tabular-nums text-center text-on-surface/80">38.5</span>
                   <span className="tabular-nums text-center text-on-surface/80">32</span>
                   <span className="tabular-nums text-center text-on-surface/80">11</span>
                 </div>
-                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-[9px]">
+                <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs">
                   <span className="text-on-surface-variant/80">MSU</span>
                   <span className="tabular-nums text-center text-on-surface-variant/80">41.7</span>
                   <span className="tabular-nums text-center text-on-surface-variant/80">32.1</span>
@@ -764,7 +764,7 @@ export default async function DashboardPage({
               <span className="text-[9px] font-semibold uppercase tracking-wider text-on-surface-variant/80">
                 {game.league}
               </span>
-              <span className="text-[9px] text-on-surface-variant/60">Final</span>
+              <span className="text-xs text-on-surface-variant/60">Final</span>
             </div>
             <div className="my-auto flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
