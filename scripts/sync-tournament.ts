@@ -42,6 +42,9 @@ const ROUND_LABELS: Record<number, string> = {
   6: "Championship",
 };
 
+// Henry API bracketRound is offset by 1 (Henry 2=First Round, app 1=First Round)
+const henryRoundToAppRound = (n: number): number => n - 1;
+
 // ─── Tournament configs ───────────────────────────────────────────────────────
 
 const TOURNAMENT_CONFIGS = [
@@ -250,7 +253,7 @@ async function syncTournament(
       gameDataList.push({
         externalGameId: gameId,
         regionTitle: region?.title?.trim() ?? "Unknown",
-        roundNumber: round?.roundNumber ?? 2,
+        roundNumber: henryRoundToAppRound(round?.roundNumber ?? 2),
         homeTeam,
         awayTeam,
         status,

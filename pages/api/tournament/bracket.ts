@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { TournamentGame } from "@/lib/sports/types";
+import { createAdminClient } from "@/lib/supabase";
 
 export interface BracketApiResponse {
   tournamentName: string;
@@ -397,7 +398,7 @@ const MOCK_BRACKET: TournamentGame[] = [
   { id: "champ-r6-1", round: 6, roundLabel: "Championship", region: "Final Four", slot: 1, topTeamId: null, topTeamName: "TBD", topTeamSeed: null, topScore: 0, bottomTeamId: null, bottomTeamName: "TBD", bottomTeamSeed: null, bottomScore: 0, status: "scheduled", winnerId: null, winnerSlot: null, nextMatchupId: null, scheduledTime: "Apr 7, TBD" },
 ];
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<BracketApiResponse>
 ) {
@@ -405,9 +406,101 @@ export default function handler(
     return res.status(405).end();
   }
 
+  const sportParam =
+    typeof req.query.sport === "string" ? req.query.sport : "mens";
+  const gender = sportParam === "womens" ? "womens" : "mens";
+  const fallbackName =
+    gender === "womens"
+      ? "NCAA Women's Basketball Tournament"
+      : "NCAA Men's Basketball Tournament";
+
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    try {
+      const supabase = createAdminClient();
+
+      const { data: tournament } = await supabase
+        .from("tournaments")
+        .select("id, name")
+        .eq("sport", "basketball")
+        .eq("gender", gender)
+        .eq("season_year", 2025)
+        .single();
+
+      if (tournament) {
+        const { data: rows } = await supabase
+          .from("tournament_games")
+          .select(`
+            id,
+            slot_number,
+            top_score,
+            bottom_score,
+            status,
+            winner_id,
+            winner_slot,
+            next_game_id,
+            scheduled_time,
+            top_team:tournament_teams!top_team_id(id, name, seed),
+            bottom_team:tournament_teams!bottom_team_id(id, name, seed),
+            round:tournament_rounds!round_id(round_number, name),
+            region:tournament_regions!region_id(name)
+          `)
+          .eq("tournament_id", tournament.id)
+          .order("slot_number");
+
+        if (rows && rows.length > 0) {
+          const games: TournamentGame[] = rows.map((r) => {
+            const top = Array.isArray(r.top_team) ? r.top_team[0] : r.top_team;
+            const bottom = Array.isArray(r.bottom_team) ? r.bottom_team[0] : r.bottom_team;
+            const round = Array.isArray(r.round) ? r.round[0] : r.round;
+            const region = Array.isArray(r.region) ? r.region[0] : r.region;
+            return {
+              id: r.id as string,
+              round: ((round as { round_number: number } | null)?.round_number ?? 1) as TournamentGame["round"],
+              roundLabel: (round as { name: string } | null)?.name ?? "",
+              region: (() => { const n = (region as { name: string } | null)?.name; return n ? n.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') : null; })(),
+              slot: r.slot_number as number,
+              topTeamId: (top as { id: string } | null)?.id ?? null,
+              topTeamName: (top as { name: string } | null)?.name ?? "TBD",
+              topTeamSeed: (top as { seed: number | null } | null)?.seed ?? null,
+              topScore: r.top_score as number,
+              bottomTeamId: (bottom as { id: string } | null)?.id ?? null,
+              bottomTeamName: (bottom as { name: string } | null)?.name ?? "TBD",
+              bottomTeamSeed: (bottom as { seed: number | null } | null)?.seed ?? null,
+              bottomScore: r.bottom_score as number,
+              status: (r.status ?? "scheduled") as TournamentGame["status"],
+              winnerId: (r.winner_id as string | null) ?? null,
+              winnerSlot: (r.winner_slot as "top" | "bottom" | null) ?? null,
+              nextMatchupId: (r.next_game_id as string | null) ?? null,
+              scheduledTime: r.scheduled_time
+                ? new Date(r.scheduled_time as string).toLocaleString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit",
+                    timeZone: "America/New_York",
+                    timeZoneName: "short",
+                  })
+                : "TBD",
+            };
+          });
+
+          res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
+          return res.status(200).json({
+            tournamentName: tournament.name,
+            season: "2025",
+            lastUpdated: new Date().toISOString(),
+            games,
+          });
+        }
+      }
+    } catch {
+      // fall through to mock
+    }
+  }
+
   res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
   return res.status(200).json({
-    tournamentName: "NCAA Men's Basketball Tournament",
+    tournamentName: fallbackName,
     season: "2025",
     lastUpdated: new Date().toISOString(),
     games: MOCK_BRACKET,
