@@ -416,7 +416,8 @@ export default async function handler(
 
   if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
     try {
-      const supabase = createAdminClient();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const supabase = createAdminClient() as any;
 
       const { data: tournament } = await supabase
         .from("tournaments")
