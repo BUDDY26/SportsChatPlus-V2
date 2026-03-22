@@ -9,7 +9,9 @@ export default async function AuthLayout({
 }) {
   const session = await getServerSession(authOptions);
 
-  // Redirect authenticated users away from login/signup
-  // Dashboard routes are nested separately — this layout handles the auth shell
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return <>{children}</>;
 }
