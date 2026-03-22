@@ -125,11 +125,31 @@ function MiniMatchup({
   );
 }
 
+// ── EmptySlot ─────────────────────────────────────────────────────────────────
+
+function EmptySlot() {
+  return (
+    <div className="card-float rounded border border-white/10 px-1.5 py-1" style={{ width: CARD_W }}>
+      <div className="flex items-center gap-1 py-0.5">
+        <span className="h-4 w-4 flex-shrink-0 rounded bg-white/5" />
+        <span className="text-xs italic text-foreground/30">TBD</span>
+      </div>
+      <div className="my-0.5 border-t border-dashed border-border/20" />
+      <div className="flex items-center gap-1 py-0.5">
+        <span className="h-4 w-4 flex-shrink-0 rounded bg-white/5" />
+        <span className="text-xs italic text-foreground/30">TBD</span>
+      </div>
+    </div>
+  );
+}
+
 // ── BracketArm ────────────────────────────────────────────────────────────────
 //
 // Left arm (flip=false): R1 at x=0 (leftmost) → R4 at x=3*(CARD_W+GAP_W) (rightmost)
 // Right arm (flip=true): R1 at x=3*(CARD_W+GAP_W) (rightmost) → R4 at x=0 (leftmost)
 // Connector lines bridge each game to its next-round successor.
+
+const SLOTS_PER_ROUND: Record<number, number> = { 1: 8, 2: 4, 3: 2, 4: 1 };
 
 function BracketArm({
   regionGames,
@@ -156,8 +176,10 @@ function BracketArm({
           .sort((a, b) => a.slot - b.slot);
         const x = colX(round);
         const hasConnector = round < 4;
+        const slotCount = SLOTS_PER_ROUND[round] ?? 1;
 
-        return roundGames.map((game, idx) => {
+        return Array.from({ length: slotCount }, (_, idx) => {
+          const game = roundGames.find((g) => g.slot === idx + 1) ?? null;
           const cy = centerY(round, idx);
           const isPairTop = idx % 2 === 0;
           const partnerCy = hasConnector
@@ -168,15 +190,16 @@ function BracketArm({
             : 0;
           const vTop = Math.min(cy, partnerCy);
           const vBot = Math.max(cy, partnerCy);
+          const key = game ? game.id : `placeholder-r${round}-s${idx + 1}`;
 
           return (
-            <React.Fragment key={game.id}>
-              {/* Game card */}
+            <React.Fragment key={key}>
+              {/* Game card or placeholder */}
               <div
                 className="absolute"
                 style={{ left: x, top: cy - CARD_H / 2, width: CARD_W }}
               >
-                <MiniMatchup game={game} alignRight={flip} />
+                {game ? <MiniMatchup game={game} alignRight={flip} /> : <EmptySlot />}
               </div>
 
               {/* Left-arm connectors (right-going) */}
