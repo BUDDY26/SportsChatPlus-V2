@@ -1,9 +1,10 @@
 # QA Audit — SportsChatPlus-V2
 
 **Audit date:** 2026-03-22 (re-audit #3 — full source re-verification)
+**Live testing addendum:** 2026-03-22 — 7 additional findings from runtime observation
 **Auditor:** QA Agent
 **Scope:** All user-facing pages, shared layout components, navigation structure
-**Method:** Static source analysis — no automated test suite exists
+**Method:** Static source analysis + live site testing
 **Prior audits:** 2026-03-22 (partial, `app/` missing) · 2026-03-22 (full)
 **Git HEAD at audit:** `2a12c3a` — fix: spotlight card text brightness matches game card style
 
@@ -193,6 +194,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 - ✅ **B3 FIXED** — `ChatWindow` renders `error` from `useChat()` at lines 46–48
 - ✅ Auto-scroll to bottom via `useEffect` + `bottomRef` in `ChatWindow`
 - ✅ Realtime subscription via Supabase `postgres_changes`
+- 🚨 **M5 / M7 — BROWSER CONSOLE CONFIRMED: `/api/chat/messages` returns HTTP 500.** Server responded with status 500 on every page load. Chat is completely non-functional in production. See M7 in issue register for full detail.
 
 ### `/dashboard/favorites`
 
@@ -294,6 +296,8 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | ~~M2~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~297–318~~ | ~~B4: sport chips are `<button>` with no `onClick` — non-functional~~ — **FIXED 2026-03-22** — converted to `<div>`; `hover:bg-[#24252b]` removed from inactive branch |
 | ~~M3~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~333–352~~ | ~~"My Teams" team buttons and "+Add" button — no handlers~~ — **FIXED 2026-03-22** — both converted to non-interactive `<div>`; hover states removed |
 | ~~M4~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~416, 576~~ | ~~Game clock hardcoded "12:24 · 2nd Qtr" for all live cards~~ — **FIXED 2026-03-22** — replaced with neutral `--` placeholder at reduced opacity |
+| M5 | `components/chat/ChatWindow.tsx` / `hooks/useChat.ts` / `pages/api/chat/messages.ts` | — | **LIVE TESTING:** "Failed to load messages" on `/dashboard/chat` page load — `/api/chat/messages` returning error in production; root cause unknown without server/Supabase logs |
+| M6 | Unknown — observed during navigation | — | **LIVE TESTING:** Full blank screen with "Application error: a client-side exception has occurred" — unhandled client-side throw; no `error.tsx` boundary exists anywhere in `app/`; browser console log required to identify source |
 
 ### ❗ Medium Issues
 
@@ -303,6 +307,10 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | ~~E2~~ | ~~`components/dashboard/sidebar.tsx:47` / `dashboard/page.tsx:114`~~ | ~~47 / 114~~ | ~~F1 is not a valid `LeagueId` — sidebar link + chip both navigate to invalid API filter~~ — **FIXED 2026-03-22** — chip labelled "F1 Soon" with `disabled: true` + `cursor-not-allowed`; sidebar renders `<span>` with `cursor-not-allowed` instead of `<Link>` |
 | ~~E3~~ | ~~`components/ai/InsightsPanel.tsx`~~ | ~~31~~ | ~~No empty state — blank panel when insights array is empty~~ — **FIXED 2026-03-22** |
 | ~~E4~~ | ~~`components/contact/ContactForm.tsx`~~ | ~~21~~ | ~~`mailto:` contact form — silent failure without mail client; no in-page feedback~~ — **FIXED 2026-03-22** — note added above submit button |
+| E5 | `components/dashboard/sidebar.tsx` | — | **LIVE TESTING:** Sidebar sport links navigate to correct URLs but scores page does not visibly filter by league — all selections appear to show the same result set; may be `ScoresClientWrapper` or API issue |
+| E6 | `app/(auth)/dashboard/page.tsx` | 297–318 | **LIVE TESTING:** Sport chips are now non-interactive `<div>` elements — clicking a chip does not navigate to `/dashboard/scores?league=X`; conversion to `<div>` resolved the false interactivity (M2) but chips remain decorative with no filtering path |
+| E7 | `app/(auth)/dashboard/page.tsx` | 45–101 | **LIVE TESTING:** Dashboard center game cards show hardcoded static arrays (`liveGames`, `upcomingGames`, `recentGames`) — team names, scores, and game data are placeholder; no real BallDontLie API data wired to this page |
+| E8 | `app/(auth)/dashboard/page.tsx` | 22–31 | **LIVE TESTING:** "My Teams" pills show `placeholderTeams` static array — not connected to user favorites in Supabase; add/remove functionality absent; row is purely decorative |
 
 ### ⚠️ Minor Issues
 
@@ -318,6 +326,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | W8 | `app/(auth)/dashboard/tournament/page.tsx:12` | Description says "NCAA Men's Basketball" only — tournament supports both genders |
 | W9 | `app/(auth)/dashboard/profile/page.tsx` | No email change path or link |
 | W10 | `app/(auth)/login/page.tsx` | No "Forgot password" link or flow |
+| W11 | `app/(auth)/dashboard/scores/page.tsx` / score card components | **LIVE TESTING:** Score cards display raw league IDs (`NCAAB_WOMEN`, `NCAAB_MEN`) instead of readable display names ("NCAA Women's Basketball", "NCAA Men's Basketball") |
 
 ---
 
@@ -327,18 +336,21 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 
 - `/`, `/about`, `/privacy`, `/terms` — static, no issues
 - `/login`, `/signup` — auth forms functional; minor UX gaps only
-- `/dashboard/scores` — scores load, filter, display correctly
-- `/dashboard/chat` — Realtime, auto-scroll, error handling all functional
 - `/dashboard/favorites` — CRUD fully functional
 - `/dashboard/profile` — session data rendering correct
 - `/dashboard/tournament` — full bracket, live polling, both genders
 
 ### Pages needing fixes
 
-- `/dashboard` — 4 major issues (chips non-functional, team buttons non-functional, hardcoded clock, mock data throughout)
-- `/dashboard/ai-insights` — InsightsPanel missing empty state
-- `/dashboard/odds` — odds are mock data only
-- `/contact` — `mailto:` form unreliable
+- `/dashboard/chat` — M5: "Failed to load messages" error on load (live testing)
+- `/dashboard` — E6 (chips decorative, no routing), E7 (hardcoded game data), E8 (placeholder team pills)
+- `/dashboard/scores` — E5 (league filter may not work), W11 (raw league IDs displayed)
+- `/dashboard/odds` — odds are mock data only (W7)
+- `/contact` — mailto: form noted; limitation disclosed (E4 fixed)
+
+### Unknown / needs investigation
+
+- M6: Blank screen client error — page unknown; no error boundary to catch it; browser console log required
 
 ### Cross-page issues
 
@@ -358,9 +370,16 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | ~~6~~ | ~~M4~~ | ~~Remove hardcoded game clock or source it from actual game data~~ — **FIXED** |
 | ~~7~~ | ~~E3~~ | ~~Add empty state message to `InsightsPanel` when `insights.length === 0`~~ — **FIXED** |
 | ~~8~~ | ~~E4~~ | ~~Replace `mailto:` contact form with API endpoint or add visible limitation note~~ — **FIXED** — note added |
-| 9 | W4 | Add auto-scroll to bottom in `AIChatBox` (match `ChatWindow` pattern: `useEffect` + `ref.scrollIntoView`) |
-| 10 | W1 | Derive Tournament Central subtitle from actual round data |
-| 11 | W6 | Add client-side password match validation to `SignupForm` |
+| 9 | M5 | Investigate `/api/chat/messages` failure in production — check Supabase RLS, env vars, table permissions |
+| 10 | M6 | Identify and fix client-side exception causing blank screen — add `error.tsx` boundary to `app/` |
+| 11 | E5 | Verify `ScoresClientWrapper` correctly filters by `activeLeague` prop in production |
+| 12 | E6 | Implement chip navigation: convert chips back to interactive elements with `router.push` |
+| 13 | E7 | Wire dashboard game cards to BallDontLie API (Phase 3) |
+| 14 | E8 | Wire "My Teams" row to user favorites from Supabase |
+| 15 | W11 | Map raw league IDs to display names in score card components |
+| 16 | W4 | Add auto-scroll to bottom in `AIChatBox` |
+| 17 | W1 | Derive Tournament Central subtitle from actual round data |
+| 18 | W6 | Add client-side password match validation to `SignupForm` |
 
 ---
 
@@ -373,8 +392,10 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 *Fix verification: 2026-03-22 — M4 verified resolved*
 *Fix verification: 2026-03-22 — E1 revert verified; infinite loop confirmed absent; E1 remains open (needs route-aware approach)*
 *Fix verification: 2026-03-22 — E3 verified resolved*
+*Fix verification: 2026-03-22 — E4 verified resolved*
 *Prior blockers confirmed resolved: B1, B2, B3, B5*
 *Issues resolved: M1 (support dead link removed), E2 (F1 marked Coming Soon — non-interactive), M2/B4 (sport chips converted to non-interactive div), M3 (placeholder buttons converted to div), M4 (hardcoded clock replaced with --)*
 *E1 reverted — infinite redirect loop; dashboard is a child of (auth) layout*
 *All original blockers resolved: B1, B2, B3, B4, B5*
-*Next audit: after remaining open issues addressed (E3, E4, W-series)*
+*Live testing addendum: 2026-03-22 — 7 new findings added (M5, M6, E5, E6, E7, E8, W11)*
+*Highest priority: M5 (chat broken in production), M6 (blank screen — unknown cause)*
