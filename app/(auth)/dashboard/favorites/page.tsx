@@ -11,7 +11,7 @@ export default async function FavoritesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-bold">My Favorites</h1>
+        <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-bold">My Favorites</h1>
         <p className="mt-1 text-muted-foreground">
           Your favorite teams and players — with personalized alerts.
         </p>

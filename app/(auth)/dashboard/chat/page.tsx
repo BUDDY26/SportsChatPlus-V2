@@ -11,7 +11,7 @@ export default async function ChatPage() {
   return (
     <div className="flex h-[calc(100vh-8rem)] flex-col space-y-4">
       <div>
-        <h1 className="font-display text-3xl font-bold">Community Chat</h1>
+        <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-bold">Community Chat</h1>
         <p className="mt-1 text-muted-foreground">
           Talk live with other sports fans.
         </p>

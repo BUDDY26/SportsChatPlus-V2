@@ -14,7 +14,7 @@ export default function OddsPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-bold">Live Odds</h1>
+        <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-bold">Live Odds</h1>
         <p className="mt-1 text-muted-foreground">
           Current betting lines, spreads, and totals from major sportsbooks.
         </p>

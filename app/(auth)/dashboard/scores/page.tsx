@@ -14,7 +14,7 @@ export default function ScoresPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-bold">Live Scores</h1>
+        <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-bold">Live Scores</h1>
         <p className="mt-1 text-muted-foreground">
           Real-time scores across all supported leagues.
         </p>
