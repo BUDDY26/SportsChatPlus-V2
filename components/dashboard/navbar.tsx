@@ -35,16 +35,6 @@ export function DashboardNavbar({ session }: DashboardNavbarProps) {
       {/* Left: width spacer aligns with sidebar */}
       <div className="hidden md:block w-52 flex-shrink-0" />
 
-      {/* Center: minimal utility link */}
-      <div className="flex flex-1 items-center justify-center">
-        <Link
-          href="/dashboard/support"
-          className="text-[11px] tracking-wide text-on-surface-variant/30 transition-colors hover:text-on-surface-variant/70"
-        >
-          Support
-        </Link>
-      </div>
-
       {/* Right: theme toggle + avatar */}
       <div className="flex items-center gap-1.5">
         <ThemeToggle />
