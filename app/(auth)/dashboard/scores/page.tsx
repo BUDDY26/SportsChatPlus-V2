@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { LeagueFilter } from "@/components/scores/LeagueFilter";
 import { ScoresClientWrapper } from "@/components/scores/ScoresClientWrapper";
 
+export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: "Live Scores" };
 
 export default function ScoresPage({
