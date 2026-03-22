@@ -414,9 +414,7 @@ export default async function DashboardPage({
 
               {/* Game clock */}
               <div className="flex items-center justify-center gap-1.5">
-                <span className="text-[11px] font-bold tabular-nums text-on-surface">12:24</span>
-                <span className="text-xs text-foreground/70">·</span>
-                <span className="text-xs text-foreground/70">2nd Qtr</span>
+                <span className="text-[11px] font-bold tabular-nums text-on-surface/50">--</span>
               </div>
 
               {/* Team rows with inline records */}
@@ -574,9 +572,7 @@ export default async function DashboardPage({
 
               {/* Game clock */}
               <div className="flex items-center justify-center gap-1.5">
-                <span className="text-[11px] font-bold tabular-nums text-on-surface">12:24</span>
-                <span className="text-xs text-foreground/70">·</span>
-                <span className="text-xs text-foreground/70">2nd Qtr</span>
+                <span className="text-[11px] font-bold tabular-nums text-on-surface/50">--</span>
               </div>
 
               {/* Team rows with inline records */}

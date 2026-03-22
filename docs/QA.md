@@ -70,7 +70,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 
 ### `app/(auth)/layout.tsx` — Auth Group Layout
 
-- ✅ **E1 FIXED 2026-03-22** — `if (session) { redirect("/dashboard"); }` added at line 12; `redirect` was already imported. Authenticated users visiting `/login` or `/signup` are now sent to `/dashboard`.
+- ❗ **E1 REVERTED 2026-03-22** — `if (session) { redirect("/dashboard") }` caused an infinite redirect loop: `/dashboard` is itself a child of `(auth)/layout.tsx`, so the session check fires on every dashboard request and redirects back to `/dashboard` indefinitely. Fix requires a route-aware approach (e.g. only redirect when `pathname` is `/login` or `/signup`). Session is fetched but redirect is not applied.
 - ✅ Passes children through — no layout chrome at this level
 
 ### `app/(auth)/dashboard/layout.tsx` — Dashboard Layout
@@ -155,7 +155,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 - ✅ CARD min-height: `min-h-[240px] md:min-h-[280px]` — mobile compact, desktop full
 - ✅ Key stats block: `hidden md:block` — hidden on mobile
 - ✅ Cards link to `/dashboard/scores`
-- 🚨 **M4 CONFIRMED OPEN — Game clock hardcoded.** Both Column A (line 416) and Column B (line 576) hardcode `"12:24"` and `"2nd Qtr"` for all live cards. This value is applied to every game regardless of actual game state.
+- ✅ **M4 FIXED 2026-03-22** — Game clock replaced with `--` at `text-on-surface/50`; misleading "12:24 · 2nd Qtr" removed from both Column A (line 416) and Column B (line 576)
 - ⚠️ All game card data (teams, scores, records, venue, quarter breakdown, key stats) is static mock data — not sourced from any live API
 - ⚠️ Win/loss records `(25-8)` and `(22-11)` are hardcoded for all cards
 
@@ -293,13 +293,13 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | ~~M1~~ | ~~`components/dashboard/navbar.tsx`~~ | ~~41~~ | ~~`/dashboard/support` link → 404 on every dashboard page~~ — **FIXED 2026-03-22** |
 | ~~M2~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~297–318~~ | ~~B4: sport chips are `<button>` with no `onClick` — non-functional~~ — **FIXED 2026-03-22** — converted to `<div>`; `hover:bg-[#24252b]` removed from inactive branch |
 | ~~M3~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~333–352~~ | ~~"My Teams" team buttons and "+Add" button — no handlers~~ — **FIXED 2026-03-22** — both converted to non-interactive `<div>`; hover states removed |
-| M4 | `app/(auth)/dashboard/page.tsx` | 416, 576 | Game clock hardcoded "12:24 · 2nd Qtr" for all live cards |
+| ~~M4~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~416, 576~~ | ~~Game clock hardcoded "12:24 · 2nd Qtr" for all live cards~~ — **FIXED 2026-03-22** — replaced with neutral `--` placeholder at reduced opacity |
 
 ### ❗ Medium Issues
 
 | ID | File | Line(s) | Description |
 |---|---|---|---|
-| ~~E1~~ | ~~`app/(auth)/layout.tsx`~~ | ~~10~~ | ~~Session fetched but authenticated users not redirected from `/login`/`/signup`~~ — **FIXED 2026-03-22** |
+| E1 | `app/(auth)/layout.tsx` | 10 | Session fetched but redirect reverted — infinite loop: `/dashboard` is a child of this layout. Needs route-aware fix. |
 | ~~E2~~ | ~~`components/dashboard/sidebar.tsx:47` / `dashboard/page.tsx:114`~~ | ~~47 / 114~~ | ~~F1 is not a valid `LeagueId` — sidebar link + chip both navigate to invalid API filter~~ — **FIXED 2026-03-22** — chip labelled "F1 Soon" with `disabled: true` + `cursor-not-allowed`; sidebar renders `<span>` with `cursor-not-allowed` instead of `<Link>` |
 | E3 | `components/ai/InsightsPanel.tsx` | 31 | No empty state — blank panel when insights array is empty |
 | E4 | `components/contact/ContactForm.tsx` | 21 | `mailto:` contact form — silent failure without mail client; no in-page feedback |
@@ -343,7 +343,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 ### Cross-page issues
 
 1. ~~`/dashboard/support` link in every dashboard navbar — 404~~ — **FIXED 2026-03-22**
-2. ~~`app/(auth)/layout.tsx` does not redirect authenticated users from login/signup~~ — **FIXED 2026-03-22**
+2. `app/(auth)/layout.tsx` — E1 redirect reverted (infinite loop); needs route-aware fix
 3. ~~F1 league ID in sidebar and dashboard chip strip — invalid for API~~ — **FIXED 2026-03-22**
 
 ### Priority fix list
@@ -351,11 +351,11 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | Priority | ID | Action |
 |---|---|---|
 | ~~1~~ | ~~M1~~ | ~~Remove or implement `/dashboard/support` in `navbar.tsx`~~ — **FIXED** |
-| ~~2~~ | ~~E1~~ | ~~Add redirect in `app/(auth)/layout.tsx` for authenticated users on `/login` and `/signup`~~ — **FIXED** |
+| 2 | E1 | Fix auth layout redirect for `/login`/`/signup` without looping — requires route-aware approach (layout also wraps `/dashboard`) |
 | ~~3~~ | ~~M2~~ | ~~Wire sport chips with `onClick` → `router.push('/dashboard/scores?league={id}')`~~ — **FIXED** — chips converted to non-interactive `<div>` |
 | ~~4~~ | ~~M3~~ | ~~Wire "+Add" → `/dashboard/favorites`; remove or link placeholder team buttons~~ — **FIXED** — converted to non-interactive `<div>` |
 | ~~5~~ | ~~E2~~ | ~~Remove F1 from sidebar and sport chips, or add F1 to `LEAGUES` type~~ — **FIXED** |
-| 6 | M4 | Remove hardcoded game clock or source it from actual game data |
+| ~~6~~ | ~~M4~~ | ~~Remove hardcoded game clock or source it from actual game data~~ — **FIXED** |
 | 7 | E3 | Add empty state message to `InsightsPanel` when `insights.length === 0` |
 | 8 | E4 | Replace `mailto:` contact form with API endpoint or add visible limitation note |
 | 9 | W4 | Add auto-scroll to bottom in `AIChatBox` (match `ChatWindow` pattern: `useEffect` + `ref.scrollIntoView`) |
@@ -369,7 +369,9 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 *Fix verification: 2026-03-22 — E2 verified resolved*
 *Fix verification: 2026-03-22 — E1 verified resolved*
 *Fix verification: 2026-03-22 — M2/B4 verified resolved*
+*Fix verification: 2026-03-22 — M3 verified resolved*
 *Prior blockers confirmed resolved: B1, B2, B3, B5*
-*Issues resolved: M1 (support dead link removed), E1 (auth redirect added), E2 (F1 marked Coming Soon — non-interactive), M2/B4 (sport chips converted to non-interactive div)*
+*Issues resolved: M1 (support dead link removed), E2 (F1 marked Coming Soon — non-interactive), M2/B4 (sport chips converted to non-interactive div), M3 (placeholder buttons converted to div), M4 (hardcoded clock replaced with --)*
+*E1 reverted — infinite redirect loop; dashboard is a child of (auth) layout*
 *All original blockers resolved: B1, B2, B3, B4, B5*
-*Next audit: after remaining open issues addressed (M4, E3, E4, W-series)*
+*Next audit: after remaining open issues addressed (E3, E4, W-series)*
