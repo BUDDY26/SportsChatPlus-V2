@@ -464,7 +464,7 @@ export default async function DashboardPage({
       {/* ── Row 3, Col 1: Column A ───────────────────────────────────────────
           Auto-placed by CSS grid into row 3, column 1.
           Direct grid child — no parent/child relationship with Col B. ───── */}
-      <div className="col-span-1 flex flex-col gap-4 overflow-y-auto p-3 bg-white/[0.04]">
+      <div className="col-span-1 flex flex-col gap-4 overflow-y-visible md:overflow-y-auto p-3 bg-white/[0.04]">
 
         {activeTab === "live" && liveGames.slice(0, 2).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
@@ -624,7 +624,7 @@ export default async function DashboardPage({
       {/* ── Row 3, Col 2: Column B ───────────────────────────────────────────
           Auto-placed by CSS grid into row 3, column 2.
           Direct grid child — no parent/child relationship with Col A. ───── */}
-      <div className="col-span-1 flex flex-col gap-4 overflow-y-auto p-3 bg-white/[0.04]">
+      <div className="col-span-1 flex flex-col gap-4 overflow-y-visible md:overflow-y-auto p-3 bg-white/[0.04]">
 
         {activeTab === "live" && liveGames.slice(2, 4).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
