@@ -173,8 +173,11 @@ export default async function DashboardPage({
           round: (Array.isArray(g.round) ? g.round[0] : g.round) as { round_number: number; name: string } | null,
         }));
 
-        const spotlightRaw = resolved
-          .filter((g: any) => g.status === "final" || g.status === "live")
+        const liveGame = resolved
+          .filter((g: any) => g.status === "live")
+          .sort((a: any, b: any) => (b.round?.round_number ?? 0) - (a.round?.round_number ?? 0))[0];
+        const spotlightRaw = liveGame ?? resolved
+          .filter((g: any) => g.status === "final")
           .sort((a: any, b: any) => (b.round?.round_number ?? 0) - (a.round?.round_number ?? 0))[0];
 
         if (spotlightRaw) {
