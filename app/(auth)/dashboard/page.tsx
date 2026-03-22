@@ -332,9 +332,9 @@ export default async function DashboardPage({
           style={{ scrollbarWidth: "none" }}
         >
           {placeholderTeams.map((team) => (
-            <button
+            <div
               key={team.abbr}
-              className="flex-shrink-0 flex items-center gap-1.5 rounded-full bg-white/[0.05] px-2 py-1 transition-colors hover:bg-white/[0.09]"
+              className="flex-shrink-0 flex items-center gap-1.5 rounded-full bg-white/[0.05] px-2 py-1"
             >
               <div
                 className="w-5 h-5 flex-shrink-0 rounded-full flex items-center justify-center text-[8px] font-bold"
@@ -345,12 +345,12 @@ export default async function DashboardPage({
               <span className="truncate text-[10px] font-medium text-on-surface-variant/80">
                 {team.label}
               </span>
-            </button>
+            </div>
           ))}
-          <button className="flex-shrink-0 flex items-center gap-1 rounded-full border border-dashed border-white/[0.12] px-2.5 py-1 text-[10px] text-on-surface-variant/40 transition-colors hover:border-primary/40 hover:text-primary">
+          <div className="flex-shrink-0 flex items-center gap-1 rounded-full border border-dashed border-white/[0.12] px-2.5 py-1 text-[10px] text-on-surface-variant/40">
             <span className="text-sm font-light leading-none">+</span>
             Add
-          </button>
+          </div>
         </div>
         <Link
           href="/dashboard/favorites"
