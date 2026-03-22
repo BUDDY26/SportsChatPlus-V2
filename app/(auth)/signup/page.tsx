@@ -23,7 +23,7 @@ export default function SignupPage() {
           <Link href="/" className="font-display text-5xl font-bold text-white sm:text-7xl hover:text-white/80 transition-colors">
             SportsChatPlus
           </Link>
-          <h1 className="mt-4 text-2xl font-bold">Create your account</h1>
+          <h1 className="mt-4 text-lg sm:text-2xl font-bold">Create your account</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Join thousands of sports fans on SportsChatPlus
           </p>

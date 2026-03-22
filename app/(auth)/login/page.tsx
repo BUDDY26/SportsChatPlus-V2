@@ -23,7 +23,7 @@ export default function LoginPage() {
           <Link href="/" className="font-display text-5xl font-bold text-white sm:text-7xl hover:text-white/80 transition-colors">
             SportsChatPlus
           </Link>
-          <h1 className="mt-4 text-2xl font-bold">Welcome back</h1>
+          <h1 className="mt-4 text-lg sm:text-2xl font-bold">Welcome back</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Sign in to your account to continue
           </p>
