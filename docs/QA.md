@@ -70,7 +70,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 
 ### `app/(auth)/layout.tsx` — Auth Group Layout
 
-- ❗ **E1 — Session fetched, redirect never implemented.** `getServerSession(authOptions)` called at line 10; `session` result is never read. Comment says "Redirect authenticated users away from login/signup" but no conditional or `redirect()` call exists. Authenticated users can revisit `/login` and `/signup` without being sent to `/dashboard`.
+- ✅ **E1 FIXED 2026-03-22** — `if (session) { redirect("/dashboard"); }` added at line 12; `redirect` was already imported. Authenticated users visiting `/login` or `/signup` are now sent to `/dashboard`.
 - ✅ Passes children through — no layout chrome at this level
 
 ### `app/(auth)/dashboard/layout.tsx` — Dashboard Layout
@@ -142,8 +142,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 - ❗ **E2 CONFIRMED OPEN — F1 is not a valid `LeagueId`.** Chip at index 8 uses `id: "F1"`. This is absent from the `LEAGUES` const and `LeagueId` type in `lib/sports/types.ts`. If chips were wired up, navigating to `/dashboard/scores?league=F1` would fail silently at the API layer.
 
 **Favorite Teams Row (lines 325–360):**
-- 🚨 **M3 CONFIRMED OPEN — All placeholder team buttons non-functional.** Eight `placeholderTeams` render as `<button>` elements with no `onClick`. They are static decoration.
-- 🚨 **M3 CONFIRMED OPEN — "+Add" button non-functional.** Button at line 349 has no handler. User expects navigation to favorites management.
+- ✅ **M3 FIXED 2026-03-22** — All placeholder team pills and "+Add" converted to `<div>`; hover states removed; "All Teams →" `<Link>` untouched
 - ✅ "All Teams →" link → `/dashboard/favorites` — valid route
 
 **Tab Filter (lines 362–390):**
@@ -242,8 +241,8 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | `/dashboard/profile` | Navbar dropdown | Profile | ✅ Valid |
 | `/dashboard/favorites` | Dashboard "All Teams →" | Favorites | ✅ Valid |
 | `/dashboard/tournament` | Tournament Central, sidebar | Tournament | ✅ Valid |
-| `/dashboard/support` | Dashboard navbar (every page) | **404 — no page** | 🚨 Dead |
-| `/dashboard/scores?league=F1` | Sidebar Motorsport group | Scores filtered by F1 | ❗ Invalid league ID |
+| `/dashboard/support` | Dashboard navbar (every page) | **Removed — link no longer exists** | ✅ Fixed |
+| `/dashboard/scores?league=F1` | Sidebar Motorsport group | — | ✅ Fixed — renders as non-interactive `<span>` |
 
 ---
 
@@ -268,6 +267,8 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 ### `components/dashboard/navbar.tsx`
 
 - ✅ **B5 FIXED** — no bell/notification button; removed entirely
+- ✅ **M1 FIXED 2026-03-22** — Support link (`/dashboard/support`) and its center wrapper `<div>` fully removed; `Link` import retained (still used for `/dashboard/profile`); no regression in layout, session handling, or dropdown
+- ✅ **E2 VERIFIED 2026-03-22** — No F1 routes referenced in navbar; unaffected by E2 fix
 
 ---
 
@@ -278,7 +279,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | B1 | Signup profile row not created | FIXED | ✅ **CONFIRMED FIXED** |
 | B2 | Favorites infinite skeleton | FIXED | ✅ **CONFIRMED FIXED** |
 | B3 | Chat send error silent | FIXED | ✅ **CONFIRMED FIXED** |
-| B4 | Sport chips dead click | OPEN | 🚨 **STILL OPEN** — `<button>` with no `onClick` |
+| B4 | Sport chips dead click | OPEN | ✅ **FIXED 2026-03-22** — converted to non-interactive `<div>` |
 | B5 | Bell/notifications dead click | FIXED | ✅ **CONFIRMED FIXED** — button removed |
 
 ---
@@ -289,17 +290,17 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 
 | ID | File | Line(s) | Description |
 |---|---|---|---|
-| M1 | `components/dashboard/navbar.tsx` | 41 | `/dashboard/support` link → 404 on every dashboard page |
-| M2 | `app/(auth)/dashboard/page.tsx` | 297–318 | B4: sport chips are `<button>` with no `onClick` — non-functional |
-| M3 | `app/(auth)/dashboard/page.tsx` | 333–352 | "My Teams" team buttons and "+Add" button — no handlers |
+| ~~M1~~ | ~~`components/dashboard/navbar.tsx`~~ | ~~41~~ | ~~`/dashboard/support` link → 404 on every dashboard page~~ — **FIXED 2026-03-22** |
+| ~~M2~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~297–318~~ | ~~B4: sport chips are `<button>` with no `onClick` — non-functional~~ — **FIXED 2026-03-22** — converted to `<div>`; `hover:bg-[#24252b]` removed from inactive branch |
+| ~~M3~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~333–352~~ | ~~"My Teams" team buttons and "+Add" button — no handlers~~ — **FIXED 2026-03-22** — both converted to non-interactive `<div>`; hover states removed |
 | M4 | `app/(auth)/dashboard/page.tsx` | 416, 576 | Game clock hardcoded "12:24 · 2nd Qtr" for all live cards |
 
 ### ❗ Medium Issues
 
 | ID | File | Line(s) | Description |
 |---|---|---|---|
-| E1 | `app/(auth)/layout.tsx` | 10 | Session fetched but authenticated users not redirected from `/login`/`/signup` |
-| E2 | `components/dashboard/sidebar.tsx:47` / `dashboard/page.tsx:114` | 47 / 114 | F1 is not a valid `LeagueId` — sidebar link + chip both navigate to invalid API filter |
+| ~~E1~~ | ~~`app/(auth)/layout.tsx`~~ | ~~10~~ | ~~Session fetched but authenticated users not redirected from `/login`/`/signup`~~ — **FIXED 2026-03-22** |
+| ~~E2~~ | ~~`components/dashboard/sidebar.tsx:47` / `dashboard/page.tsx:114`~~ | ~~47 / 114~~ | ~~F1 is not a valid `LeagueId` — sidebar link + chip both navigate to invalid API filter~~ — **FIXED 2026-03-22** — chip labelled "F1 Soon" with `disabled: true` + `cursor-not-allowed`; sidebar renders `<span>` with `cursor-not-allowed` instead of `<Link>` |
 | E3 | `components/ai/InsightsPanel.tsx` | 31 | No empty state — blank panel when insights array is empty |
 | E4 | `components/contact/ContactForm.tsx` | 21 | `mailto:` contact form — silent failure without mail client; no in-page feedback |
 
@@ -341,19 +342,19 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 
 ### Cross-page issues
 
-1. `/dashboard/support` link in every dashboard navbar — 404
-2. `app/(auth)/layout.tsx` does not redirect authenticated users from login/signup
-3. F1 league ID in sidebar and dashboard chip strip — invalid for API
+1. ~~`/dashboard/support` link in every dashboard navbar — 404~~ — **FIXED 2026-03-22**
+2. ~~`app/(auth)/layout.tsx` does not redirect authenticated users from login/signup~~ — **FIXED 2026-03-22**
+3. ~~F1 league ID in sidebar and dashboard chip strip — invalid for API~~ — **FIXED 2026-03-22**
 
 ### Priority fix list
 
 | Priority | ID | Action |
 |---|---|---|
-| 1 | M1 | Remove or implement `/dashboard/support` in `navbar.tsx` |
-| 2 | E1 | Add redirect in `app/(auth)/layout.tsx` for authenticated users on `/login` and `/signup` |
-| 3 | M2 | Wire sport chips with `onClick` → `router.push('/dashboard/scores?league={id}')` |
-| 4 | M3 | Wire "+Add" → `/dashboard/favorites`; remove or link placeholder team buttons |
-| 5 | E2 | Remove F1 from sidebar and sport chips, or add F1 to `LEAGUES` type |
+| ~~1~~ | ~~M1~~ | ~~Remove or implement `/dashboard/support` in `navbar.tsx`~~ — **FIXED** |
+| ~~2~~ | ~~E1~~ | ~~Add redirect in `app/(auth)/layout.tsx` for authenticated users on `/login` and `/signup`~~ — **FIXED** |
+| ~~3~~ | ~~M2~~ | ~~Wire sport chips with `onClick` → `router.push('/dashboard/scores?league={id}')`~~ — **FIXED** — chips converted to non-interactive `<div>` |
+| ~~4~~ | ~~M3~~ | ~~Wire "+Add" → `/dashboard/favorites`; remove or link placeholder team buttons~~ — **FIXED** — converted to non-interactive `<div>` |
+| ~~5~~ | ~~E2~~ | ~~Remove F1 from sidebar and sport chips, or add F1 to `LEAGUES` type~~ — **FIXED** |
 | 6 | M4 | Remove hardcoded game clock or source it from actual game data |
 | 7 | E3 | Add empty state message to `InsightsPanel` when `insights.length === 0` |
 | 8 | E4 | Replace `mailto:` contact form with API endpoint or add visible limitation note |
@@ -364,6 +365,11 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 ---
 
 *Full QA audit completed: 2026-03-22 (re-audit #3)*
+*Fix verification: 2026-03-22 — M1 verified resolved*
+*Fix verification: 2026-03-22 — E2 verified resolved*
+*Fix verification: 2026-03-22 — E1 verified resolved*
+*Fix verification: 2026-03-22 — M2/B4 verified resolved*
 *Prior blockers confirmed resolved: B1, B2, B3, B5*
-*Remaining blocker: B4 (sport chips non-functional)*
-*Next audit: after priority 1–5 fixes are applied*
+*Issues resolved: M1 (support dead link removed), E1 (auth redirect added), E2 (F1 marked Coming Soon — non-interactive), M2/B4 (sport chips converted to non-interactive div)*
+*All original blockers resolved: B1, B2, B3, B4, B5*
+*Next audit: after remaining open issues addressed (M4, E3, E4, W-series)*
