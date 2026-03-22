@@ -117,7 +117,7 @@ const sportChips = [
 // ─── Shared card class ───────────────────────────────────────────────────────
 
 const CARD =
-  "flex h-[340px] flex-shrink-0 flex-col overflow-hidden rounded-xl card-float p-3 transition-colors hover:bg-white/[0.03]";
+  "flex min-h-[280px] h-auto flex-shrink-0 flex-col overflow-hidden rounded-xl card-float p-3 transition-colors hover:bg-white/[0.03]";
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
@@ -250,7 +250,7 @@ export default async function DashboardPage({
         {sportChips.map((chip) => (
           <button
             key={chip.id}
-            className={`flex-1 min-w-[60px] flex flex-col items-center justify-center gap-1.5 h-[64px] rounded-xl border transition-all relative ${
+            className={`flex-1 flex flex-col items-center justify-center gap-1.5 h-auto py-2 rounded-xl border transition-all relative ${
               chip.active
                 ? "bg-[linear-gradient(135deg,rgba(100,50,180,0.5),rgba(60,30,140,0.4))] border-[rgba(130,80,220,0.4)]"
                 : "border-white/[0.08] bg-[#1e1f25] hover:bg-[#24252b]"
@@ -285,7 +285,7 @@ export default async function DashboardPage({
           {placeholderTeams.map((team) => (
             <button
               key={team.abbr}
-              className="flex-1 min-w-[72px] flex items-center gap-1.5 rounded-full bg-white/[0.05] px-2 py-1 transition-colors hover:bg-white/[0.09]"
+              className="flex-1 flex items-center gap-1.5 rounded-full bg-white/[0.05] px-2 py-1 transition-colors hover:bg-white/[0.09]"
             >
               <div
                 className="w-5 h-5 flex-shrink-0 rounded-full flex items-center justify-center text-[8px] font-bold"
@@ -500,7 +500,7 @@ export default async function DashboardPage({
                       <span className="ml-1 text-[9px] font-normal text-on-surface-variant/40">(25-8)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-foreground">{game.homeScore}</span>
+                  <span className="flex-shrink-0 text-xl sm:text-2xl font-bold tabular-nums text-foreground">{game.homeScore}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
@@ -510,7 +510,7 @@ export default async function DashboardPage({
                       <span className="ml-1 text-[9px] text-on-surface-variant/30">(22-11)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-foreground">{game.awayScore}</span>
+                  <span className="flex-shrink-0 text-xl sm:text-2xl font-bold tabular-nums text-foreground">{game.awayScore}</span>
                 </div>
               </div>
 
@@ -660,7 +660,7 @@ export default async function DashboardPage({
                       <span className="ml-1 text-[9px] font-normal text-on-surface-variant/40">(25-8)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-foreground">{game.homeScore}</span>
+                  <span className="flex-shrink-0 text-xl sm:text-2xl font-bold tabular-nums text-foreground">{game.homeScore}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
@@ -670,7 +670,7 @@ export default async function DashboardPage({
                       <span className="ml-1 text-[9px] text-on-surface-variant/30">(22-11)</span>
                     </span>
                   </div>
-                  <span className="flex-shrink-0 text-2xl font-bold tabular-nums text-foreground">{game.awayScore}</span>
+                  <span className="flex-shrink-0 text-xl sm:text-2xl font-bold tabular-nums text-foreground">{game.awayScore}</span>
                 </div>
               </div>
 

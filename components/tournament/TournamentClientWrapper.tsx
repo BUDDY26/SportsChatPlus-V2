@@ -222,7 +222,7 @@ export function TournamentClientWrapper() {
           {/* Current round heading */}
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="font-display text-2xl font-bold">{currentRoundLabel}</h2>
+              <h2 className="font-display text-lg sm:text-2xl font-bold">{currentRoundLabel}</h2>
               {liveCount > 0 && selectedRound === games.find((g) => g.status === "live")?.round && (
                 <p className="mt-0.5 text-sm text-sports-green">
                   {liveCount} game{liveCount !== 1 ? "s" : ""} in progress

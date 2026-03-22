@@ -29,7 +29,7 @@ export function ScheduleList({ games }: ScheduleListProps) {
           className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-muted/30"
         >
           {/* Left: round + region */}
-          <div className="min-w-[120px]">
+          <div className="w-24 flex-shrink-0">
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {game.roundLabel}
             </p>
