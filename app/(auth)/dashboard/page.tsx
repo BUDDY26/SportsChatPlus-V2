@@ -244,9 +244,10 @@ export default async function DashboardPage({
           col-span-2 → occupies columns 1 and 2 only.
           Tournament Central (col-start-3) is unaffected.           ────── */}
       <div
-        className="col-span-1 md:col-span-2 flex gap-2 overflow-x-auto px-4 py-3 border-b border-white/[0.06]"
+        className="col-span-1 md:col-span-2 overflow-x-auto px-4 py-3 border-b border-white/[0.06]"
         style={{ scrollbarWidth: "none" }}
       >
+        <div className="flex w-max gap-2">
         {sportChips.map((chip) => (
           <button
             key={chip.id}
@@ -269,6 +270,7 @@ export default async function DashboardPage({
             )}
           </button>
         ))}
+        </div>
       </div>
 
       {/* ── Row 2, Cols 1-2: Favorite Teams Row ─────────────────────────────
