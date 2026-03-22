@@ -71,7 +71,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 
 ### `app/(auth)/layout.tsx` — Auth Group Layout
 
-- ❗ **E1 REVERTED 2026-03-22** — `if (session) { redirect("/dashboard") }` caused an infinite redirect loop: `/dashboard` is itself a child of `(auth)/layout.tsx`, so the session check fires on every dashboard request and redirects back to `/dashboard` indefinitely. Fix requires a route-aware approach (e.g. only redirect when `pathname` is `/login` or `/signup`). Session is fetched but redirect is not applied.
+- ✅ **E1 FIXED 2026-03-22** — Dead session code removed from `app/(auth)/layout.tsx`; layout is now a pure passthrough. Dashboard auth protection remains intact via `dashboard/layout.tsx`. No infinite loop possible.
 - ✅ Passes children through — no layout chrome at this level
 
 ### `app/(auth)/dashboard/layout.tsx` — Dashboard Layout
@@ -306,7 +306,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 
 | ID | File | Line(s) | Description |
 |---|---|---|---|
-| E1 | `app/(auth)/layout.tsx` | 10 | Session fetched but redirect reverted — infinite loop: `/dashboard` is a child of this layout. Needs route-aware fix. |
+| ~~E1~~ | ~~`app/(auth)/layout.tsx`~~ | ~~10~~ | ~~Session fetched but redirect reverted — infinite loop: `/dashboard` is a child of this layout. Needs route-aware fix.~~ — **FIXED 2026-03-22** — Removed dead session code from auth layout — pure passthrough, dashboard protection via `dashboard/layout.tsx` unchanged. Confirmed March 22 2026 |
 | ~~E2~~ | ~~`components/dashboard/sidebar.tsx:47` / `dashboard/page.tsx:114`~~ | ~~47 / 114~~ | ~~F1 is not a valid `LeagueId` — sidebar link + chip both navigate to invalid API filter~~ — **FIXED 2026-03-22** — chip labelled "F1 Soon" with `disabled: true` + `cursor-not-allowed`; sidebar renders `<span>` with `cursor-not-allowed` instead of `<Link>` |
 | ~~E3~~ | ~~`components/ai/InsightsPanel.tsx`~~ | ~~31~~ | ~~No empty state — blank panel when insights array is empty~~ — **FIXED 2026-03-22** |
 | ~~E4~~ | ~~`components/contact/ContactForm.tsx`~~ | ~~21~~ | ~~`mailto:` contact form — silent failure without mail client; no in-page feedback~~ — **FIXED 2026-03-22** — note added above submit button |
@@ -333,6 +333,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | W11 | `app/(auth)/dashboard/scores/page.tsx` / score card components | **LIVE TESTING:** Score cards display raw league IDs (`NCAAB_WOMEN`, `NCAAB_MEN`) instead of readable display names ("NCAA Women's Basketball", "NCAA Men's Basketball") |
 | W12 | `lib/supabase.ts` / client instantiation sites | **BROWSER CONSOLE CONFIRMED:** "Multiple GoTrueClient instances detected in the same browser tab" — Supabase client created in more than one place; may cause undefined auth behavior, stale sessions, or duplicate requests. Likely cause: `createClient()` called at module level in multiple files. |
 | ~~W13~~ | ~~`components/chat/ChatWindow.tsx` / `hooks/useChat.ts`~~ | ~~Chat page shows "Failed to send message" error UI even when send API returns 200 successfully — frontend error state not clearing on success~~ — **FIXED 2026-03-22** — Auto-resolved after session guard added to API routes — chat send error UI no longer appears. Confirmed March 22 2026 |
+| W14 | `app/(auth)/dashboard/tournament/page.tsx` / tournament game card components | Round winners are incorrectly labeled "Tournament Champion" — this badge should only display for the actual championship winner, not every round winner. Confirmed live March 22 2026 |
 
 ---
 
@@ -361,7 +362,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 ### Cross-page issues
 
 1. ~~`/dashboard/support` link in every dashboard navbar — 404~~ — **FIXED 2026-03-22**
-2. `app/(auth)/layout.tsx` — E1 redirect reverted (infinite loop); needs route-aware fix
+2. ~~`app/(auth)/layout.tsx` — E1 redirect reverted (infinite loop); needs route-aware fix~~ — **FIXED 2026-03-22**
 3. ~~F1 league ID in sidebar and dashboard chip strip — invalid for API~~ — **FIXED 2026-03-22**
 
 ### Priority fix list
@@ -369,7 +370,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | Priority | ID | Action |
 |---|---|---|
 | ~~1~~ | ~~M1~~ | ~~Remove or implement `/dashboard/support` in `navbar.tsx`~~ — **FIXED** |
-| 2 | E1 | Fix auth layout redirect for `/login`/`/signup` without looping — requires route-aware approach (layout also wraps `/dashboard`) |
+| ~~2~~ | ~~E1~~ | ~~Fix auth layout redirect for `/login`/`/signup` without looping~~ — **FIXED 2026-03-22** |
 | ~~3~~ | ~~M2~~ | ~~Wire sport chips with `onClick` → `router.push('/dashboard/scores?league={id}')`~~ — **FIXED** — chips converted to non-interactive `<div>` |
 | ~~4~~ | ~~M3~~ | ~~Wire "+Add" → `/dashboard/favorites`; remove or link placeholder team buttons~~ — **FIXED** — converted to non-interactive `<div>` |
 | ~~5~~ | ~~E2~~ | ~~Remove F1 from sidebar and sport chips, or add F1 to `LEAGUES` type~~ — **FIXED** |
@@ -411,3 +412,5 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 *New finding: 2026-03-22 — W13 added — chat send error UI not clearing on successful 200 response*
 *Fix verification: 2026-03-22 — W13 resolved — auto-resolved after session guard added to API routes — confirmed March 22 2026*
 *Fix verification: 2026-03-22 — E9 added and immediately resolved — 4 API routes guarded with getServerSession — confirmed March 22 2026*
+*Fix verification: 2026-03-22 — E1 resolved — dead session code removed from (auth)/layout.tsx — pure passthrough, dashboard/layout.tsx protection unchanged. Confirmed March 22 2026*
+*New finding: 2026-03-22 — W14 added — tournament round winners incorrectly labeled Tournament Champion*
