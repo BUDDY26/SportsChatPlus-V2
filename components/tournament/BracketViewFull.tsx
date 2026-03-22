@@ -285,11 +285,12 @@ function BracketCenter({ games }: { games: TournamentGame[] }) {
           Final Four
         </p>
         <div className="space-y-3">
-          {ff.length > 0 ? (
-            ff.map((g) => <MiniMatchup key={g.id} game={g} />)
-          ) : (
-            <p className="text-center text-[9px] italic text-muted-foreground">TBD</p>
-          )}
+          {[0, 1].map((idx) => {
+            const game = ff[idx] ?? null;
+            return game
+              ? <MiniMatchup key={game.id} game={game} />
+              : <EmptySlot key={`ff-${idx}`} />;
+          })}
         </div>
       </div>
 
@@ -300,11 +301,10 @@ function BracketCenter({ games }: { games: TournamentGame[] }) {
           <Trophy className="h-3 w-3" />
           Championship
         </p>
-        {champ.length > 0 ? (
-          champ.map((g) => <MiniMatchup key={g.id} game={g} />)
-        ) : (
-          <p className="text-center text-[9px] italic text-muted-foreground">TBD</p>
-        )}
+        {champ.length > 0
+          ? champ.map((g) => <MiniMatchup key={g.id} game={g} />)
+          : <EmptySlot key="champ-placeholder" />
+        }
       </div>
     </div>
   );
