@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { DashboardNavbar } from "@/components/dashboard/navbar";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
+import SessionProviderWrapper from "@/components/providers/SessionProviderWrapper";
 
 export default async function DashboardLayout({
   children,
@@ -21,7 +22,7 @@ export default async function DashboardLayout({
       <div className="flex flex-1 min-h-0">
         <DashboardSidebar />
         <main className="flex-1 min-h-0 overflow-y-auto">
-          {children}
+          <SessionProviderWrapper>{children}</SessionProviderWrapper>
         </main>
       </div>
     </div>
