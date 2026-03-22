@@ -117,7 +117,7 @@ const sportChips = [
 // ─── Shared card class ───────────────────────────────────────────────────────
 
 const CARD =
-  "flex min-h-[280px] h-auto flex-shrink-0 flex-col overflow-hidden rounded-xl card-float p-3 transition-colors hover:bg-white/[0.03]";
+  "flex min-h-[240px] md:min-h-[280px] h-auto flex-shrink-0 flex-col overflow-hidden rounded-xl card-float p-3 transition-colors hover:bg-white/[0.03]";
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
@@ -431,7 +431,7 @@ export default async function DashboardPage({
               </div>
 
               {/* Key stats */}
-              <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
+              <div className="hidden md:block rounded-lg bg-white/[0.03] px-2 py-1.5">
                 <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs text-foreground/70">
                   <span />
                   <span className="text-center">FG%</span>
@@ -591,7 +591,7 @@ export default async function DashboardPage({
               </div>
 
               {/* Key stats */}
-              <div className="rounded-lg bg-white/[0.03] px-2 py-1.5">
+              <div className="hidden md:block rounded-lg bg-white/[0.03] px-2 py-1.5">
                 <div className="mb-1 grid grid-cols-[auto_1fr_1fr_1fr_1fr] text-xs text-foreground/70">
                   <span />
                   <span className="text-center">FG%</span>
