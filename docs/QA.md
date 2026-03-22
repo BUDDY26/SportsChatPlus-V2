@@ -314,6 +314,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | E6 | `app/(auth)/dashboard/page.tsx` | 297–318 | **LIVE TESTING:** Sport chips are now non-interactive `<div>` elements — clicking a chip does not navigate to `/dashboard/scores?league=X`; conversion to `<div>` resolved the false interactivity (M2) but chips remain decorative with no filtering path |
 | E7 | `app/(auth)/dashboard/page.tsx` | 45–101 | **LIVE TESTING:** Dashboard center game cards show hardcoded static arrays (`liveGames`, `upcomingGames`, `recentGames`) — team names, scores, and game data are placeholder; no real BallDontLie API data wired to this page |
 | E8 | `app/(auth)/dashboard/page.tsx` | 22–31 | **LIVE TESTING:** "My Teams" pills show `placeholderTeams` static array — not connected to user favorites in Supabase; add/remove functionality absent; row is purely decorative |
+| ~~E9~~ | ~~`pages/api/ai/chat.ts`, `pages/api/chat/send.ts`, `pages/api/favorites/index.ts`, `pages/api/profile/index.ts`~~ | ~~—~~ | ~~4 API routes had no session protection — unauthenticated callers could burn OpenAI credits, insert messages as any user, read/modify any user's favorites, or overwrite any user's profile~~ — **FIXED 2026-03-22** — all 4 routes now guarded with `getServerSession(req, res, authOptions)`; unauthenticated requests return HTTP 401 |
 
 ### ⚠️ Minor Issues
 
@@ -331,7 +332,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | W10 | `app/(auth)/login/page.tsx` | No "Forgot password" link or flow |
 | W11 | `app/(auth)/dashboard/scores/page.tsx` / score card components | **LIVE TESTING:** Score cards display raw league IDs (`NCAAB_WOMEN`, `NCAAB_MEN`) instead of readable display names ("NCAA Women's Basketball", "NCAA Men's Basketball") |
 | W12 | `lib/supabase.ts` / client instantiation sites | **BROWSER CONSOLE CONFIRMED:** "Multiple GoTrueClient instances detected in the same browser tab" — Supabase client created in more than one place; may cause undefined auth behavior, stale sessions, or duplicate requests. Likely cause: `createClient()` called at module level in multiple files. |
-| W13 | `components/chat/ChatWindow.tsx` / `hooks/useChat.ts` | Chat page shows "Failed to send message" error UI even when send API returns 200 successfully — frontend error state not clearing on success |
+| ~~W13~~ | ~~`components/chat/ChatWindow.tsx` / `hooks/useChat.ts`~~ | ~~Chat page shows "Failed to send message" error UI even when send API returns 200 successfully — frontend error state not clearing on success~~ — **FIXED 2026-03-22** — Auto-resolved after session guard added to API routes — chat send error UI no longer appears. Confirmed March 22 2026 |
 
 ---
 
@@ -408,3 +409,5 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 *Fix verification: 2026-03-22 — M8 verified resolved — SessionProviderWrapper client boundary added — confirmed working on live site March 22 2026*
 *Fix verification: 2026-03-22 — M7 verified resolved — Missing migrations 001–005 applied to Supabase — chat_messages table now exists. Confirmed working March 22 2026*
 *New finding: 2026-03-22 — W13 added — chat send error UI not clearing on successful 200 response*
+*Fix verification: 2026-03-22 — W13 resolved — auto-resolved after session guard added to API routes — confirmed March 22 2026*
+*Fix verification: 2026-03-22 — E9 added and immediately resolved — 4 API routes guarded with getServerSession — confirmed March 22 2026*
