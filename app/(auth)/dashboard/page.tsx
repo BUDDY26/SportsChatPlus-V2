@@ -752,16 +752,16 @@ export default async function DashboardPage({
                 </div>
                 <div className="mb-2 space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className={`text-sm ${spotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+                    <span className={`text-sm ${spotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-foreground"}`}>
                       {spotlight.topTeamName}{spotlight.topTeamSeed != null ? ` (${spotlight.topTeamSeed})` : ""}
                     </span>
-                    <span className={`text-sm tabular-nums ${spotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{spotlight.topScore}</span>
+                    <span className={`text-sm tabular-nums ${spotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-foreground"}`}>{spotlight.topScore}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className={`text-sm ${spotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+                    <span className={`text-sm ${spotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-foreground"}`}>
                       {spotlight.bottomTeamName}{spotlight.bottomTeamSeed != null ? ` (${spotlight.bottomTeamSeed})` : ""}
                     </span>
-                    <span className={`text-sm tabular-nums ${spotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{spotlight.bottomScore}</span>
+                    <span className={`text-sm tabular-nums ${spotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-foreground"}`}>{spotlight.bottomScore}</span>
                   </div>
                 </div>
                 <div className="border-t border-white/[0.06] pt-2">
@@ -791,16 +791,16 @@ export default async function DashboardPage({
                 </div>
                 <div className="mb-2 space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className={`text-sm ${womensSpotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+                    <span className={`text-sm ${womensSpotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-foreground"}`}>
                       {womensSpotlight.topTeamName}{womensSpotlight.topTeamSeed != null ? ` (${womensSpotlight.topTeamSeed})` : ""}
                     </span>
-                    <span className={`text-sm tabular-nums ${womensSpotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{womensSpotlight.topScore}</span>
+                    <span className={`text-sm tabular-nums ${womensSpotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-foreground"}`}>{womensSpotlight.topScore}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className={`text-sm ${womensSpotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+                    <span className={`text-sm ${womensSpotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-foreground"}`}>
                       {womensSpotlight.bottomTeamName}{womensSpotlight.bottomTeamSeed != null ? ` (${womensSpotlight.bottomTeamSeed})` : ""}
                     </span>
-                    <span className={`text-sm tabular-nums ${womensSpotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{womensSpotlight.bottomScore}</span>
+                    <span className={`text-sm tabular-nums ${womensSpotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-foreground"}`}>{womensSpotlight.bottomScore}</span>
                   </div>
                 </div>
                 <div className="border-t border-white/[0.06] pt-2">
