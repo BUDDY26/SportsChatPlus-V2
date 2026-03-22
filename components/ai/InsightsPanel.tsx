@@ -27,6 +27,8 @@ export function InsightsPanel() {
             <AlertCircle className="h-4 w-4" />
             Failed to load insights.
           </div>
+        ) : insights.length === 0 ? (
+          <p className="text-sm text-on-surface-variant/50">No insights available.</p>
         ) : (
           insights.map((insight, i) => (
             <div key={i} className="rounded-lg border bg-muted/30 p-4">

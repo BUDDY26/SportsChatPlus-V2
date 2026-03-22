@@ -203,7 +203,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 ### `/dashboard/ai-insights`
 
 - ✅ `InsightsPanel` + `AIChatBox` in `lg:grid-cols-2`, stacks on < lg
-- ❗ **E3 CONFIRMED OPEN — InsightsPanel missing empty state.** When `insights` array is empty and not loading/erroring, `insights.map(...)` renders nothing — blank `CardContent` with no message to explain the absence of data.
+- ✅ **E3 FIXED 2026-03-22** — `insights.length === 0` branch added before the map; renders "No insights available." at `text-on-surface-variant/50`
 - ⚠️ `AIChatBox` has no auto-scroll to bottom — messages appended to `ScrollArea` but no `useEffect` to scroll down; user may miss new AI responses — W4
 
 ### `/dashboard/profile`
@@ -301,7 +301,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 |---|---|---|---|
 | E1 | `app/(auth)/layout.tsx` | 10 | Session fetched but redirect reverted — infinite loop: `/dashboard` is a child of this layout. Needs route-aware fix. |
 | ~~E2~~ | ~~`components/dashboard/sidebar.tsx:47` / `dashboard/page.tsx:114`~~ | ~~47 / 114~~ | ~~F1 is not a valid `LeagueId` — sidebar link + chip both navigate to invalid API filter~~ — **FIXED 2026-03-22** — chip labelled "F1 Soon" with `disabled: true` + `cursor-not-allowed`; sidebar renders `<span>` with `cursor-not-allowed` instead of `<Link>` |
-| E3 | `components/ai/InsightsPanel.tsx` | 31 | No empty state — blank panel when insights array is empty |
+| ~~E3~~ | ~~`components/ai/InsightsPanel.tsx`~~ | ~~31~~ | ~~No empty state — blank panel when insights array is empty~~ — **FIXED 2026-03-22** |
 | E4 | `components/contact/ContactForm.tsx` | 21 | `mailto:` contact form — silent failure without mail client; no in-page feedback |
 
 ### ⚠️ Minor Issues
@@ -356,7 +356,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | ~~4~~ | ~~M3~~ | ~~Wire "+Add" → `/dashboard/favorites`; remove or link placeholder team buttons~~ — **FIXED** — converted to non-interactive `<div>` |
 | ~~5~~ | ~~E2~~ | ~~Remove F1 from sidebar and sport chips, or add F1 to `LEAGUES` type~~ — **FIXED** |
 | ~~6~~ | ~~M4~~ | ~~Remove hardcoded game clock or source it from actual game data~~ — **FIXED** |
-| 7 | E3 | Add empty state message to `InsightsPanel` when `insights.length === 0` |
+| ~~7~~ | ~~E3~~ | ~~Add empty state message to `InsightsPanel` when `insights.length === 0`~~ — **FIXED** |
 | 8 | E4 | Replace `mailto:` contact form with API endpoint or add visible limitation note |
 | 9 | W4 | Add auto-scroll to bottom in `AIChatBox` (match `ChatWindow` pattern: `useEffect` + `ref.scrollIntoView`) |
 | 10 | W1 | Derive Tournament Central subtitle from actual round data |
@@ -370,6 +370,8 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 *Fix verification: 2026-03-22 — E1 verified resolved*
 *Fix verification: 2026-03-22 — M2/B4 verified resolved*
 *Fix verification: 2026-03-22 — M3 verified resolved*
+*Fix verification: 2026-03-22 — M4 verified resolved*
+*Fix verification: 2026-03-22 — E1 revert verified; infinite loop confirmed absent; E1 remains open (needs route-aware approach)*
 *Prior blockers confirmed resolved: B1, B2, B3, B5*
 *Issues resolved: M1 (support dead link removed), E2 (F1 marked Coming Soon — non-interactive), M2/B4 (sport chips converted to non-interactive div), M3 (placeholder buttons converted to div), M4 (hardcoded clock replaced with --)*
 *E1 reverted — infinite redirect loop; dashboard is a child of (auth) layout*
