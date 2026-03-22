@@ -244,7 +244,7 @@ export default async function DashboardPage({
           col-span-2 → occupies columns 1 and 2 only.
           Tournament Central (col-start-3) is unaffected.           ────── */}
       <div
-        className="col-span-2 flex gap-2 overflow-x-auto px-4 py-3 border-b border-white/[0.06]"
+        className="col-span-1 md:col-span-2 flex gap-2 overflow-x-auto px-4 py-3 border-b border-white/[0.06]"
         style={{ scrollbarWidth: "none" }}
       >
         {sportChips.map((chip) => (
@@ -274,7 +274,7 @@ export default async function DashboardPage({
       {/* ── Row 2, Cols 1-2: Favorite Teams Row ─────────────────────────────
           col-span-2 → occupies columns 1 and 2 only.
           Tournament Central (col-start-3) is unaffected.           ────── */}
-      <div className="col-span-2 flex items-center gap-2 px-4 py-2 border-b border-white/[0.06]">
+      <div className="col-span-1 md:col-span-2 flex items-center gap-2 px-4 py-2 border-b border-white/[0.06]">
         <span className="flex-shrink-0 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/40">
           My Teams
         </span>
@@ -314,7 +314,7 @@ export default async function DashboardPage({
       {/* ── Col 3, Rows 1-3: Tournament Central ─────────────────────────────
           col-start-3 row-start-1 row-span-3 → independent right rail.
           Does not sit under the Teams Row or Tab Filter bands.      ────── */}
-      <div className="md:col-start-3 md:row-start-1 md:row-span-4 flex flex-col overflow-y-auto card-float border-l border-white/[0.06]">
+      <div className="col-span-1 md:col-start-3 md:row-start-1 md:row-span-4 flex flex-col overflow-y-auto card-float border-l border-white/[0.06]">
 
         {/* Spotlight header */}
         <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
@@ -434,7 +434,7 @@ export default async function DashboardPage({
       {/* ── Row 2, Cols 1-2: Tab Filter Row ─────────────────────────────────
           col-span-2 → spans columns 1 and 2 only.
           Sits directly below Favorite Teams Row.                    ────── */}
-      <div className="col-span-2 flex items-center justify-between px-4 py-2 border-b border-white/[0.06]">
+      <div className="col-span-1 md:col-span-2 flex items-center justify-between px-4 py-2 border-b border-white/[0.06]">
         <div className="flex items-center gap-1">
           {(["live", "upcoming", "recent"] as Tab[]).map((tab) => (
             <Link
@@ -464,7 +464,7 @@ export default async function DashboardPage({
       {/* ── Row 3, Col 1: Column A ───────────────────────────────────────────
           Auto-placed by CSS grid into row 3, column 1.
           Direct grid child — no parent/child relationship with Col B. ───── */}
-      <div className="flex flex-col gap-4 overflow-y-auto p-3 bg-white/[0.04]">
+      <div className="col-span-1 flex flex-col gap-4 overflow-y-auto p-3 bg-white/[0.04]">
 
         {activeTab === "live" && liveGames.slice(0, 2).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
@@ -624,7 +624,7 @@ export default async function DashboardPage({
       {/* ── Row 3, Col 2: Column B ───────────────────────────────────────────
           Auto-placed by CSS grid into row 3, column 2.
           Direct grid child — no parent/child relationship with Col A. ───── */}
-      <div className="flex flex-col gap-4 overflow-y-auto p-3 bg-white/[0.04]">
+      <div className="col-span-1 flex flex-col gap-4 overflow-y-auto p-3 bg-white/[0.04]">
 
         {activeTab === "live" && liveGames.slice(2, 4).map((game) => (
           <Link key={game.id} href="/dashboard/scores" className={CARD}>
