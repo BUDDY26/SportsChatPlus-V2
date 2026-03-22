@@ -142,6 +142,11 @@ export default async function DashboardPage({
   let spotlight: SpotlightGame | null = null;
   let roundStatuses: RoundStatus[] = [];
   let womensRoundLabel = "First Round";
+  let womensSpotlight: {
+    topTeamName: string; topTeamSeed: number | null; topScore: number;
+    bottomTeamName: string; bottomTeamSeed: number | null; bottomScore: number;
+    roundLabel: string; status: string; winnerSlot: string | null;
+  } | null = null;
 
   try {
     const supabase = createAdminClient() as any;
@@ -220,14 +225,31 @@ export default async function DashboardPage({
     if (womensTournament) {
       const { data: womensGames } = await supabase
         .from("tournament_games")
-        .select(`status, round:tournament_rounds!round_id(round_number, name)`)
-        .eq("tournament_id", womensTournament.id);
+        .select(`status, top_score, bottom_score, winner_slot,
+            top_team:tournament_teams!top_team_id(name, seed),
+            bottom_team:tournament_teams!bottom_team_id(name, seed),
+            round:tournament_rounds!round_id(round_number, name)`)
+        .eq("tournament_id", womensTournament.id)
+        .order("slot_number");
 
       if (womensGames?.length > 0) {
         const wr = womensGames.map((g: any) => {
           const r = Array.isArray(g.round) ? g.round[0] : g.round;
-          return { status: g.status as string, rn: r?.round_number ?? 0, name: r?.name ?? "" };
+          const top = (Array.isArray(g.top_team) ? g.top_team[0] : g.top_team) as { name: string; seed: number | null } | null;
+          const bottom = (Array.isArray(g.bottom_team) ? g.bottom_team[0] : g.bottom_team) as { name: string; seed: number | null } | null;
+          return {
+            status: g.status as string,
+            topScore: g.top_score as number,
+            bottomScore: g.bottom_score as number,
+            winnerSlot: g.winner_slot as string | null,
+            top,
+            bottom,
+            rn: r?.round_number ?? 0,
+            name: r?.name ?? "",
+            round: r as { round_number: number; name: string } | null,
+          };
         });
+
         const activeLow = wr.filter((g: any) => g.status === "scheduled" || g.status === "live")
           .sort((a: any, b: any) => a.rn - b.rn)[0];
         if (activeLow) {
@@ -235,6 +257,27 @@ export default async function DashboardPage({
         } else {
           const highFinal = wr.filter((g: any) => g.status === "final").sort((a: any, b: any) => b.rn - a.rn)[0];
           if (highFinal) womensRoundLabel = highFinal.name;
+        }
+
+        const womensLiveGame = wr
+          .filter((g: any) => g.status === "live")
+          .sort((a: any, b: any) => (b.rn ?? 0) - (a.rn ?? 0))[0];
+        const womensSpotlightRaw = womensLiveGame ?? wr
+          .filter((g: any) => g.status === "final")
+          .sort((a: any, b: any) => (b.rn ?? 0) - (a.rn ?? 0))[0];
+
+        if (womensSpotlightRaw) {
+          womensSpotlight = {
+            topTeamName: womensSpotlightRaw.top?.name ?? "TBD",
+            topTeamSeed: womensSpotlightRaw.top?.seed ?? null,
+            topScore: womensSpotlightRaw.topScore,
+            bottomTeamName: womensSpotlightRaw.bottom?.name ?? "TBD",
+            bottomTeamSeed: womensSpotlightRaw.bottom?.seed ?? null,
+            bottomScore: womensSpotlightRaw.bottomScore,
+            roundLabel: womensSpotlightRaw.round?.name ?? "",
+            status: womensSpotlightRaw.status,
+            winnerSlot: womensSpotlightRaw.winnerSlot,
+          };
         }
       }
     }
@@ -723,6 +766,45 @@ export default async function DashboardPage({
                 </div>
                 <div className="border-t border-white/[0.06] pt-2">
                   <span className="text-[9px] text-on-surface-variant/50 capitalize">{spotlight.status}</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p className="text-[10px] text-on-surface-variant/50">No games available.</p>
+          )}
+        </div>
+
+        {/* Women's Tournament Spotlight */}
+        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-2 md:py-3">
+          <p className="mb-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
+            Women&apos;s Spotlight
+          </p>
+          {womensSpotlight ? (
+            <>
+              <p className="mb-2.5 text-[10px] text-on-surface-variant/60">
+                NCAA Women&apos;s Basketball · {womensSpotlight.roundLabel}
+              </p>
+              <div className="rounded-xl card-float p-3 border border-white/[0.05]">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[9px] uppercase tracking-wide text-on-surface-variant/50">Featured</span>
+                  <span className="text-[9px] font-medium text-on-surface-variant">{womensSpotlight.roundLabel}</span>
+                </div>
+                <div className="mb-2 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm ${womensSpotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+                      {womensSpotlight.topTeamName}{womensSpotlight.topTeamSeed != null ? ` (${womensSpotlight.topTeamSeed})` : ""}
+                    </span>
+                    <span className={`text-sm tabular-nums ${womensSpotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{womensSpotlight.topScore}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm ${womensSpotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+                      {womensSpotlight.bottomTeamName}{womensSpotlight.bottomTeamSeed != null ? ` (${womensSpotlight.bottomTeamSeed})` : ""}
+                    </span>
+                    <span className={`text-sm tabular-nums ${womensSpotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{womensSpotlight.bottomScore}</span>
+                  </div>
+                </div>
+                <div className="border-t border-white/[0.06] pt-2">
+                  <span className="text-[9px] text-on-surface-variant/50 capitalize">{womensSpotlight.status}</span>
                 </div>
               </div>
             </>
