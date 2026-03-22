@@ -123,7 +123,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 
 - ✅ Navbar + Footer present
 - ✅ `ContactForm` rendered
-- ❗ **E4 — `mailto:` contact form.** `ContactForm` on submit sets `window.location.href` to a `mailto:` URI. This silently fails on systems without a configured email client. No API fallback, no in-page success/error state, no loading indicator.
+- ✅ **E4 FIXED 2026-03-22** — Note added above submit button: "This form opens your email client to send a message."
 
 ### `/privacy` and `/terms`
 
@@ -302,7 +302,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | E1 | `app/(auth)/layout.tsx` | 10 | Session fetched but redirect reverted — infinite loop: `/dashboard` is a child of this layout. Needs route-aware fix. |
 | ~~E2~~ | ~~`components/dashboard/sidebar.tsx:47` / `dashboard/page.tsx:114`~~ | ~~47 / 114~~ | ~~F1 is not a valid `LeagueId` — sidebar link + chip both navigate to invalid API filter~~ — **FIXED 2026-03-22** — chip labelled "F1 Soon" with `disabled: true` + `cursor-not-allowed`; sidebar renders `<span>` with `cursor-not-allowed` instead of `<Link>` |
 | ~~E3~~ | ~~`components/ai/InsightsPanel.tsx`~~ | ~~31~~ | ~~No empty state — blank panel when insights array is empty~~ — **FIXED 2026-03-22** |
-| E4 | `components/contact/ContactForm.tsx` | 21 | `mailto:` contact form — silent failure without mail client; no in-page feedback |
+| ~~E4~~ | ~~`components/contact/ContactForm.tsx`~~ | ~~21~~ | ~~`mailto:` contact form — silent failure without mail client; no in-page feedback~~ — **FIXED 2026-03-22** — note added above submit button |
 
 ### ⚠️ Minor Issues
 
@@ -357,7 +357,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | ~~5~~ | ~~E2~~ | ~~Remove F1 from sidebar and sport chips, or add F1 to `LEAGUES` type~~ — **FIXED** |
 | ~~6~~ | ~~M4~~ | ~~Remove hardcoded game clock or source it from actual game data~~ — **FIXED** |
 | ~~7~~ | ~~E3~~ | ~~Add empty state message to `InsightsPanel` when `insights.length === 0`~~ — **FIXED** |
-| 8 | E4 | Replace `mailto:` contact form with API endpoint or add visible limitation note |
+| ~~8~~ | ~~E4~~ | ~~Replace `mailto:` contact form with API endpoint or add visible limitation note~~ — **FIXED** — note added |
 | 9 | W4 | Add auto-scroll to bottom in `AIChatBox` (match `ChatWindow` pattern: `useEffect` + `ref.scrollIntoView`) |
 | 10 | W1 | Derive Tournament Central subtitle from actual round data |
 | 11 | W6 | Add client-side password match validation to `SignupForm` |
@@ -372,6 +372,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 *Fix verification: 2026-03-22 — M3 verified resolved*
 *Fix verification: 2026-03-22 — M4 verified resolved*
 *Fix verification: 2026-03-22 — E1 revert verified; infinite loop confirmed absent; E1 remains open (needs route-aware approach)*
+*Fix verification: 2026-03-22 — E3 verified resolved*
 *Prior blockers confirmed resolved: B1, B2, B3, B5*
 *Issues resolved: M1 (support dead link removed), E2 (F1 marked Coming Soon — non-interactive), M2/B4 (sport chips converted to non-interactive div), M3 (placeholder buttons converted to div), M4 (hardcoded clock replaced with --)*
 *E1 reverted — infinite redirect loop; dashboard is a child of (auth) layout*

@@ -60,6 +60,7 @@ export function ContactForm() {
             onChange={(e) => setMessage(e.target.value)}
           />
         </div>
+        <p className="text-xs text-on-surface-variant/50">This form opens your email client to send a message.</p>
         <Button className="w-full" onClick={handleSend} disabled={!canSend}>
           Send Message
         </Button>
