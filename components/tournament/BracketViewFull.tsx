@@ -11,11 +11,11 @@ interface BracketViewFullProps {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const SLOT_H = 48;  // px per R1 game slot
-const CARD_W = 136; // card width in px
-const CARD_H = 44;  // approx card height in px
-const GAP_W = 16;   // horizontal gap between rounds (connector zone)
-const ARM_W = 4 * CARD_W + 3 * GAP_W; // 592px per region arm
+const SLOT_H = 80;  // px per R1 game slot
+const CARD_W = 180; // card width in px
+const CARD_H = 52;  // approx card height in px
+const GAP_W = 32;   // horizontal gap between rounds (connector zone)
+const ARM_W = 4 * CARD_W + 3 * GAP_W; // 816px per region arm
 
 // ── TeamLine ──────────────────────────────────────────────────────────────────
 
@@ -56,7 +56,7 @@ function TeamLine({
       )}
       <span
         className={cn(
-          "flex-1 truncate text-[10px] leading-tight",
+          "flex-1 truncate text-xs leading-tight",
           isTbd && "italic text-muted-foreground",
           isWinner && "font-bold text-foreground",
           isLoser && "text-muted-foreground/60 line-through decoration-1",
@@ -95,9 +95,9 @@ function MiniMatchup({
   return (
     <div
       className={cn(
-        "rounded border px-1.5 py-1",
-        isLive && "border-sports-green/40 bg-sports-green/5",
-        !isLive && "border-border/50 bg-card",
+        "card-float rounded border px-1.5 py-1",
+        isLive && "border-sports-green/40",
+        !isLive && "border-white/10",
       )}
     >
       <TeamLine
@@ -183,13 +183,13 @@ function BracketArm({
               {hasConnector && !flip && (
                 <>
                   <div
-                    className="absolute border-t border-border/30"
+                    className="absolute border-t border-white/25"
                     style={{ left: x + CARD_W, top: cy, width: GAP_W / 2 }}
                   />
                   {isPairTop && (
                     <>
                       <div
-                        className="absolute border-l border-border/30"
+                        className="absolute border-l border-white/25"
                         style={{
                           left: x + CARD_W + GAP_W / 2,
                           top: vTop,
@@ -197,7 +197,7 @@ function BracketArm({
                         }}
                       />
                       <div
-                        className="absolute border-t border-border/30"
+                        className="absolute border-t border-white/25"
                         style={{
                           left: x + CARD_W + GAP_W / 2,
                           top: nextCy,
@@ -213,13 +213,13 @@ function BracketArm({
               {hasConnector && flip && (
                 <>
                   <div
-                    className="absolute border-t border-border/30"
+                    className="absolute border-t border-white/25"
                     style={{ left: x - GAP_W / 2, top: cy, width: GAP_W / 2 }}
                   />
                   {isPairTop && (
                     <>
                       <div
-                        className="absolute border-l border-border/30"
+                        className="absolute border-l border-white/25"
                         style={{
                           left: x - GAP_W / 2,
                           top: vTop,
@@ -227,7 +227,7 @@ function BracketArm({
                         }}
                       />
                       <div
-                        className="absolute border-t border-border/30"
+                        className="absolute border-t border-white/25"
                         style={{
                           left: x - GAP_W,
                           top: nextCy,
@@ -317,6 +317,17 @@ export function BracketViewFull({ games }: BracketViewFullProps) {
       <div className="flex min-w-max items-center gap-0">
         {/* Left arm */}
         <div className="space-y-4">
+          <div className="flex" style={{ width: ARM_W }}>
+            {["FIRST ROUND", "SECOND ROUND", "SWEET 16", "ELITE EIGHT"].map((label) => (
+              <div
+                key={label}
+                className="text-[9px] font-bold uppercase tracking-widest text-foreground/50 text-center"
+                style={{ width: CARD_W, flexShrink: 0 }}
+              >
+                {label}
+              </div>
+            ))}
+          </div>
           {leftRegions.map((region) => (
             <div key={region}>
               <p className="mb-1.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -335,6 +346,17 @@ export function BracketViewFull({ games }: BracketViewFullProps) {
 
         {/* Right arm */}
         <div className="space-y-4">
+          <div className="flex" style={{ width: ARM_W }}>
+            {["ELITE EIGHT", "SWEET 16", "SECOND ROUND", "FIRST ROUND"].map((label) => (
+              <div
+                key={label}
+                className="text-[9px] font-bold uppercase tracking-widest text-foreground/50 text-center"
+                style={{ width: CARD_W, flexShrink: 0 }}
+              >
+                {label}
+              </div>
+            ))}
+          </div>
           {rightRegions.map((region) => (
             <div key={region}>
               <p className="mb-1.5 text-right text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
