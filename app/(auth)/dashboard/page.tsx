@@ -294,16 +294,14 @@ export default async function DashboardPage({
         style={{ scrollbarWidth: "none" }}
       >
         <div className="flex w-max gap-2">
-        {sportChips.map((chip) => (
-          <div
-            key={chip.id}
-            className={`flex-shrink-0 w-16 flex flex-col items-center justify-center gap-1.5 h-auto py-2 rounded-xl border transition-all relative ${
-              chip.disabled ? "opacity-40 cursor-not-allowed border-white/[0.04] bg-[#1e1f25]" :
-              chip.active
-                ? "bg-[linear-gradient(135deg,rgba(100,50,180,0.5),rgba(60,30,140,0.4))] border-[rgba(130,80,220,0.4)]"
-                : "border-white/[0.08] bg-[#1e1f25]"
-            }`}
-          >
+        {sportChips.map((chip) => {
+          const chipClass = `flex-shrink-0 w-16 flex flex-col items-center justify-center gap-1.5 h-auto py-2 rounded-xl border transition-all relative ${
+            chip.disabled ? "opacity-40 cursor-not-allowed border-white/[0.04] bg-[#1e1f25]" :
+            chip.active
+              ? "bg-[linear-gradient(135deg,rgba(100,50,180,0.5),rgba(60,30,140,0.4))] border-[rgba(130,80,220,0.4)]"
+              : "border-white/[0.08] bg-[#1e1f25]"
+          }`;
+          const inner = <>
             <chip.icon
               className={`h-4 w-4 ${chip.active ? "text-[#c084fc]" : "text-on-surface-variant/50"}`}
             />
@@ -315,8 +313,13 @@ export default async function DashboardPage({
                 {chip.count}
               </span>
             )}
-          </div>
-        ))}
+          </>;
+          return chip.disabled ? (
+            <div key={chip.id} className={chipClass}>{inner}</div>
+          ) : (
+            <Link key={chip.id} href={`/dashboard/scores?league=${chip.id}`} className={chipClass}>{inner}</Link>
+          );
+        })}
         </div>
       </div>
 
