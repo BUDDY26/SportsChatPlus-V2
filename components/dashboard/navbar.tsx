@@ -33,7 +33,7 @@ export function DashboardNavbar({ session }: DashboardNavbarProps) {
     <header className="flex h-9 flex-shrink-0 items-center border-b border-white/[0.06] px-4">
 
       {/* Left: width spacer aligns with sidebar */}
-      <div className="w-52 flex-shrink-0" />
+      <div className="hidden md:block w-52 flex-shrink-0" />
 
       {/* Center: minimal utility link */}
       <div className="flex flex-1 items-center justify-center">
