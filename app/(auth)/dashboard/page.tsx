@@ -238,7 +238,7 @@ export default async function DashboardPage({
   } catch {}
 
   return (
-    <div className="grid h-full overflow-hidden grid-cols-[1fr_1fr_18rem] grid-rows-[auto_auto_auto_1fr]">
+    <div className="grid h-full overflow-hidden grid-cols-1 grid-rows-[auto_auto_auto_1fr] md:grid-cols-[1fr_1fr_18rem]">
 
       {/* ── Row 1, Cols 1-2: Sport Icon Strip ────────────────────────────────
           col-span-2 → occupies columns 1 and 2 only.
@@ -314,7 +314,7 @@ export default async function DashboardPage({
       {/* ── Col 3, Rows 1-3: Tournament Central ─────────────────────────────
           col-start-3 row-start-1 row-span-3 → independent right rail.
           Does not sit under the Teams Row or Tab Filter bands.      ────── */}
-      <div className="col-start-3 row-start-1 row-span-4 flex flex-col overflow-y-auto card-float border-l border-white/[0.06]">
+      <div className="md:col-start-3 md:row-start-1 md:row-span-4 flex flex-col overflow-y-auto card-float border-l border-white/[0.06]">
 
         {/* Spotlight header */}
         <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
