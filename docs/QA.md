@@ -194,7 +194,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 - ✅ **B3 FIXED** — `ChatWindow` renders `error` from `useChat()` at lines 46–48
 - ✅ Auto-scroll to bottom via `useEffect` + `bottomRef` in `ChatWindow`
 - ✅ Realtime subscription via Supabase `postgres_changes`
-- 🚨 **M5 / M7 — BROWSER CONSOLE CONFIRMED: `/api/chat/messages` returns HTTP 500.** Server responded with status 500 on every page load. Chat is completely non-functional in production. See M7 in issue register for full detail.
+- ✅ **M7 FIXED 2026-03-22** — Missing migrations 001–005 applied to Supabase; `chat_messages` table now exists. `/api/chat/messages` returning 200. Chat functional in production.
 
 ### `/dashboard/favorites`
 
@@ -207,6 +207,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 - ✅ `InsightsPanel` + `AIChatBox` in `lg:grid-cols-2`, stacks on < lg
 - ✅ **E3 FIXED 2026-03-22** — `insights.length === 0` branch added before the map; renders "No insights available." at `text-on-surface-variant/50`
 - ⚠️ `AIChatBox` has no auto-scroll to bottom — messages appended to `ScrollArea` but no `useEffect` to scroll down; user may miss new AI responses — W4
+- ✅ **M8 FIXED 2026-03-22** — `SessionProviderWrapper` client boundary added (`components/providers/SessionProviderWrapper.tsx`); imported into `app/(auth)/dashboard/layout.tsx` wrapping `{children}`. `useSession()` crash resolved.
 
 ### `/dashboard/profile`
 
@@ -297,7 +298,9 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | ~~M3~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~333–352~~ | ~~"My Teams" team buttons and "+Add" button — no handlers~~ — **FIXED 2026-03-22** — both converted to non-interactive `<div>`; hover states removed |
 | ~~M4~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~416, 576~~ | ~~Game clock hardcoded "12:24 · 2nd Qtr" for all live cards~~ — **FIXED 2026-03-22** — replaced with neutral `--` placeholder at reduced opacity |
 | M5 | `components/chat/ChatWindow.tsx` / `hooks/useChat.ts` / `pages/api/chat/messages.ts` | — | **LIVE TESTING:** "Failed to load messages" on `/dashboard/chat` page load — `/api/chat/messages` returning error in production; root cause unknown without server/Supabase logs |
-| M6 | Unknown — observed during navigation | — | **LIVE TESTING:** Full blank screen with "Application error: a client-side exception has occurred" — unhandled client-side throw; no `error.tsx` boundary exists anywhere in `app/`; browser console log required to identify source |
+| M6 | Unknown — observed during navigation | — | **LIVE TESTING:** Full blank screen with "Application error: a client-side exception has occurred" — unhandled client-side throw; no `error.tsx` boundary exists anywhere in `app/`; browser console log required to identify source. **Now likely confirmed as M8 — see below.** |
+| ~~M7~~ | ~~`pages/api/chat/messages.ts`~~ | ~~—~~ | ~~`/api/chat/messages` returns HTTP 500 on every request — `chat_messages` table did not exist in Supabase~~ — **FIXED 2026-03-22** — Missing migrations 001–005 applied to Supabase — `chat_messages` table now exists. Confirmed working March 22 2026 |
+| ~~M8~~ | ~~`components/ai/AIChatBox.tsx`~~ | ~~—~~ | ~~`Cannot destructure property 'data' of useSession() as it is undefined` — rendered outside `SessionProvider` context; page crashed and redirected to landing page~~ — **FIXED 2026-03-22** — `SessionProviderWrapper` client boundary added; confirmed working on live site March 22 2026 |
 
 ### ❗ Medium Issues
 
@@ -327,6 +330,8 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | W9 | `app/(auth)/dashboard/profile/page.tsx` | No email change path or link |
 | W10 | `app/(auth)/login/page.tsx` | No "Forgot password" link or flow |
 | W11 | `app/(auth)/dashboard/scores/page.tsx` / score card components | **LIVE TESTING:** Score cards display raw league IDs (`NCAAB_WOMEN`, `NCAAB_MEN`) instead of readable display names ("NCAA Women's Basketball", "NCAA Men's Basketball") |
+| W12 | `lib/supabase.ts` / client instantiation sites | **BROWSER CONSOLE CONFIRMED:** "Multiple GoTrueClient instances detected in the same browser tab" — Supabase client created in more than one place; may cause undefined auth behavior, stale sessions, or duplicate requests. Likely cause: `createClient()` called at module level in multiple files. |
+| W13 | `components/chat/ChatWindow.tsx` / `hooks/useChat.ts` | Chat page shows "Failed to send message" error UI even when send API returns 200 successfully — frontend error state not clearing on success |
 
 ---
 
@@ -350,7 +355,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 
 ### Unknown / needs investigation
 
-- M6: Blank screen client error — page unknown; no error boundary to catch it; browser console log required
+- M6: Blank screen client error — now likely M8 (`useSession` crash on `/dashboard/ai-insights`); browser console confirmed M8 as a page-crash. M6 may be the same event.
 
 ### Cross-page issues
 
@@ -370,8 +375,8 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | ~~6~~ | ~~M4~~ | ~~Remove hardcoded game clock or source it from actual game data~~ — **FIXED** |
 | ~~7~~ | ~~E3~~ | ~~Add empty state message to `InsightsPanel` when `insights.length === 0`~~ — **FIXED** |
 | ~~8~~ | ~~E4~~ | ~~Replace `mailto:` contact form with API endpoint or add visible limitation note~~ — **FIXED** — note added |
-| 9 | M5 | Investigate `/api/chat/messages` failure in production — check Supabase RLS, env vars, table permissions |
-| 10 | M6 | Identify and fix client-side exception causing blank screen — add `error.tsx` boundary to `app/` |
+| ~~9~~ | ~~M7~~ | ~~Fix `/api/chat/messages` HTTP 500~~ — **FIXED 2026-03-22** |
+| ~~10~~ | ~~M8~~ | ~~Fix `useSession()` crash on `/dashboard/ai-insights`~~ — **FIXED 2026-03-22** |
 | 11 | E5 | Verify `ScoresClientWrapper` correctly filters by `activeLeague` prop in production |
 | 12 | E6 | Implement chip navigation: convert chips back to interactive elements with `router.push` |
 | 13 | E7 | Wire dashboard game cards to BallDontLie API (Phase 3) |
@@ -398,4 +403,8 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 *E1 reverted — infinite redirect loop; dashboard is a child of (auth) layout*
 *All original blockers resolved: B1, B2, B3, B4, B5*
 *Live testing addendum: 2026-03-22 — 7 new findings added (M5, M6, E5, E6, E7, E8, W11)*
-*Highest priority: M5 (chat broken in production), M6 (blank screen — unknown cause)*
+*Browser console addendum: 2026-03-22 — 3 confirmed findings added (M7, M8, W12)*
+*Highest priority: M7 (chat API 500), M8 (ai-insights page crash — useSession undefined), W12 (multiple GoTrueClient instances)*
+*Fix verification: 2026-03-22 — M8 verified resolved — SessionProviderWrapper client boundary added — confirmed working on live site March 22 2026*
+*Fix verification: 2026-03-22 — M7 verified resolved — Missing migrations 001–005 applied to Supabase — chat_messages table now exists. Confirmed working March 22 2026*
+*New finding: 2026-03-22 — W13 added — chat send error UI not clearing on successful 200 response*
