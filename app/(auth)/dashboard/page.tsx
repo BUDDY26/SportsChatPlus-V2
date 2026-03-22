@@ -669,7 +669,7 @@ export default async function DashboardPage({
       <div className="col-span-1 md:col-start-3 md:row-start-1 md:row-span-4 flex flex-col overflow-y-auto card-float border-l border-white/[0.06]">
 
         {/* Spotlight header */}
-        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
+        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-2 md:py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Trophy className="h-4 w-4 flex-shrink-0 text-sports-gold" />
@@ -690,7 +690,7 @@ export default async function DashboardPage({
         </div>
 
         {/* Tournament Spotlight */}
-        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
+        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-2 md:py-3">
           <p className="mb-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
             Tournament Spotlight
           </p>
@@ -729,7 +729,7 @@ export default async function DashboardPage({
         </div>
 
         {/* Round Status */}
-        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
+        <div className="hidden md:flex-shrink-0 md:block border-b border-white/[0.06] px-4 py-2 md:py-3">
           <p className="mb-2.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
             Round Status
           </p>
@@ -748,7 +748,7 @@ export default async function DashboardPage({
         </div>
 
         {/* Other Active */}
-        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
+        <div className="hidden md:flex-shrink-0 md:block border-b border-white/[0.06] px-4 py-2 md:py-3">
           <p className="mb-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
             Other Active
           </p>
@@ -771,7 +771,7 @@ export default async function DashboardPage({
         </div>
 
         {/* CTA */}
-        <div className="flex-shrink-0 px-4 py-3">
+        <div className="flex-shrink-0 px-4 py-2 md:py-3">
           <Link
             href="/dashboard/tournament"
             className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/20"
