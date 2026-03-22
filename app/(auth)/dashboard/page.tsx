@@ -238,7 +238,7 @@ export default async function DashboardPage({
   } catch {}
 
   return (
-    <div className="grid h-full overflow-hidden grid-cols-1 grid-rows-[auto_auto_auto_1fr] md:grid-cols-[1fr_1fr_18rem]">
+    <div className="grid min-h-full grid-cols-1 md:grid-cols-[1fr_1fr_18rem]">
 
       {/* ── Row 1, Cols 1-2: Sport Icon Strip ────────────────────────────────
           col-span-2 → occupies columns 1 and 2 only.
@@ -250,7 +250,7 @@ export default async function DashboardPage({
         {sportChips.map((chip) => (
           <button
             key={chip.id}
-            className={`flex-1 flex flex-col items-center justify-center gap-1.5 h-auto py-2 rounded-xl border transition-all relative ${
+            className={`flex-shrink-0 w-16 flex flex-col items-center justify-center gap-1.5 h-auto py-2 rounded-xl border transition-all relative ${
               chip.active
                 ? "bg-[linear-gradient(135deg,rgba(100,50,180,0.5),rgba(60,30,140,0.4))] border-[rgba(130,80,220,0.4)]"
                 : "border-white/[0.08] bg-[#1e1f25] hover:bg-[#24252b]"
@@ -285,7 +285,7 @@ export default async function DashboardPage({
           {placeholderTeams.map((team) => (
             <button
               key={team.abbr}
-              className="flex-1 flex items-center gap-1.5 rounded-full bg-white/[0.05] px-2 py-1 transition-colors hover:bg-white/[0.09]"
+              className="flex-shrink-0 flex items-center gap-1.5 rounded-full bg-white/[0.05] px-2 py-1 transition-colors hover:bg-white/[0.09]"
             >
               <div
                 className="w-5 h-5 flex-shrink-0 rounded-full flex items-center justify-center text-[8px] font-bold"
@@ -309,126 +309,6 @@ export default async function DashboardPage({
         >
           All Teams →
         </Link>
-      </div>
-
-      {/* ── Col 3, Rows 1-3: Tournament Central ─────────────────────────────
-          col-start-3 row-start-1 row-span-3 → independent right rail.
-          Does not sit under the Teams Row or Tab Filter bands.      ────── */}
-      <div className="col-span-1 md:col-start-3 md:row-start-1 md:row-span-4 flex flex-col overflow-y-auto card-float border-l border-white/[0.06]">
-
-        {/* Spotlight header */}
-        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 flex-shrink-0 text-sports-gold" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-on-surface">
-                Tournament Central
-              </span>
-            </div>
-            <Link
-              href="/dashboard/tournament"
-              className="flex-shrink-0 text-[10px] text-primary/70 transition-colors hover:text-primary"
-            >
-              Full bracket →
-            </Link>
-          </div>
-          <p className="mt-1 text-[10px] text-on-surface-variant/60">
-            NCAA March Madness · Elite Eight
-          </p>
-        </div>
-
-        {/* Tournament Spotlight */}
-        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
-          <p className="mb-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
-            Tournament Spotlight
-          </p>
-          {spotlight ? (
-            <>
-              <p className="mb-2.5 text-[10px] text-on-surface-variant/60">
-                NCAA Men&apos;s Basketball · {spotlight.roundLabel}
-              </p>
-              <div className="rounded-xl card-float p-3 border border-white/[0.05]">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-[9px] uppercase tracking-wide text-on-surface-variant/50">Featured</span>
-                  <span className="text-[9px] font-medium text-on-surface-variant">{spotlight.roundLabel}</span>
-                </div>
-                <div className="mb-2 space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className={`text-sm ${spotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
-                      {spotlight.topTeamName}{spotlight.topTeamSeed != null ? ` (${spotlight.topTeamSeed})` : ""}
-                    </span>
-                    <span className={`text-sm tabular-nums ${spotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{spotlight.topScore}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className={`text-sm ${spotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
-                      {spotlight.bottomTeamName}{spotlight.bottomTeamSeed != null ? ` (${spotlight.bottomTeamSeed})` : ""}
-                    </span>
-                    <span className={`text-sm tabular-nums ${spotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{spotlight.bottomScore}</span>
-                  </div>
-                </div>
-                <div className="border-t border-white/[0.06] pt-2">
-                  <span className="text-[9px] text-on-surface-variant/50 capitalize">{spotlight.status}</span>
-                </div>
-              </div>
-            </>
-          ) : (
-            <p className="text-[10px] text-on-surface-variant/50">No games available.</p>
-          )}
-        </div>
-
-        {/* Round Status */}
-        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
-          <p className="mb-2.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
-            Round Status
-          </p>
-          <div className="space-y-2">
-            {roundStatuses.length > 0 ? roundStatuses.map((r) => (
-              <div key={r.label} className="flex items-center justify-between py-0.5">
-                <span className={`text-[11px] ${r.status === "active" ? "font-semibold text-on-surface" : "text-foreground/70"}`}>
-                  {r.label}
-                </span>
-                <span className={`text-[10px] ${r.status === "active" ? "font-semibold text-sports-green" : r.status === "complete" ? "text-foreground/70" : "text-foreground/70"}`}>
-                  {r.status === "active" ? "In Progress" : r.status === "complete" ? "Complete" : "Upcoming"}
-                </span>
-              </div>
-            )) : <p className="text-[10px] text-on-surface-variant/40">No data</p>}
-          </div>
-        </div>
-
-        {/* Other Active */}
-        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
-          <p className="mb-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
-            Other Active
-          </p>
-          <div className="space-y-0.5">
-            {[
-              { name: "NCAA Women's Basketball", round: womensRoundLabel  },
-              { name: "NCAA Baseball",           round: "Regionals"       },
-              { name: "NCAA Softball",           round: "Super Regionals" },
-            ].map((t) => (
-              <Link
-                key={t.name}
-                href="/dashboard/tournament"
-                className="-mx-1.5 flex items-center justify-between rounded-lg px-1.5 py-1.5 transition-colors hover:bg-white/[0.05]"
-              >
-                <span className="text-[11px] text-on-surface-variant/70">{t.name}</span>
-                <span className="text-[10px] text-on-surface-variant/40">{t.round}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* CTA */}
-        <div className="flex-shrink-0 px-4 py-3">
-          <Link
-            href="/dashboard/tournament"
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/20"
-          >
-            <Trophy className="h-3.5 w-3.5" />
-            View Tournament Center
-          </Link>
-        </div>
-
       </div>
 
       {/* ── Row 2, Cols 1-2: Tab Filter Row ─────────────────────────────────
@@ -778,6 +658,126 @@ export default async function DashboardPage({
             </div>
           </Link>
         ))}
+
+      </div>
+
+      {/* ── Col 3, Rows 1-3: Tournament Central ─────────────────────────────
+          col-start-3 row-start-1 row-span-3 → independent right rail.
+          Does not sit under the Teams Row or Tab Filter bands.      ────── */}
+      <div className="col-span-1 md:col-start-3 md:row-start-1 md:row-span-4 flex flex-col overflow-y-auto card-float border-l border-white/[0.06]">
+
+        {/* Spotlight header */}
+        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Trophy className="h-4 w-4 flex-shrink-0 text-sports-gold" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-on-surface">
+                Tournament Central
+              </span>
+            </div>
+            <Link
+              href="/dashboard/tournament"
+              className="flex-shrink-0 text-[10px] text-primary/70 transition-colors hover:text-primary"
+            >
+              Full bracket →
+            </Link>
+          </div>
+          <p className="mt-1 text-[10px] text-on-surface-variant/60">
+            NCAA March Madness · Elite Eight
+          </p>
+        </div>
+
+        {/* Tournament Spotlight */}
+        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
+          <p className="mb-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
+            Tournament Spotlight
+          </p>
+          {spotlight ? (
+            <>
+              <p className="mb-2.5 text-[10px] text-on-surface-variant/60">
+                NCAA Men&apos;s Basketball · {spotlight.roundLabel}
+              </p>
+              <div className="rounded-xl card-float p-3 border border-white/[0.05]">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[9px] uppercase tracking-wide text-on-surface-variant/50">Featured</span>
+                  <span className="text-[9px] font-medium text-on-surface-variant">{spotlight.roundLabel}</span>
+                </div>
+                <div className="mb-2 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm ${spotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+                      {spotlight.topTeamName}{spotlight.topTeamSeed != null ? ` (${spotlight.topTeamSeed})` : ""}
+                    </span>
+                    <span className={`text-sm tabular-nums ${spotlight.winnerSlot === "top" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{spotlight.topScore}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm ${spotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+                      {spotlight.bottomTeamName}{spotlight.bottomTeamSeed != null ? ` (${spotlight.bottomTeamSeed})` : ""}
+                    </span>
+                    <span className={`text-sm tabular-nums ${spotlight.winnerSlot === "bottom" ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>{spotlight.bottomScore}</span>
+                  </div>
+                </div>
+                <div className="border-t border-white/[0.06] pt-2">
+                  <span className="text-[9px] text-on-surface-variant/50 capitalize">{spotlight.status}</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p className="text-[10px] text-on-surface-variant/50">No games available.</p>
+          )}
+        </div>
+
+        {/* Round Status */}
+        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
+          <p className="mb-2.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
+            Round Status
+          </p>
+          <div className="space-y-2">
+            {roundStatuses.length > 0 ? roundStatuses.map((r) => (
+              <div key={r.label} className="flex items-center justify-between py-0.5">
+                <span className={`text-[11px] ${r.status === "active" ? "font-semibold text-on-surface" : "text-foreground/70"}`}>
+                  {r.label}
+                </span>
+                <span className={`text-[10px] ${r.status === "active" ? "font-semibold text-sports-green" : r.status === "complete" ? "text-foreground/70" : "text-foreground/70"}`}>
+                  {r.status === "active" ? "In Progress" : r.status === "complete" ? "Complete" : "Upcoming"}
+                </span>
+              </div>
+            )) : <p className="text-[10px] text-on-surface-variant/40">No data</p>}
+          </div>
+        </div>
+
+        {/* Other Active */}
+        <div className="flex-shrink-0 border-b border-white/[0.06] px-4 py-3">
+          <p className="mb-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/50">
+            Other Active
+          </p>
+          <div className="space-y-0.5">
+            {[
+              { name: "NCAA Women's Basketball", round: womensRoundLabel  },
+              { name: "NCAA Baseball",           round: "Regionals"       },
+              { name: "NCAA Softball",           round: "Super Regionals" },
+            ].map((t) => (
+              <Link
+                key={t.name}
+                href="/dashboard/tournament"
+                className="-mx-1.5 flex items-center justify-between rounded-lg px-1.5 py-1.5 transition-colors hover:bg-white/[0.05]"
+              >
+                <span className="text-[11px] text-on-surface-variant/70">{t.name}</span>
+                <span className="text-[10px] text-on-surface-variant/40">{t.round}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="flex-shrink-0 px-4 py-3">
+          <Link
+            href="/dashboard/tournament"
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/20"
+          >
+            <Trophy className="h-3.5 w-3.5" />
+            View Tournament Center
+          </Link>
+        </div>
 
       </div>
 
