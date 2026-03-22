@@ -11,6 +11,8 @@ export function useScores(league: string = "ALL") {
   const [error, setError] = useState<string | null>(null);
 
   const fetchScores = useCallback(async () => {
+    setIsLoading(true);
+    setScores([]);
     try {
       const url =
         league === "ALL"

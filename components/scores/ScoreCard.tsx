@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import type { GameScore } from "@/lib/sports/types";
+import { LEAGUES } from "@/lib/sports/types";
 import { cn } from "@/lib/utils";
 
 interface ScoreCardProps {
@@ -17,7 +18,7 @@ export function ScoreCard({ game }: ScoreCardProps) {
         {/* Header: League + Status */}
         <div className="mb-3 flex items-center justify-between">
           <span className="text-xs font-medium text-muted-foreground uppercase">
-            {game.league}
+            {LEAGUES.find((l) => l.id === game.league)?.label ?? game.league}
           </span>
           {isLive ? (
             <Badge variant="live" className="flex items-center gap-1">
