@@ -1,4 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase";
 import { z } from "zod";
 import type { FavoriteTeam } from "@/lib/sports/types";
@@ -14,6 +16,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) return res.status(401).json({ error: "Unauthorized" });
+
   const supabase = createAdminClient();
 
   if (req.method === "GET") {

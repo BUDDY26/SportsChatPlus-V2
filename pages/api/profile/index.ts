@@ -1,4 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase";
 import { z } from "zod";
 
@@ -15,6 +17,9 @@ export default async function handler(
   res: NextApiResponse<SuccessResponse | ErrorResponse>
 ) {
   if (req.method !== "PATCH") return res.status(405).end();
+
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) return res.status(401).json({ error: "Unauthorized" });
 
   const parsed = schema.safeParse(req.body);
   if (!parsed.success) {
