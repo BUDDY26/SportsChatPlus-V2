@@ -44,7 +44,7 @@ const sportsBrowser = [
   {
     label: "Motorsport",
     items: [
-      { label: "F1", href: "/dashboard/scores?league=F1" },
+      { label: "F1 (Coming Soon)", href: "#" },
     ],
   },
 ];
@@ -101,15 +101,24 @@ export function DashboardSidebar() {
             <p className="px-3 pb-1 pt-2.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-on-surface-variant/30">
               {group.label}
             </p>
-            {group.items.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center px-3 py-[7px] text-[11px] text-on-surface-variant/60 transition-colors hover:bg-white/[0.05] hover:text-on-surface"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {group.items.map((item) =>
+              item.href === "#" ? (
+                <span
+                  key={item.label}
+                  className="flex items-center px-3 py-[7px] text-[11px] text-on-surface-variant/30 cursor-not-allowed"
+                >
+                  {item.label}
+                </span>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center px-3 py-[7px] text-[11px] text-on-surface-variant/60 transition-colors hover:bg-white/[0.05] hover:text-on-surface"
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </div>
         ))}
       </div>

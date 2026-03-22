@@ -111,7 +111,7 @@ const sportChips = [
   { id: "NCAA_BASEBALL", label: "NCAA Baseball", icon: Circle, count: 0, active: false },
   { id: "MLB",           label: "MLB",           icon: Circle, count: 0, active: false },
   { id: "NCAA_SOFTBALL", label: "NCAA Softball", icon: Circle, count: 0, active: false },
-  { id: "F1",            label: "F1",            icon: Gauge,  count: 0, active: false },
+  { id: "F1",            label: "F1 Soon",       icon: Gauge,  count: 0, active: false, disabled: true },
 ];
 
 // ─── Shared card class ───────────────────────────────────────────────────────
@@ -298,6 +298,7 @@ export default async function DashboardPage({
           <button
             key={chip.id}
             className={`flex-shrink-0 w-16 flex flex-col items-center justify-center gap-1.5 h-auto py-2 rounded-xl border transition-all relative ${
+              chip.disabled ? "opacity-40 cursor-not-allowed border-white/[0.04] bg-[#1e1f25]" :
               chip.active
                 ? "bg-[linear-gradient(135deg,rgba(100,50,180,0.5),rgba(60,30,140,0.4))] border-[rgba(130,80,220,0.4)]"
                 : "border-white/[0.08] bg-[#1e1f25] hover:bg-[#24252b]"
