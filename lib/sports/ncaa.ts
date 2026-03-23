@@ -25,6 +25,7 @@ interface HenryScoreboardGame {
   gameID: string;
   gameState: string; // "pre" | "live" | "final"
   startTime?: string;
+  startTimeEpoch?: string;
   startDate?: string;
   currentPeriod?: string;
 }
@@ -129,7 +130,9 @@ export async function getNCAAScorebord(league: LeagueId): Promise<GameScore[]> {
       awayScore: isNaN(awayScore) ? 0 : awayScore,
       status: toGameStatus(sbGame.gameState),
       period: sbGame.currentPeriod ?? "",
-      startTime: sbGame.startTime ?? "",
+      startTime: sbGame.startTimeEpoch
+        ? new Date(Number(sbGame.startTimeEpoch) * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        : (sbGame.startTime ?? ""),
     });
   }
 
