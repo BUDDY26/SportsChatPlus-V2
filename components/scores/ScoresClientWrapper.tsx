@@ -1,14 +1,13 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useScores } from "@/hooks/useScores";
 import { ScoreCard } from "@/components/scores/ScoreCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface ScoresClientWrapperProps {
-  activeLeague: string;
-}
-
-export function ScoresClientWrapper({ activeLeague }: ScoresClientWrapperProps) {
+export function ScoresClientWrapper() {
+  const searchParams = useSearchParams();
+  const activeLeague = searchParams.get("league") ?? "ALL";
   const { scores, isLoading, error } = useScores(activeLeague);
 
   if (isLoading) {

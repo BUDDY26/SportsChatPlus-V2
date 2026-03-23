@@ -21,7 +21,7 @@ export default function ScoresPage({
         </p>
       </div>
       <LeagueFilter activeLeague={activeLeague} />
-      <ScoresClientWrapper key={activeLeague} activeLeague={activeLeague} />
+      <ScoresClientWrapper />
     </div>
   );
 }
