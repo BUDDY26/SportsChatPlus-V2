@@ -19,17 +19,10 @@ const NCAA_PATHS: Partial<Record<LeagueId, string>> = {
   NCAA_SOFTBALL: "/scoreboard/softball/d1",
 };
 
-// --- Raw response types ---
+// --- Raw response types (reflect actual Henry API shapes) ---
 
-interface HenryTeam {
-  names: { full: string; short?: string };
-  score?: string;
-}
-
-interface HenryGame {
+interface HenryScoreboardGame {
   gameID: string;
-  away: HenryTeam;
-  home: HenryTeam;
   gameState: string; // "pre" | "live" | "final"
   startTime?: string;
   startDate?: string;
@@ -37,7 +30,24 @@ interface HenryGame {
 }
 
 interface HenryScoreboardResponse {
-  games?: Array<{ game: HenryGame }>;
+  games?: Array<{ game: HenryScoreboardGame }>;
+}
+
+interface HenryContestTeam {
+  nameFull: string;
+  nameShort?: string;
+  score?: string;
+  isHome: boolean;
+}
+
+interface HenryContest {
+  teams: HenryContestTeam[];
+  gameState: string;
+  currentPeriod?: string;
+}
+
+interface HenryContestResponse {
+  contests?: HenryContest[];
 }
 
 // --- Status mapping ---
@@ -53,31 +63,13 @@ function toGameStatus(gameState: string): GameStatus {
   }
 }
 
-// --- Transformer ---
-
-function transformGame(game: HenryGame, league: LeagueId): GameScore {
-  const homeScore = parseInt(game.home.score ?? "", 10);
-  const awayScore = parseInt(game.away.score ?? "", 10);
-
-  return {
-    id: `ncaa-${league}-${game.gameID}`,
-    league,
-    homeTeam: game.home.names.full,
-    awayTeam: game.away.names.full,
-    homeScore: isNaN(homeScore) ? 0 : homeScore,
-    awayScore: isNaN(awayScore) ? 0 : awayScore,
-    status: toGameStatus(game.gameState),
-    period: game.currentPeriod ?? "",
-    startTime: game.startTime ?? "",
-  };
-}
-
 // --- Public fetch function ---
 
 export async function getNCAAScorebord(league: LeagueId): Promise<GameScore[]> {
   const path = NCAA_PATHS[league];
   if (!path) return [];
 
+  // Phase 1: fetch scoreboard to get gameIDs and basic metadata
   const res = await fetch(`${BASE_URL}${path}`, {
     next: { revalidate: 30 },
   });
@@ -90,5 +82,48 @@ export async function getNCAAScorebord(league: LeagueId): Promise<GameScore[]> {
 
   if (!data.games?.length) return [];
 
-  return data.games.map(({ game }) => transformGame(game, league));
+  const scoreboardGames = data.games.map(({ game }) => game);
+
+  // Phase 2: fetch individual game detail for each gameID in parallel
+  const detailResults = await Promise.allSettled(
+    scoreboardGames.map((g) =>
+      fetch(`${BASE_URL}/game/${g.gameID}`, { next: { revalidate: 30 } })
+        .then((r) => {
+          if (!r.ok) throw new Error(`Henry game error ${r.status}: ${g.gameID}`);
+          return r.json() as Promise<HenryContestResponse>;
+        })
+    )
+  );
+
+  const scores: GameScore[] = [];
+
+  for (let i = 0; i < scoreboardGames.length; i++) {
+    const sbGame = scoreboardGames[i];
+    const result = detailResults[i];
+
+    if (result.status === "rejected") continue;
+
+    const contest = result.value.contests?.[0];
+    if (!contest) continue;
+
+    const homeTeam = contest.teams.find((t) => t.isHome);
+    const awayTeam = contest.teams.find((t) => !t.isHome);
+
+    const homeScore = parseInt(homeTeam?.score ?? "0", 10);
+    const awayScore = parseInt(awayTeam?.score ?? "0", 10);
+
+    scores.push({
+      id: `ncaa-${league}-${sbGame.gameID}`,
+      league,
+      homeTeam: homeTeam?.nameFull ?? "",
+      awayTeam: awayTeam?.nameFull ?? "",
+      homeScore: isNaN(homeScore) ? 0 : homeScore,
+      awayScore: isNaN(awayScore) ? 0 : awayScore,
+      status: toGameStatus(sbGame.gameState),
+      period: sbGame.currentPeriod ?? "",
+      startTime: sbGame.startTime ?? "",
+    });
+  }
+
+  return scores;
 }
