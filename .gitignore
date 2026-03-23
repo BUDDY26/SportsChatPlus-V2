@@ -31,3 +31,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local settings (do not commit)
+settings.local.json
+
+# claude / ai workflow local files
+.claude/
