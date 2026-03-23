@@ -84,9 +84,17 @@ export async function getNCAAScorebord(league: LeagueId): Promise<GameScore[]> {
 
   const scoreboardGames = data.games.map(({ game }) => game);
 
+  // Filter, sort, and cap before Phase 2 to prevent Vercel timeout on high-volume leagues
+  const activeGames = scoreboardGames.filter((g) => g.gameState.toLowerCase() !== "final");
+  const sorted = activeGames.sort((a, b) => {
+    const order: Record<string, number> = { live: 0, pre: 1 };
+    return (order[a.gameState.toLowerCase()] ?? 2) - (order[b.gameState.toLowerCase()] ?? 2);
+  });
+  const capped = sorted.slice(0, 25);
+
   // Phase 2: fetch individual game detail for each gameID in parallel
   const detailResults = await Promise.allSettled(
-    scoreboardGames.map((g) =>
+    capped.map((g) =>
       fetch(`${BASE_URL}/game/${g.gameID}`, { next: { revalidate: 30 } })
         .then((r) => {
           if (!r.ok) throw new Error(`Henry game error ${r.status}: ${g.gameID}`);
@@ -97,8 +105,8 @@ export async function getNCAAScorebord(league: LeagueId): Promise<GameScore[]> {
 
   const scores: GameScore[] = [];
 
-  for (let i = 0; i < scoreboardGames.length; i++) {
-    const sbGame = scoreboardGames[i];
+  for (let i = 0; i < capped.length; i++) {
+    const sbGame = capped[i];
     const result = detailResults[i];
 
     if (result.status === "rejected") continue;
