@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function ScoresClientWrapper() {
   const searchParams = useSearchParams();
-  const activeLeague = searchParams.get("league") ?? "ALL";
+  const activeLeague = searchParams?.get("league") ?? "ALL";
   const { scores, isLoading, error } = useScores(activeLeague);
 
   if (isLoading) {
