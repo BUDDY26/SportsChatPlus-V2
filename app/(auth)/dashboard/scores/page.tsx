@@ -5,13 +5,7 @@ import { ScoresClientWrapper } from "@/components/scores/ScoresClientWrapper";
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: "Live Scores" };
 
-export default function ScoresPage({
-  searchParams,
-}: {
-  searchParams: { league?: string };
-}) {
-  const activeLeague = searchParams.league ?? "ALL";
-
+export default function ScoresPage() {
   return (
     <div className="space-y-6">
       <div>
@@ -20,7 +14,7 @@ export default function ScoresPage({
           Real-time scores across all supported leagues.
         </p>
       </div>
-      <LeagueFilter activeLeague={activeLeague} />
+      <LeagueFilter />
       <ScoresClientWrapper />
     </div>
   );

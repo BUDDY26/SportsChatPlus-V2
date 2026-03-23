@@ -1,17 +1,14 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LEAGUES } from "@/lib/sports/types";
 
-interface LeagueFilterProps {
-  activeLeague: string;
-}
-
-export function LeagueFilter({ activeLeague }: LeagueFilterProps) {
+export function LeagueFilter() {
   const router = useRouter();
   const pathname = usePathname();
+  const activeLeague = useSearchParams()?.get("league") ?? "ALL";
 
   const handleSelect = (league: string) => {
     router.push(`${pathname}?league=${league}`);
