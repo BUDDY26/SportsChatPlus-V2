@@ -315,6 +315,8 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | E7 | `app/(auth)/dashboard/page.tsx` | 45–101 | **LIVE TESTING:** Dashboard center game cards show hardcoded static arrays (`liveGames`, `upcomingGames`, `recentGames`) — team names, scores, and game data are placeholder; no real BallDontLie API data wired to this page |
 | E8 | `app/(auth)/dashboard/page.tsx` | 22–31 | **LIVE TESTING:** "My Teams" pills show `placeholderTeams` static array — not connected to user favorites in Supabase; add/remove functionality absent; row is purely decorative |
 | ~~E9~~ | ~~`pages/api/ai/chat.ts`, `pages/api/chat/send.ts`, `pages/api/favorites/index.ts`, `pages/api/profile/index.ts`~~ | ~~—~~ | ~~4 API routes had no session protection — unauthenticated callers could burn OpenAI credits, insert messages as any user, read/modify any user's favorites, or overwrite any user's profile~~ — **FIXED 2026-03-22** — all 4 routes now guarded with `getServerSession(req, res, authOptions)`; unauthenticated requests return HTTP 401 |
+| E10 | `pages/api/scores/by-league.ts` | — | **LIVE TESTING:** NBA tab shows "Failed to load scores" — BallDontLie NBA API call failing in production |
+| E11 | `pages/api/scores/by-league.ts` | — | **LIVE TESTING:** MLB tab shows "Failed to load scores" — BallDontLie MLB API call failing in production |
 
 ### ⚠️ Minor Issues
 
@@ -334,6 +336,8 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | W12 | `lib/supabase.ts` / client instantiation sites | **BROWSER CONSOLE CONFIRMED:** "Multiple GoTrueClient instances detected in the same browser tab" — Supabase client created in more than one place; may cause undefined auth behavior, stale sessions, or duplicate requests. Likely cause: `createClient()` called at module level in multiple files. |
 | ~~W13~~ | ~~`components/chat/ChatWindow.tsx` / `hooks/useChat.ts`~~ | ~~Chat page shows "Failed to send message" error UI even when send API returns 200 successfully — frontend error state not clearing on success~~ — **FIXED 2026-03-22** — Auto-resolved after session guard added to API routes — chat send error UI no longer appears. Confirmed March 22 2026 |
 | W14 | `app/(auth)/dashboard/tournament/page.tsx` / tournament game card components | Round winners are incorrectly labeled "Tournament Champion" — this badge should only display for the actual championship winner, not every round winner. Confirmed live March 22 2026 |
+| W15 | `components/scores/LeagueFilter.tsx` | "All" tab does not show as active/highlighted when on the scores page with no league param or `league=ALL` |
+| W16 | `components/scores/ScoreCard.tsx` | Team names missing from all score cards — `homeTeam` and `awayTeam` fields appear empty |
 
 ---
 
@@ -418,3 +422,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 *Fix verification: 2026-03-22 — E6 resolved — sport chips converted to conditional Link/div; non-disabled chips navigate to /dashboard/scores?league={id}. Confirmed March 22 2026*
 *Fix verification: 2026-03-22 — W11 resolved — LEAGUES.find() lookup added to ScoreCard; raw IDs now display as readable labels. Confirmed March 22 2026*
 *Fix verification: 2026-03-22 — W3 resolved — stale scores cleared at start of fetchScores. Part of E5 fix.*
+*New finding: 2026-03-22 — E10 added — NBA tab shows "Failed to load scores" — BallDontLie NBA API call failing in production*
+*New finding: 2026-03-22 — E11 added — MLB tab shows "Failed to load scores" — BallDontLie MLB API call failing in production*
+*New finding: 2026-03-22 — W15 added — "All" tab not highlighted when league=ALL or no league param*
+*New finding: 2026-03-22 — W16 added — team names missing from score cards; homeTeam and awayTeam fields appear empty*
