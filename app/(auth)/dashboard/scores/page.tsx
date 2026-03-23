@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { LeagueFilter } from "@/components/scores/LeagueFilter";
 import { ScoresClientWrapper } from "@/components/scores/ScoresClientWrapper";
 
@@ -14,8 +15,10 @@ export default function ScoresPage() {
           Real-time scores across all supported leagues.
         </p>
       </div>
-      <LeagueFilter />
-      <ScoresClientWrapper />
+      <Suspense>
+        <LeagueFilter />
+        <ScoresClientWrapper />
+      </Suspense>
     </div>
   );
 }
