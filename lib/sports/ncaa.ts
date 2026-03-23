@@ -92,7 +92,11 @@ export async function getNCAAScorebord(league: LeagueId): Promise<GameScore[]> {
   const activeGames = scoreboardGames.filter((g) => g.gameState.toLowerCase() !== "final");
   const sorted = activeGames.sort((a, b) => {
     const order: Record<string, number> = { live: 0, pre: 1 };
-    return (order[a.gameState.toLowerCase()] ?? 2) - (order[b.gameState.toLowerCase()] ?? 2);
+    const stateDiff = (order[a.gameState.toLowerCase()] ?? 2) - (order[b.gameState.toLowerCase()] ?? 2);
+    if (stateDiff !== 0) return stateDiff;
+    const aEpoch = a.startTimeEpoch ? Number(a.startTimeEpoch) : Infinity;
+    const bEpoch = b.startTimeEpoch ? Number(b.startTimeEpoch) : Infinity;
+    return aEpoch - bEpoch;
   });
   const capped = sorted.slice(0, 25);
 
