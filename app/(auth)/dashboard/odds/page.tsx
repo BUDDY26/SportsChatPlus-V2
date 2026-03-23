@@ -19,7 +19,7 @@ export default function OddsPage({
           Current betting lines, spreads, and totals from major sportsbooks.
         </p>
       </div>
-      <LeagueFilter activeLeague={activeLeague} />
+      <LeagueFilter />
       <OddsClientWrapper activeLeague={activeLeague} />
     </div>
   );
