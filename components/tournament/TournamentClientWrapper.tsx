@@ -11,6 +11,30 @@ import { BracketViewFull } from "./BracketViewFull";
 import { LiveScoreStrip } from "./LiveScoreStrip";
 import { cn } from "@/lib/utils";
 
+function propagateWinners(games: TournamentGame[]): TournamentGame[] {
+  const map = new Map<string, TournamentGame>(games.map((g) => [g.id, g]));
+
+  for (const game of games) {
+    if (game.status !== "final" || !game.winnerId || !game.winnerSlot || !game.nextMatchupId) continue;
+
+    const next = map.get(game.nextMatchupId);
+    if (!next) continue;
+
+    const teamId   = game.winnerSlot === "top" ? game.topTeamId   : game.bottomTeamId;
+    const teamName = game.winnerSlot === "top" ? game.topTeamName : game.bottomTeamName;
+    const teamSeed = game.winnerSlot === "top" ? game.topTeamSeed : game.bottomTeamSeed;
+    const fillsTop = game.slot % 2 === 1;
+
+    if (fillsTop && next.topTeamId === null) {
+      map.set(next.id, { ...next, topTeamId: teamId, topTeamName: teamName, topTeamSeed: teamSeed });
+    } else if (!fillsTop && next.bottomTeamId === null) {
+      map.set(next.id, { ...next, bottomTeamId: teamId, bottomTeamName: teamName, bottomTeamSeed: teamSeed });
+    }
+  }
+
+  return games.map((g) => map.get(g.id) ?? g);
+}
+
 export function TournamentClientWrapper() {
   const [games, setGames] = useState<TournamentGame[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,13 +57,13 @@ export function TournamentClientWrapper() {
         return r.json() as Promise<BracketApiResponse>;
       })
       .then((data) => {
-        setGames(data.games);
+        setGames(propagateWinners(data.games));
         setTournamentId(data.tournamentId);
         if (data.games.some((g) => g.status === "live")) {
           pollRef.current = setInterval(() => {
             fetch(`/api/tournament/bracket?sport=${sport}`)
               .then((r) => r.ok ? r.json() as Promise<BracketApiResponse> : null)
-              .then((d) => { if (d) setGames(d.games); })
+              .then((d) => { if (d) setGames(propagateWinners(d.games)); })
               .catch(() => {});
           }, 30_000);
         }
@@ -89,17 +113,19 @@ export function TournamentClientWrapper() {
             winner_slot: "top" | "bottom" | null;
           };
           setGames((prev) =>
-            prev.map((g) =>
-              g.id === row.id
-                ? {
-                    ...g,
-                    topScore: row.top_score,
-                    bottomScore: row.bottom_score,
-                    status: row.status,
-                    winnerId: row.winner_id,
-                    winnerSlot: row.winner_slot,
-                  }
-                : g,
+            propagateWinners(
+              prev.map((g) =>
+                g.id === row.id
+                  ? {
+                      ...g,
+                      topScore: row.top_score,
+                      bottomScore: row.bottom_score,
+                      status: row.status,
+                      winnerId: row.winner_id,
+                      winnerSlot: row.winner_slot,
+                    }
+                  : g,
+              ),
             ),
           );
         },
