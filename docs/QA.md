@@ -310,8 +310,8 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | ~~E2~~ | ~~`components/dashboard/sidebar.tsx:47` / `dashboard/page.tsx:114`~~ | ~~47 / 114~~ | ~~F1 is not a valid `LeagueId` — sidebar link + chip both navigate to invalid API filter~~ — **FIXED 2026-03-22** — chip labelled "F1 Soon" with `disabled: true` + `cursor-not-allowed`; sidebar renders `<span>` with `cursor-not-allowed` instead of `<Link>` |
 | ~~E3~~ | ~~`components/ai/InsightsPanel.tsx`~~ | ~~31~~ | ~~No empty state — blank panel when insights array is empty~~ — **FIXED 2026-03-22** |
 | ~~E4~~ | ~~`components/contact/ContactForm.tsx`~~ | ~~21~~ | ~~`mailto:` contact form — silent failure without mail client; no in-page feedback~~ — **FIXED 2026-03-22** — note added above submit button |
-| E5 | `components/dashboard/sidebar.tsx` | — | **LIVE TESTING:** Sidebar sport links navigate to correct URLs but scores page does not visibly filter by league — all selections appear to show the same result set; may be `ScoresClientWrapper` or API issue |
-| E6 | `app/(auth)/dashboard/page.tsx` | 297–318 | **LIVE TESTING:** Sport chips are now non-interactive `<div>` elements — clicking a chip does not navigate to `/dashboard/scores?league=X`; conversion to `<div>` resolved the false interactivity (M2) but chips remain decorative with no filtering path |
+| ~~E5~~ | ~~`app/(auth)/dashboard/scores/page.tsx`, `hooks/useScores.ts`, `components/scores/ScoresClientWrapper.tsx`~~ | ~~—~~ | ~~Sidebar sport links navigate to correct URLs but scores page does not visibly filter by league~~ — **FIXED 2026-03-22** — Three-part fix: (1) `export const dynamic = 'force-dynamic'` on scores page to bypass Router Cache; (2) `setIsLoading(true); setScores([])` at start of `fetchScores` to clear stale state; (3) `key={activeLeague}` on `<ScoresClientWrapper>` to force React unmount/remount on league change. Confirmed March 22 2026 |
+| ~~E6~~ | ~~`app/(auth)/dashboard/page.tsx`~~ | ~~297–318~~ | ~~Sport chips are non-interactive `<div>` elements — clicking does not navigate to `/dashboard/scores?league=X`~~ — **FIXED 2026-03-22** — Chips converted to conditional `<Link>`/`<div>` render: non-disabled chips navigate to `/dashboard/scores?league=${chip.id}`; F1 (disabled) stays as `<div>`. Confirmed March 22 2026 |
 | E7 | `app/(auth)/dashboard/page.tsx` | 45–101 | **LIVE TESTING:** Dashboard center game cards show hardcoded static arrays (`liveGames`, `upcomingGames`, `recentGames`) — team names, scores, and game data are placeholder; no real BallDontLie API data wired to this page |
 | E8 | `app/(auth)/dashboard/page.tsx` | 22–31 | **LIVE TESTING:** "My Teams" pills show `placeholderTeams` static array — not connected to user favorites in Supabase; add/remove functionality absent; row is purely decorative |
 | ~~E9~~ | ~~`pages/api/ai/chat.ts`, `pages/api/chat/send.ts`, `pages/api/favorites/index.ts`, `pages/api/profile/index.ts`~~ | ~~—~~ | ~~4 API routes had no session protection — unauthenticated callers could burn OpenAI credits, insert messages as any user, read/modify any user's favorites, or overwrite any user's profile~~ — **FIXED 2026-03-22** — all 4 routes now guarded with `getServerSession(req, res, authOptions)`; unauthenticated requests return HTTP 401 |
@@ -322,7 +322,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 |---|---|---|
 | W1 | `app/(auth)/dashboard/page.tsx:734` | "NCAA March Madness · Elite Eight" subtitle hardcoded — inaccurate outside Elite Eight |
 | W2 | `app/(auth)/dashboard/page.tsx` | All game card data (scores, records, venue, quarter breakdown, key stats) is static mock data |
-| W3 | `hooks/useScores.ts` | `isLoading` not reset on league change — stale data briefly visible during filter transitions |
+| ~~W3~~ | ~~`hooks/useScores.ts`~~ | ~~`isLoading` not reset on league change — stale data briefly visible during filter transitions~~ — **FIXED 2026-03-22** — `setIsLoading(true)` and `setScores([])` added at top of `fetchScores` before the try block. Part of E5 fix. |
 | W4 | `components/ai/AIChatBox.tsx` | No auto-scroll to bottom — new AI responses may require manual scroll (contrast: `ChatWindow` has auto-scroll) |
 | W5 | `app/about/page.tsx:28` | Body copy references "Next.js 14" — stale; project uses Next.js 16 |
 | W6 | `app/(auth)/signup/page.tsx` | No client-side password match validation — mismatch requires server round-trip to surface |
@@ -330,7 +330,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | W8 | `app/(auth)/dashboard/tournament/page.tsx:12` | Description says "NCAA Men's Basketball" only — tournament supports both genders |
 | W9 | `app/(auth)/dashboard/profile/page.tsx` | No email change path or link |
 | W10 | `app/(auth)/login/page.tsx` | No "Forgot password" link or flow |
-| W11 | `app/(auth)/dashboard/scores/page.tsx` / score card components | **LIVE TESTING:** Score cards display raw league IDs (`NCAAB_WOMEN`, `NCAAB_MEN`) instead of readable display names ("NCAA Women's Basketball", "NCAA Men's Basketball") |
+| ~~W11~~ | ~~`components/scores/ScoreCard.tsx`~~ | ~~Score cards display raw league IDs (`NCAAB_WOMEN`, `NCAAB_MEN`) instead of readable display names~~ — **FIXED 2026-03-22** — `LEAGUES.find((l) => l.id === game.league)?.label ?? game.league` lookup added to `ScoreCard`; raw IDs replaced with human-readable labels. Confirmed March 22 2026 |
 | W12 | `lib/supabase.ts` / client instantiation sites | **BROWSER CONSOLE CONFIRMED:** "Multiple GoTrueClient instances detected in the same browser tab" — Supabase client created in more than one place; may cause undefined auth behavior, stale sessions, or duplicate requests. Likely cause: `createClient()` called at module level in multiple files. |
 | ~~W13~~ | ~~`components/chat/ChatWindow.tsx` / `hooks/useChat.ts`~~ | ~~Chat page shows "Failed to send message" error UI even when send API returns 200 successfully — frontend error state not clearing on success~~ — **FIXED 2026-03-22** — Auto-resolved after session guard added to API routes — chat send error UI no longer appears. Confirmed March 22 2026 |
 | W14 | `app/(auth)/dashboard/tournament/page.tsx` / tournament game card components | Round winners are incorrectly labeled "Tournament Champion" — this badge should only display for the actual championship winner, not every round winner. Confirmed live March 22 2026 |
@@ -351,7 +351,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 
 - `/dashboard/chat` — M5: "Failed to load messages" error on load (live testing)
 - `/dashboard` — E6 (chips decorative, no routing), E7 (hardcoded game data), E8 (placeholder team pills)
-- `/dashboard/scores` — E5 (league filter may not work), W11 (raw league IDs displayed)
+- `/dashboard/scores` — ~~E5 FIXED~~ ~~W11 FIXED~~ — fully functional league filtering with display names
 - `/dashboard/odds` — odds are mock data only (W7)
 - `/contact` — mailto: form noted; limitation disclosed (E4 fixed)
 
@@ -379,11 +379,11 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 | ~~8~~ | ~~E4~~ | ~~Replace `mailto:` contact form with API endpoint or add visible limitation note~~ — **FIXED** — note added |
 | ~~9~~ | ~~M7~~ | ~~Fix `/api/chat/messages` HTTP 500~~ — **FIXED 2026-03-22** |
 | ~~10~~ | ~~M8~~ | ~~Fix `useSession()` crash on `/dashboard/ai-insights`~~ — **FIXED 2026-03-22** |
-| 11 | E5 | Verify `ScoresClientWrapper` correctly filters by `activeLeague` prop in production |
-| 12 | E6 | Implement chip navigation: convert chips back to interactive elements with `router.push` |
+| ~~11~~ | ~~E5~~ | ~~Verify `ScoresClientWrapper` correctly filters by `activeLeague` prop in production~~ — **FIXED 2026-03-22** |
+| ~~12~~ | ~~E6~~ | ~~Implement chip navigation: convert chips back to interactive elements~~ — **FIXED 2026-03-22** |
 | 13 | E7 | Wire dashboard game cards to BallDontLie API (Phase 3) |
 | 14 | E8 | Wire "My Teams" row to user favorites from Supabase |
-| 15 | W11 | Map raw league IDs to display names in score card components |
+| ~~15~~ | ~~W11~~ | ~~Map raw league IDs to display names in score card components~~ — **FIXED 2026-03-22** |
 | 16 | W4 | Add auto-scroll to bottom in `AIChatBox` |
 | 17 | W1 | Derive Tournament Central subtitle from actual round data |
 | 18 | W6 | Add client-side password match validation to `SignupForm` |
@@ -414,3 +414,7 @@ No `loading.tsx` or `error.tsx` files exist anywhere in `app/`.
 *Fix verification: 2026-03-22 — E9 added and immediately resolved — 4 API routes guarded with getServerSession — confirmed March 22 2026*
 *Fix verification: 2026-03-22 — E1 resolved — dead session code removed from (auth)/layout.tsx — pure passthrough, dashboard/layout.tsx protection unchanged. Confirmed March 22 2026*
 *New finding: 2026-03-22 — W14 added — tournament round winners incorrectly labeled Tournament Champion*
+*Fix verification: 2026-03-22 — E5 resolved — three-part fix: force-dynamic + stale state reset (W3) + key={activeLeague} on ScoresClientWrapper. Confirmed March 22 2026*
+*Fix verification: 2026-03-22 — E6 resolved — sport chips converted to conditional Link/div; non-disabled chips navigate to /dashboard/scores?league={id}. Confirmed March 22 2026*
+*Fix verification: 2026-03-22 — W11 resolved — LEAGUES.find() lookup added to ScoreCard; raw IDs now display as readable labels. Confirmed March 22 2026*
+*Fix verification: 2026-03-22 — W3 resolved — stale scores cleared at start of fetchScores. Part of E5 fix.*
