@@ -71,9 +71,12 @@ export async function getNCAAScorebord(league: LeagueId): Promise<GameScore[]> {
   if (!path) return [];
 
   // Phase 1: fetch scoreboard to get gameIDs and basic metadata
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
   const res = await fetch(`${BASE_URL}${path}`, {
     next: { revalidate: 30 },
-  });
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timer));
 
   if (!res.ok) {
     throw new Error(`Henry NCAA API error ${res.status}: ${path}`);
@@ -95,13 +98,16 @@ export async function getNCAAScorebord(league: LeagueId): Promise<GameScore[]> {
 
   // Phase 2: fetch individual game detail for each gameID in parallel
   const detailResults = await Promise.allSettled(
-    capped.map((g) =>
-      fetch(`${BASE_URL}/game/${g.gameID}`, { next: { revalidate: 30 } })
+    capped.map((g) => {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 5000);
+      return fetch(`${BASE_URL}/game/${g.gameID}`, { next: { revalidate: 30 }, signal: ctrl.signal })
+        .finally(() => clearTimeout(timer))
         .then((r) => {
           if (!r.ok) throw new Error(`Henry game error ${r.status}: ${g.gameID}`);
           return r.json() as Promise<HenryContestResponse>;
-        })
-    )
+        });
+    })
   );
 
   const scores: GameScore[] = [];

@@ -13,7 +13,10 @@ const headers = {
 };
 
 async function fetchBDL<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`, { headers, next: { revalidate: 60 } });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
+  const res = await fetch(`${BASE_URL}${path}`, { headers, next: { revalidate: 60 }, signal: controller.signal })
+    .finally(() => clearTimeout(timer));
   if (!res.ok) {
     throw new Error(`BallDontLie API error ${res.status}: ${path}`);
   }
