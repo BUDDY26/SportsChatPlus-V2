@@ -14,21 +14,29 @@ import { cn } from "@/lib/utils";
 function propagateWinners(games: TournamentGame[]): TournamentGame[] {
   const map = new Map<string, TournamentGame>(games.map((g) => [g.id, g]));
 
-  for (const game of games) {
-    if (game.status !== "final" || !game.winnerId || !game.winnerSlot || !game.nextMatchupId) continue;
+  let changed = true;
+  while (changed) {
+    changed = false;
 
-    const next = map.get(game.nextMatchupId);
-    if (!next) continue;
+    for (const game of games) {
+      if (game.status !== "final" || !game.winnerId || !game.winnerSlot || !game.nextMatchupId) continue;
 
-    const teamId   = game.winnerSlot === "top" ? game.topTeamId   : game.bottomTeamId;
-    const teamName = game.winnerSlot === "top" ? game.topTeamName : game.bottomTeamName;
-    const teamSeed = game.winnerSlot === "top" ? game.topTeamSeed : game.bottomTeamSeed;
-    const fillsTop = game.slot % 2 === 1;
+      const next = map.get(game.nextMatchupId);
+      if (!next) continue;
 
-    if (fillsTop && next.topTeamId === null) {
-      map.set(next.id, { ...next, topTeamId: teamId, topTeamName: teamName, topTeamSeed: teamSeed });
-    } else if (!fillsTop && next.bottomTeamId === null) {
-      map.set(next.id, { ...next, bottomTeamId: teamId, bottomTeamName: teamName, bottomTeamSeed: teamSeed });
+      const current  = map.get(game.id) ?? game;
+      const teamId   = current.winnerSlot === "top" ? current.topTeamId   : current.bottomTeamId;
+      const teamName = current.winnerSlot === "top" ? current.topTeamName : current.bottomTeamName;
+      const teamSeed = current.winnerSlot === "top" ? current.topTeamSeed : current.bottomTeamSeed;
+      const fillsTop = game.slot % 2 === 1;
+
+      if (fillsTop && next.topTeamId === null) {
+        map.set(next.id, { ...next, topTeamId: teamId, topTeamName: teamName, topTeamSeed: teamSeed });
+        changed = true;
+      } else if (!fillsTop && next.bottomTeamId === null) {
+        map.set(next.id, { ...next, bottomTeamId: teamId, bottomTeamName: teamName, bottomTeamSeed: teamSeed });
+        changed = true;
+      }
     }
   }
 
