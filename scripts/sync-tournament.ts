@@ -151,7 +151,6 @@ const summary = {
   teamsUpserted: 0,
   gamesUpserted: 0,
   scoresUpserted: 0,
-  nextGameIdsUpdated: 0,
   failedFetches: [] as string[],
   failedUpserts: [] as string[],
 };
@@ -177,6 +176,17 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 function hasBracketRound(val: number | string | null | undefined): boolean {
   return val !== null && val !== undefined && val !== "";
+}
+
+const REGION_TITLE_NORM: Record<string, string> = {
+  EAST: "East",
+  WEST: "West",
+  SOUTH: "South",
+  MIDWEST: "Midwest",
+};
+
+function normalizeRegionTitle(title: string): string {
+  return REGION_TITLE_NORM[title] ?? title;
 }
 
 // ─── Core sync function ───────────────────────────────────────────────────────
@@ -261,7 +271,7 @@ async function syncTournament(
 
       gameDataList.push({
         externalGameId: gameId,
-        regionTitle: region?.title?.trim() ?? "Unknown",
+        regionTitle: normalizeRegionTitle(region?.title?.trim() ?? "Unknown"),
         roundNumber: henryRoundToAppRound(round?.roundNumber ?? 2),
         homeTeam,
         awayTeam,
@@ -473,9 +483,15 @@ async function syncTournament(
 
   console.log(`Teams ready: ${Object.keys(teamIdMap).length}`);
 
-  // ── Step 5: Upsert games ───────────────────────────────────────────────────
+  // ── Step 5: Update scaffold rows with Henry game data ────────────────────
+  //
+  // Slot assignment: sort Henry gameIDs numerically within each region+round
+  // group. This must match the slot order used when the scaffold was created
+  // (Migration 009), so the correct scaffold row is targeted.
+  //
+  // next_game_id, fills_top_in_next, and slot_number are scaffold fields —
+  // they are never overwritten here.
 
-  // Assign slot numbers: sort by gameID (numeric) within each region+round group
   const groupedGames: Record<string, GameData[]> = {};
   for (const g of gameDataList) {
     const key = `${g.regionTitle}:${g.roundNumber}`;
@@ -500,6 +516,16 @@ async function syncTournament(
   for (const g of gameDataList) {
     const roundId = roundIdMap[g.roundNumber];
     const regionId = regionIdMap[g.regionTitle] ?? null;
+
+    if (!regionId) {
+      console.warn(
+        `Region "${g.regionTitle}" not found in tournament_regions ` +
+        `(tournament ${tournamentId}) — skipping game ${g.externalGameId}`
+      );
+      summary.failedUpserts.push(`game-${g.externalGameId}`);
+      continue;
+    }
+
     const topTeamId = teamIdMap[g.homeTeam.teamId] ?? null;
     const bottomTeamId = teamIdMap[g.awayTeam.teamId] ?? null;
 
@@ -526,67 +552,65 @@ async function syncTournament(
 
     const slotNumber = gameSlotMap[g.externalGameId] ?? 1;
 
-    const gameRow = {
-      tournament_id: tournamentId,
-      round_id: roundId,
-      region_id: regionId,
-      external_game_id: g.externalGameId,
-      top_team_id: topTeamId,
-      bottom_team_id: bottomTeamId,
-      winner_id: winnerId,
-      loser_id: loserId,
-      winner_slot: winnerSlot,
-      top_score: g.homeTeam.score ?? 0,
-      bottom_score: g.awayTeam.score ?? 0,
-      status: g.status,
-      scheduled_time: g.scheduledTime,
-      tv_channel: g.tvChannel,
-      venue_name: g.venueName,
-      venue_city: g.venueCity,
-      slot_number: slotNumber,
-      next_game_id: null,
-      season_year: config.season_year,
-      sport: config.supabaseSport,
-      tournament_name: config.name,
-      upset: g.isUpset,
-      upset_seed_diff: g.upsetSeedDiff,
-    };
+    if (!roundId) {
+      console.warn(
+        `No round ID for round ${g.roundNumber} — skipping game ${g.externalGameId}`
+      );
+      summary.failedUpserts.push(`game-${g.externalGameId}`);
+      continue;
+    }
 
-    const { data: existingGame } = await supabase
+    // Find the matching scaffold row by tournament + round + region + slot.
+    const { data: scaffoldRow } = await supabase
       .from("tournament_games")
       .select("id")
-      .eq("external_game_id", g.externalGameId)
+      .eq("tournament_id", tournamentId)
+      .eq("round_id", roundId)
+      .eq("region_id", regionId)
+      .eq("slot_number", slotNumber)
       .maybeSingle();
 
-    if (existingGame) {
-      gameDbIdMap[g.externalGameId] = existingGame.id;
-      const { error } = await supabase
-        .from("tournament_games")
-        .update(gameRow)
-        .eq("id", existingGame.id);
-      if (error) {
-        console.error(`UPSERT ERROR (game ${g.externalGameId}):`, error);
-        summary.failedUpserts.push(`game-${g.externalGameId}`);
-      } else {
-        summary.gamesUpserted++;
-      }
+    if (!scaffoldRow) {
+      console.warn(
+        `No scaffold row for ${g.regionTitle} R${g.roundNumber} slot ${slotNumber}` +
+        ` (game ${g.externalGameId}) — run Migration 009 first`
+      );
+      summary.failedUpserts.push(`game-${g.externalGameId}`);
+      continue;
+    }
+
+    gameDbIdMap[g.externalGameId] = scaffoldRow.id;
+
+    const { error } = await supabase
+      .from("tournament_games")
+      .update({
+        external_game_id: g.externalGameId,
+        top_team_id: topTeamId,
+        bottom_team_id: bottomTeamId,
+        winner_id: winnerId,
+        loser_id: loserId,
+        winner_slot: winnerSlot,
+        top_score: g.homeTeam.score ?? 0,
+        bottom_score: g.awayTeam.score ?? 0,
+        status: g.status,
+        scheduled_time: g.scheduledTime,
+        tv_channel: g.tvChannel,
+        venue_name: g.venueName,
+        venue_city: g.venueCity,
+        upset: g.isUpset,
+        upset_seed_diff: g.upsetSeedDiff,
+      })
+      .eq("id", scaffoldRow.id);
+
+    if (error) {
+      console.error(`UPDATE ERROR (game ${g.externalGameId}):`, error);
+      summary.failedUpserts.push(`game-${g.externalGameId}`);
     } else {
-      const { data, error } = await supabase
-        .from("tournament_games")
-        .insert(gameRow)
-        .select("id")
-        .single();
-      if (error || !data) {
-        console.error(`UPSERT ERROR (game ${g.externalGameId}):`, error);
-        summary.failedUpserts.push(`game-${g.externalGameId}`);
-      } else {
-        gameDbIdMap[g.externalGameId] = data.id;
-        summary.gamesUpserted++;
-      }
+      summary.gamesUpserted++;
     }
   }
 
-  console.log(`Games upserted: ${Object.keys(gameDbIdMap).length}`);
+  console.log(`Games updated: ${Object.keys(gameDbIdMap).length}`);
 
   // ── Step 6: tournament_game_scores ────────────────────────────────────────
 
@@ -644,54 +668,6 @@ async function syncTournament(
     }
   }
 
-  // ── Pass 2: next_game_id ───────────────────────────────────────────────────
-
-  console.log("Running pass 2: next_game_id...");
-
-  for (const g of gameDataList) {
-    if (g.roundNumber >= 5) continue;
-
-    const currentGameDbId = gameDbIdMap[g.externalGameId];
-    if (!currentGameDbId) continue;
-
-    const currentSlot = gameSlotMap[g.externalGameId];
-    const nextSlot = Math.ceil(currentSlot / 2);
-    const nextRound = g.roundNumber + 1;
-
-    // Rounds 1–3: same region. Round 4 → Final Four region.
-    const nextRegionTitle =
-      g.roundNumber === 4 ? "Final Four" : g.regionTitle;
-    const nextRegionId = regionIdMap[nextRegionTitle];
-    const nextRoundId = roundIdMap[nextRound];
-
-    if (!nextRegionId || !nextRoundId) continue;
-
-    const { data: nextGame } = await supabase
-      .from("tournament_games")
-      .select("id")
-      .eq("tournament_id", tournamentId)
-      .eq("round_id", nextRoundId)
-      .eq("region_id", nextRegionId)
-      .eq("slot_number", nextSlot)
-      .maybeSingle();
-
-    if (!nextGame) continue; // Next round game not yet in DB
-
-    const { error } = await supabase
-      .from("tournament_games")
-      .update({ next_game_id: nextGame.id })
-      .eq("id", currentGameDbId);
-
-    if (error) {
-      console.error(
-        `UPDATE ERROR (next_game_id for ${g.externalGameId}):`,
-        error
-      );
-      summary.failedUpserts.push(`next_game_id-${g.externalGameId}`);
-    } else {
-      summary.nextGameIdsUpdated++;
-    }
-  }
 }
 
 // ─── Entry point ─────────────────────────────────────────────────────────────
@@ -715,9 +691,8 @@ async function main(): Promise<void> {
   console.log(`Regions upserted     :  ${summary.regionsUpserted}`);
   console.log(`Rounds upserted      :  ${summary.roundsUpserted}`);
   console.log(`Teams upserted       :  ${summary.teamsUpserted}`);
-  console.log(`Games upserted       :  ${summary.gamesUpserted}`);
+  console.log(`Games updated        :  ${summary.gamesUpserted}`);
   console.log(`Scores upserted      :  ${summary.scoresUpserted}`);
-  console.log(`next_game_id updated :  ${summary.nextGameIdsUpdated}`);
 
   if (summary.failedFetches.length > 0) {
     console.log(`\nFailed fetches (${summary.failedFetches.length}):`);
