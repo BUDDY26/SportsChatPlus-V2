@@ -131,7 +131,7 @@ export async function getNCAAScorebord(league: LeagueId): Promise<GameScore[]> {
       status: toGameStatus(sbGame.gameState),
       period: sbGame.currentPeriod ?? "",
       startTime: sbGame.startTimeEpoch
-        ? new Date(Number(sbGame.startTimeEpoch) * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        ? new Date(Number(sbGame.startTimeEpoch) * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: "America/New_York" })
         : (sbGame.startTime ?? ""),
     });
   }

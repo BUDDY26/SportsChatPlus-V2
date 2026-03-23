@@ -28,6 +28,7 @@ export default async function handler(
         startTime: new Date(g.date).toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
+          timeZone: "America/New_York",
         }),
       }));
     } else if (league === "NFL") {
@@ -45,6 +46,7 @@ export default async function handler(
         startTime: new Date(g.date).toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
+          timeZone: "America/New_York",
         }),
       }));
     } else if (league === "MLB") {
@@ -61,6 +63,7 @@ export default async function handler(
         startTime: new Date(g.date).toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
+          timeZone: "America/New_York",
         }),
       }));
     } else {

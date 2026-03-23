@@ -47,6 +47,7 @@ export default async function handler(
           startTime: new Date(g.date).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
+            timeZone: "America/New_York",
           }),
         });
       });
@@ -69,6 +70,7 @@ export default async function handler(
           startTime: new Date(g.date).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
+            timeZone: "America/New_York",
           }),
         });
       });
@@ -91,6 +93,7 @@ export default async function handler(
           startTime: new Date(g.date).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
+            timeZone: "America/New_York",
           }),
         });
       });
