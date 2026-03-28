@@ -36,15 +36,28 @@ Secondary causes:
   - `next_game_id` — pre-wired in pass 2
   - `fills_top_in_next` — hardcoded per slot
 
-### Phase 3 — Sync update (complete)
+### Phase 3 — Sync update (complete; slot assignment and overtime corrected 2026-03-27)
 
 **`scripts/sync-tournament.ts`**
 - Step 5 (game INSERT): replaced with UPDATE by `tournament_id + round_id + region_id + slot_number` match
 - Pass 2 (`next_game_id` update loop): removed — superseded by scaffold
-- Preserves slot assignment logic (sort Henry gameIDs numerically within region+round group)
+- ~~Preserves slot assignment logic (sort Henry gameIDs numerically within region+round group)~~ — **superseded 2026-03-27** (see below)
 - Never inserts new `tournament_games` rows
 - `REGION_TITLE_NORM` constant + `normalizeRegionTitle()` helper normalizes Henry uppercase region titles (`EAST` → `East`) before scaffold lookup
 - Explicit `regionId` null guard logs the unresolved region name and skips with a clear warning
+
+**Phase 3 correction — slot assignment (2026-03-27)**
+
+New evidence: UT Austin (2-seed, Midwest) completed regulation and remained `status = "scheduled"` after sync. Root cause: the Henry game ID for that Sweet 16 game sorted lower than the other Midwest Sweet 16 game, so numeric sort assigned it slot 1. The correct scaffold row (Midwest R3 slot 2, from chain R1 slot 8 → R2 slot 4 → R3 slot 2) was never updated.
+
+- **Corrected primary rule**: `deriveSlotFromSeeds()` helper derives `slot_number` from team seed numbers using standard NCAA bracket pairings (R1: 8 slots; R2: 4 slots; R3: 2 slots; R4: always 1). Upstream upsets do not affect correctness — a 12-seed that upset a 5-seed still occupies the same bracket quarter.
+- **Retained fallback**: Numeric sort is kept for R5/R6 (Final Four / Championship) where seed-based derivation is unavailable (both Final Four games share the "Final Four" region title in Henry's API).
+
+**Phase 3 correction — `mapGameState` overtime states (2026-03-27)**
+
+`mapGameState` only matched `"f"` and `"final"` as final states. Henry returns `"F/OT"`, `"F/2OT"`, etc. for overtime endings; these fell through to `"scheduled"`. The `finalStatus` override was also silently broken by the same issue.
+
+- **Corrected rule**: `s.startsWith("f/")` added to the final-state branch. Covers all overtime suffixes. The `finalStatus` override codepath becomes effective as a side effect.
 
 ### Phase 4 — API update (pending)
 

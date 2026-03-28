@@ -90,3 +90,37 @@ The numeric suffix in each women's region name encodes the pairing and slot fill
 **Implementation**: `REGION_TITLE_NORM` constant + `normalizeRegionTitle()` helper applied at `gameDataList.push()`. An explicit `regionId` null guard logs the actual region name and skips with a clear message if normalization still fails.
 
 **Files**: `scripts/sync-tournament.ts`
+
+### 2026-03-27 — Slot assignment: seed-based derivation supersedes numeric Henry gameID sort (R1–R3)
+
+**Decision**: Replace numeric sort of Henry external game IDs as the primary slot assignment rule for R1–R3 with a seed-based lookup. Numeric sort is retained as fallback for R5/R6 (Final Four / Championship) where seed-based derivation is unavailable.
+
+**Prior rule (Phase 3, 2026-03-23)**: Within each `region:round` group, sort Henry game IDs numerically (`parseInt(a.externalGameId) - parseInt(b.externalGameId)`) and assign `slot_number = idx + 1`. This was described in the Phase 3 sprint record as "preserves slot assignment logic."
+
+**Why the prior rule seemed valid**: The scaffold was new and no completed games existed to expose order mismatches. The `normalizeRegionTitle` fix (previous confirmed bug) dominated that debugging session; once region IDs resolved, games matched scaffold rows for the dates tested. No Sweet 16 data existed at Phase 3 completion to reveal a slot collision.
+
+**New evidence (2026-03-27)**: UT Austin (Texas, 2-seed, Midwest) completed its Sweet 16 game in regulation. After sync ran, the game remained `status = "scheduled"` in Round Select view. Tracing the scaffold: UT Austin's bracket position is Midwest R3 slot 2 (R1 slot 8 → R2 slot 4 → R3 slot 2). If the other Midwest Sweet 16 game has a lower Henry game ID, the numeric sort assigns it slot 1 and UT Austin gets slot 1 as well or gets displaced. The correct scaffold row (slot 2) is never updated and stays `status = "scheduled"`. Round Select renders the slot-2 row as "Upcoming"; Full Bracket renders the slot-1 row (with UT Austin data) as "Final."
+
+**Corrected primary rule (R1–R3)**: Derive `slot_number` from team seed numbers using the standard NCAA bracket structure:
+- R1 (8 slots per region): 1/16→1, 8/9→2, 5/12→3, 4/13→4, 6/11→5, 3/14→6, 7/10→7, 2/15→8
+- R2 (4 slots per region): {1,16,8,9}→1, {5,12,4,13}→2, {6,11,3,14}→3, {7,10,2,15}→4
+- R3 (2 slots per region): {1,16,8,9,5,12,4,13}→1, {6,11,3,14,7,10,2,15}→2
+- R4 (1 slot per region): always slot 1
+
+This is upset-safe: a 12-seed that upset a 5-seed still occupies R2 slot 2 because it originated from that quarter of the bracket.
+
+**Retained fallback rule (R5/R6)**: R5 Final Four has 2 games whose teams originate from different regions; Henry labels both with the same region title ("Final Four"), making seed-based derivation unavailable. Numeric sort is retained for unslotted games after seed derivation runs. R6 Championship always has 1 game — no sort ambiguity.
+
+**Files**: `scripts/sync-tournament.ts`
+
+### 2026-03-27 — `mapGameState`: add overtime final-state variants
+
+**Decision**: Add `s.startsWith("f/")` to the final-state branch of `mapGameState` in `scripts/sync-tournament.ts`.
+
+**Prior state (Phase 3, 2026-03-23)**: `mapGameState` matched only `"f"` and `"final"` as final states. Henry returns `"F/OT"`, `"F/2OT"`, `"F/3OT"`, etc. for overtime endings. These fell through to `return "scheduled"`, leaving overtime-completed games as `status = "scheduled"` in the DB.
+
+**Why it wasn't caught**: Phase 3 testing predated any overtime games in the 2026 tournament. The `finalStatus` override codepath (which compares scoreboard status against game-detail status) was also silently broken by this — both sides of the condition used `mapGameState`, so both returned "scheduled" for the same overtime string; the override could never fire.
+
+**Corrected rule**: `if (s === "f" || s === "final" || s.startsWith("f/")) return "final"`. This covers all `F/OT`, `F/2OT`, `F/3OT` variants and any future Henry overtime suffixes. The `finalStatus` override becomes a live, effective codepath once both sides can return the correct status.
+
+**Files**: `scripts/sync-tournament.ts`

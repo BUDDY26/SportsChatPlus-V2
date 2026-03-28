@@ -163,7 +163,7 @@ function sleep(ms: number): Promise<void> {
 
 function mapGameState(state: string): string {
   const s = state.toLowerCase();
-  if (s === "f" || s === "final") return "final";
+  if (s === "f" || s === "final" || s.startsWith("f/")) return "final";
   if (s === "l" || s === "live" || s === "in_progress") return "live";
   return "scheduled";
 }
@@ -187,6 +187,57 @@ const REGION_TITLE_NORM: Record<string, string> = {
 
 function normalizeRegionTitle(title: string): string {
   return REGION_TITLE_NORM[title] ?? title;
+}
+
+// deriveSlotFromSeeds returns the bracket slot_number for a game based on the
+// standard NCAA bracket seed-pairing structure for R1–R4.
+//
+// R1 (8 slots): 1/16→1, 8/9→2, 5/12→3, 4/13→4, 6/11→5, 3/14→6, 7/10→7, 2/15→8
+// R2 (4 slots): {1,16,8,9}→1, {5,12,4,13}→2, {6,11,3,14}→3, {7,10,2,15}→4
+// R3 (2 slots): {1,16,8,9,5,12,4,13}→1, {6,11,3,14,7,10,2,15}→2
+// R4 (1 slot):  always 1
+//
+// Returns null for R5/R6 (Final Four / Championship) or when seeds are missing
+// from the team records — callers should fall back to numeric sort in those cases.
+//
+// Upset-safe: a 12-seed that upset a 5-seed still occupies R2 slot 2 because
+// both {5,12,4,13} originate from that bracket quarter.
+function deriveSlotFromSeeds(
+  roundNumber: number,
+  homeTeam: HenryTeam,
+  awayTeam: HenryTeam
+): number | null {
+  if (roundNumber === 4) return 1;
+  if (roundNumber >= 5) return null;
+
+  const R1_MAP: Record<number, number> = {
+     1: 1, 16: 1,  8: 2,  9: 2,
+     5: 3, 12: 3,  4: 4, 13: 4,
+     6: 5, 11: 5,  3: 6, 14: 6,
+     7: 7, 10: 7,  2: 8, 15: 8,
+  };
+  const R2_MAP: Record<number, number> = {
+     1: 1, 16: 1,  8: 1,  9: 1,
+     5: 2, 12: 2,  4: 2, 13: 2,
+     6: 3, 11: 3,  3: 3, 14: 3,
+     7: 4, 10: 4,  2: 4, 15: 4,
+  };
+  const R3_MAP: Record<number, number> = {
+     1: 1, 16: 1,  8: 1,  9: 1,  5: 1, 12: 1,  4: 1, 13: 1,
+     6: 2, 11: 2,  3: 2, 14: 2,  7: 2, 10: 2,  2: 2, 15: 2,
+  };
+
+  const seedMap =
+    roundNumber === 1 ? R1_MAP : roundNumber === 2 ? R2_MAP : R3_MAP;
+  const seeds = [homeTeam.seed, awayTeam.seed].filter(
+    (s): s is number => s != null
+  );
+
+  for (const seed of seeds) {
+    const slot = seedMap[seed];
+    if (slot != null) return slot;
+  }
+  return null;
 }
 
 // ─── Core sync function ───────────────────────────────────────────────────────
@@ -485,9 +536,9 @@ async function syncTournament(
 
   // ── Step 5: Update scaffold rows with Henry game data ────────────────────
   //
-  // Slot assignment: sort Henry gameIDs numerically within each region+round
-  // group. This must match the slot order used when the scaffold was created
-  // (Migration 009), so the correct scaffold row is targeted.
+  // Slot assignment: use seed-based derivation for R1–R3 (standard NCAA bracket
+  // pairings); R4 is always slot 1. For R5/R6 or games with missing seeds,
+  // fall back to numeric sort of Henry gameIDs within the region+round group.
   //
   // next_game_id, fills_top_in_next, and slot_number are scaffold fields —
   // they are never overwritten here.
@@ -498,17 +549,34 @@ async function syncTournament(
     if (!groupedGames[key]) groupedGames[key] = [];
     groupedGames[key].push(g);
   }
-  for (const key of Object.keys(groupedGames)) {
-    groupedGames[key].sort(
-      (a, b) => parseInt(a.externalGameId) - parseInt(b.externalGameId)
-    );
-  }
 
   const gameSlotMap: Record<string, number> = {};
-  for (const games of Object.values(groupedGames)) {
-    games.forEach((g, idx) => {
-      gameSlotMap[g.externalGameId] = idx + 1;
-    });
+  for (const g of gameDataList) {
+    const slot = deriveSlotFromSeeds(g.roundNumber, g.homeTeam, g.awayTeam);
+    if (slot != null) {
+      gameSlotMap[g.externalGameId] = slot;
+    }
+  }
+  // Fallback: for any game not yet slotted (R5/R6 or missing seeds),
+  // use numeric sort of Henry gameIDs within the region+round group.
+  for (const key of Object.keys(groupedGames)) {
+    const unslotted = groupedGames[key].filter(
+      (g) => gameSlotMap[g.externalGameId] == null
+    );
+    if (unslotted.length === 0) continue;
+    const usedSlots = new Set(
+      groupedGames[key]
+        .filter((g) => gameSlotMap[g.externalGameId] != null)
+        .map((g) => gameSlotMap[g.externalGameId])
+    );
+    unslotted.sort((a, b) => parseInt(a.externalGameId) - parseInt(b.externalGameId));
+    let next = 1;
+    for (const g of unslotted) {
+      while (usedSlots.has(next)) next++;
+      gameSlotMap[g.externalGameId] = next;
+      usedSlots.add(next);
+      next++;
+    }
   }
 
   const gameDbIdMap: Record<string, string> = {}; // externalGameId → supabase UUID
