@@ -91,25 +91,18 @@ The numeric suffix in each women's region name encodes the pairing and slot fill
 
 **Files**: `scripts/sync-tournament.ts`
 
-### 2026-03-27 — Slot assignment: seed-based derivation supersedes numeric Henry gameID sort (R1–R3)
+### 2026-03-27 — Slot assignment: numeric Henry gameID sort is the authoritative rule (FINAL)
 
-**Decision**: Replace numeric sort of Henry external game IDs as the primary slot assignment rule for R1–R3 with a seed-based lookup. Numeric sort is retained as fallback for R5/R6 (Final Four / Championship) where seed-based derivation is unavailable.
+**Decision**: Slot assignment uses numeric sort of Henry external game IDs within each `region:round` group, assigning `slot_number = idx + 1` (lowest Henry gameID = slot 1). This is the sole slot assignment rule for all rounds.
 
-**Prior rule (Phase 3, 2026-03-23)**: Within each `region:round` group, sort Henry game IDs numerically (`parseInt(a.externalGameId) - parseInt(b.externalGameId)`) and assign `slot_number = idx + 1`. This was described in the Phase 3 sprint record as "preserves slot assignment logic."
+**History**:
+- *Phase 3 (2026-03-23)*: Numeric sort was the original rule. Described as "preserves slot assignment logic." Seemed valid — the scaffold was new and no slot collisions were observable.
+- *Superseded attempt (2026-03-27 AM)*: Replaced with seed-based `deriveSlotFromSeeds` after UT Austin (2-seed, Midwest) remained `status = "scheduled"` post-sync. Root cause was diagnosed as numeric sort ordering mismatch. Seed-based rule implemented as primary with numeric sort as R5/R6 fallback.
+- *Reverted (2026-03-27 PM)*: Seed-based rule was incorrect. The scaffold's actual slot convention WAS established by the initial numeric sort — the scaffold is the source of truth, not standard NCAA bracket seeding. Seed-based rule correctly placed UT Austin's game in East+Midwest (where Henry ID order happened to match seed order) but placed South+West games in wrong scaffold rows (where Henry ID order differs from seed order). South+West Sweet 16 remained `status = "scheduled"` after the seed-based fix.
 
-**Why the prior rule seemed valid**: The scaffold was new and no completed games existed to expose order mismatches. The `normalizeRegionTitle` fix (previous confirmed bug) dominated that debugging session; once region IDs resolved, games matched scaffold rows for the dates tested. No Sweet 16 data existed at Phase 3 completion to reveal a slot collision.
+**Root cause of the UT Austin incident (retrospective)**: The slot collision was not caused by numeric sort being wrong — it was caused by something upstream (likely the scaffold initial population or a prior sync that ran before all Sweet 16 games were present). Numeric sort is self-consistent: as long as the same set of Henry game IDs arrives in the same sort order each sync, the assignment is stable and matches scaffold.
 
-**New evidence (2026-03-27)**: UT Austin (Texas, 2-seed, Midwest) completed its Sweet 16 game in regulation. After sync ran, the game remained `status = "scheduled"` in Round Select view. Tracing the scaffold: UT Austin's bracket position is Midwest R3 slot 2 (R1 slot 8 → R2 slot 4 → R3 slot 2). If the other Midwest Sweet 16 game has a lower Henry game ID, the numeric sort assigns it slot 1 and UT Austin gets slot 1 as well or gets displaced. The correct scaffold row (slot 2) is never updated and stays `status = "scheduled"`. Round Select renders the slot-2 row as "Upcoming"; Full Bracket renders the slot-1 row (with UT Austin data) as "Final."
-
-**Corrected primary rule (R1–R3)**: Derive `slot_number` from team seed numbers using the standard NCAA bracket structure:
-- R1 (8 slots per region): 1/16→1, 8/9→2, 5/12→3, 4/13→4, 6/11→5, 3/14→6, 7/10→7, 2/15→8
-- R2 (4 slots per region): {1,16,8,9}→1, {5,12,4,13}→2, {6,11,3,14}→3, {7,10,2,15}→4
-- R3 (2 slots per region): {1,16,8,9,5,12,4,13}→1, {6,11,3,14,7,10,2,15}→2
-- R4 (1 slot per region): always slot 1
-
-This is upset-safe: a 12-seed that upset a 5-seed still occupies R2 slot 2 because it originated from that quarter of the bracket.
-
-**Retained fallback rule (R5/R6)**: R5 Final Four has 2 games whose teams originate from different regions; Henry labels both with the same region title ("Final Four"), making seed-based derivation unavailable. Numeric sort is retained for unslotted games after seed derivation runs. R6 Championship always has 1 game — no sort ambiguity.
+**Correct rule**: Within each `region:round` group, sort Henry game IDs numerically (`parseInt(a.externalGameId) - parseInt(b.externalGameId)`) and assign `slot_number = idx + 1`. No seed lookup. No fallback paths. Applies to all rounds (R1–R6).
 
 **Files**: `scripts/sync-tournament.ts`
 
