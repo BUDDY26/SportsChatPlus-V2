@@ -247,5 +247,3 @@ All API routes live under `pages/api/`. No routes exist under `app/api/`.
 | `docs/architecture.md` | Router split, bracket data model, external data sources, Supabase Realtime |
 | `docs/implementation-plan.md` | Tournament bracket fix — phases, verification queries |
 | `docs/evidence-ledger.md` | Migration status, schema notes, key implementation decisions |
-| `docs/QA.md` | QA audit findings and fix priorities |
-| `AI-WORKFLOW/agents/QA-AGENT.md` | QA agent role definition for structured review sessions |
