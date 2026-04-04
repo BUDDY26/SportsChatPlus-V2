@@ -1,131 +1,145 @@
-# Skill: qa-checklist
+# QA Checklist
 
-A pre-commit / pre-PR quality gate for SportsChatPlus-V2. Run through every item before marking any task complete. Do not skip items because a change "seems small."
-
----
-
-## Run This Checklist
-
-Work through each section in order. For each item: PASS, FAIL (with detail), or N/A (with reason).
+> **Trigger:** "Run QA" or "Audit the tests"
+> Produces a test coverage and portfolio readiness report.
 
 ---
 
-### 1. TypeScript
+## QA Agent Role
+
+You are operating as the QA Agent. You do NOT act as a coding agent.
+
+- The QA agent audits, validates, and verifies.
+- The QA agent does NOT implement features, modify application code, redesign architecture, or expand scope.
+- The QA agent and the coding agent must not be combined in the same pass. If implementation is needed, hand off to a coding pass first, then return to QA.
+- Audit first, report findings, recommend fixes. Only apply fixes if explicitly instructed.
+
+---
+
+## Severity Classification
+
+All findings must be classified using this scale:
+
+| Level | Label | Meaning |
+|-------|-------|---------|
+| ✅ | **Passed** | Working correctly — no action needed |
+| ⚠️ | **Minor** | Cosmetic or low-impact issue |
+| ❗ | **Medium** | Affects usability but not blocking |
+| 🚨 | **Major** | Breaks functionality or user experience |
+
+---
+
+## Mandatory QA Workflow
+
+QA is performed AFTER implementation, not during. The required sequence is:
+
+1. **Plan** — define what will be built
+2. **Code** — coding agent implements the plan
+3. **QA Audit** — QA agent audits the result (this skill)
+4. **Fix Pass** — coding agent addresses findings (separate pass)
+5. **QA Verify** — QA agent confirms fixes resolved the issues
+
+Do not skip the verify pass. A fix is not confirmed until QA re-audits it.
+
+---
+
+## Part 1 — Test Coverage Audit
+
+### 1.1 Inventory
+
+List every file in `src/`. For each, identify:
+
+- Whether a unit test exists in `tests/unit/`
+- Whether integration test coverage exists in `tests/integration/`
+- Whether the file is tested at all
+
+Flag any source file with no coverage as **UNCOVERED**.
+
+### 1.2 Test Quality
+
+For each test file, check:
+
+| Check | Pass? |
+|-------|-------|
+| Tests assert specific outcomes, not just absence of errors | |
+| Tests are independent — no shared mutable state between test cases | |
+| Edge cases are covered: empty input, boundary values, error paths | |
+| Test names describe the behavior being verified | |
+| Fixtures are minimal and purposeful | |
+
+### 1.3 Coverage Report
+
+Run the test command from CLAUDE.md Section 3 and capture coverage output. Report:
+
+- Total coverage percentage
+- Files below 80% (flag as **LOW COVERAGE**)
+- Files at 0% (flag as **UNCOVERED**)
+
+---
+
+## Part 2 — Documentation Audit
+
+| Item | Status |
+|------|--------|
+| `README.md` overview matches current implementation | |
+| All README commands tested and working | |
+| `docs/architecture.md` reflects current code structure | |
+| At least one ADR exists in `docs/adr/` | |
+| `docs/qa/qa-plan.md` is filled in | |
+| `docs/runbooks/operations.md` is filled in | |
+| No unfilled `{{PLACEHOLDER}}` tokens in any file | |
+
+---
+
+## Part 3 — Portfolio Readiness Audit
+
+| Criterion | Status |
+|-----------|--------|
+| Project has a clear purpose stated in README | |
+| README explains what problem is solved | |
+| Architecture is documented | |
+| Tests exist and pass | |
+| CI pipeline is green | |
+| No placeholder tokens remain | |
+| No dead code or commented-out blocks | |
+| Commit history is professional (descriptive messages, logical progression) | |
+| No secrets or credentials in any file | |
+| CLAUDE.md Sections 4–9 and 12 are filled in | |
+
+---
+
+## Part 4 — Structure Validation
+
+Run:
 
 ```bash
-npm run typecheck
+bash scripts/validate-structure.sh --strict
 ```
 
-- [ ] Zero type errors
-- [ ] No `@ts-ignore` or `as any` added without a documented reason
-
-Note: Next.js `next build` may suppress TS errors — always run `tsc --noEmit` explicitly.
+All items must pass in portfolio-ready state. Warnings are not acceptable for a submitted portfolio repository.
 
 ---
 
-### 2. Lint
-
-```bash
-npm run lint
-```
-
-- [ ] Zero ESLint errors
-- [ ] No new lint disable comments added without reason
-
----
-
-### 3. Tests
-
-No test suite is configured yet. When one is added, this section becomes:
-
-```bash
-npm test
-```
-
-- [ ] All tests pass
-- [ ] Suite and test counts have not decreased
-- [ ] New routes and lib functions have corresponding tests
-
-Until then: N/A — skip this section.
-
----
-
-### 4. Auth guards
-
-For every new or modified file in `pages/api/` that accesses user data:
-
-- [ ] Session or token validated before any DB operation
-- [ ] `401` returned if session/token is absent or invalid
-- [ ] No DB reads or writes occur before the auth check
-
----
-
-### 5. Environment variables
-
-- [ ] No new server-only env vars referenced in client-side code
-- [ ] If a new env var was added, `.env.local.example` has been updated with the key (empty value)
-
----
-
-### 6. Migration hygiene
-
-For any new file in `supabase/migrations/`:
-
-- [ ] Matching `_rollback.sql` exists
-- [ ] DDL uses `IF NOT EXISTS` / `IF EXISTS` guards
-- [ ] FKs use `ON DELETE RESTRICT` (or deviation is documented)
-- [ ] `CLAUDE.md` migration status table updated
-- [ ] Migration has NOT been auto-applied — user was asked first
-
----
-
-### 7. Router placement
-
-- [ ] No new files added under `app/api/`
-- [ ] All new API handlers follow Pages Router pattern (`(req: NextApiRequest, res: NextApiResponse)`)
-- [ ] All new pages follow App Router pattern under `app/`
-
----
-
-### 8. Protected areas
-
-- [ ] `components/ui/` files untouched
-- [ ] `lib/supabase.ts` untouched (unless explicitly requested)
-- [ ] `lib/auth.ts` untouched (unless explicitly requested)
-- [ ] `app/(auth)/` layout untouched (unless explicitly requested)
-
----
-
-### 9. V2 cleanliness
-
-- [ ] No patterns copied blindly from the old team SportsChatPlus repo
-- [ ] New code follows V2 conventions established in `CLAUDE.md`
-
----
-
-### 10. Commit hygiene
-
-- [ ] Only files relevant to the task are staged
-- [ ] No `.env`, `.env.local`, or secret files staged
-- [ ] Commit message describes the "why", not just the "what"
-
----
-
-## Summary Output
+## QA Report Output Format
 
 ```
-## QA Checklist — [date] — [task description]
+## QA Report: [project name] — [date]
 
-1. TypeScript:   PASS / FAIL
-2. Lint:         PASS / FAIL
-3. Tests:        N/A (no suite yet)
-4. Auth guards:  PASS / N/A
-5. Env vars:     PASS / N/A
-6. Migrations:   PASS / N/A
-7. Router:       PASS / PASS
-8. Protected:    PASS / PASS
-9. V2 clean:     PASS / FLAG
-10. Commit:      PASS / FAIL
+### Test Coverage
+- Total: [X]%
+- Uncovered files: [list or "None"]
+- Low-coverage files: [list or "None"]
 
-Overall: READY TO COMMIT / BLOCKED (items N, N)
+### Documentation
+[Pass / list of gaps]
+
+### Portfolio Readiness
+[Pass / list of blockers]
+
+### Structure Validation
+[Pass / FAIL with details]
+
+### Recommended Actions
+1. [Highest priority item]
+2. [Next item]
 ```

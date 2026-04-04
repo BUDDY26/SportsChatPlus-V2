@@ -1,187 +1,96 @@
-# Skill: refactor-playbook
+# Refactor Playbook
 
-> **Trigger:** Invoked when any change involves renaming, restructuring, moving, or
-> significantly altering the design of existing code — even during a "bug fix" pass.
->
-> **Rule:** No code is changed until a proposal is written and explicitly approved.
-> This applies to changes the user asked for AND to any cleanup Claude wants to add.
+> **Trigger:** "Refactor [component / file / function]"
+> All refactoring follows a proposal-first workflow. No code is changed until a proposal is approved.
 
 ---
 
-## When This Playbook Applies
+## Rule: Proposal Before Any Change
 
-This playbook is required before any of the following:
+Before writing a single line of changed code:
 
-- Renaming a function, variable, component, file, or directory
-- Changing a function signature or hook return shape
-- Moving a file to a different directory
-- Adding, removing, or reordering imports in a way that changes runtime behavior
-- Extracting logic into a new hook, utility, or component
-- Changing a shared type in `lib/sports/types.ts`
-- Touching `lib/auth.ts`, `lib/supabase.ts`, or `lib/database.types.ts`
-- Any change to `pages/api/` that alters request/response shape
-- Any change to `app/(auth)/` layout files
+1. Read the target code in full
+2. Read its tests
+3. Read any related section of `docs/architecture.md`
+4. Write a proposal using the template below
+5. Present the proposal and wait for explicit approval
 
-**It does NOT apply to:**
-- Isolated bug fixes that change only the broken behavior (no surrounding cleanup)
-- Adding new files without touching existing ones
-- Documentation-only changes
-
-If in doubt: write the proposal. A two-minute proposal is cheaper than an unasked-for
-refactor that breaks a working feature.
-
----
-
-## Rule: No Cleanup During Fix Passes
-
-When executing a bug fix, the scope is the minimum change required to fix the reported
-behavior. Do not:
-
-- Rename variables or functions in files you are touching for a fix
-- Reorder imports or consolidate `useState` declarations
-- Add comments or docstrings to code you are not changing
-- Restructure JSX or extract sub-components that were not part of the fix
-- "Improve" error handling beyond what the fix requires
-
-If cleanup is genuinely needed, note it in the fix response as a separate follow-up item.
-The user will schedule it separately.
+This prevents wasted effort and ensures the user controls all structural decisions.
 
 ---
 
 ## Proposal Template
 
-Write this proposal and present it before touching any code.
-
 ```
-## Refactor Proposal: [component, hook, or file name]
+## Refactor Proposal: [component or function name]
 
 ### What
-[One sentence: what will be changed]
+[One sentence describing what will be changed]
 
 ### Why
-[One paragraph: what is wrong with the current code and why it needs changing now,
-not in a future cleanup pass]
+[One paragraph explaining the problem with the current code]
 
 ### How
-[Numbered steps describing the planned changes — no code yet]
-
-### Scope
-
-Files to be modified:
-- [file path] — [what changes]
-
-Files that must NOT be modified:
-- [file path] — [reason: protected area / not part of this refactor / etc.]
-
-### V2 Router and Architecture Constraints
-- [ ] No new files will be added under app/api/
-- [ ] All API handlers remain in pages/api/ with NextApiRequest/NextApiResponse signature
-- [ ] No changes to components/ui/ (shadcn/ui primitives)
-- [ ] No changes to lib/supabase.ts or lib/auth.ts unless this refactor explicitly requires it
+[Step-by-step description of the planned changes — no code yet]
 
 ### Risks
-- [What could break]
-- [What needs manual re-verification from docs/qa/manual-test-checklist.md]
+- [Risk 1 — what could break]
+- [Risk 2 — what needs re-testing]
 
-### Verification
-After the refactor:
-1. npm run typecheck — must pass with 0 errors
-2. npm run lint — must pass with 0 errors
-3. Manual checklist sections to run: [list from docs/qa/manual-test-checklist.md]
+### Scope
+Files to be modified:
+- [file 1]
+- [file 2]
+
+Files that must NOT be modified:
+- [file — reason]
+
+### Tests
+[How the refactor will be validated — existing tests, new tests, or both]
 
 ### Reversibility
-[How to undo this change if it introduces a regression — e.g., which files to restore]
+[How to undo this change if it introduces a regression]
 ```
 
 ---
 
 ## Execution Steps (post-approval only)
 
-### Step 1 — Confirm baseline passes before touching anything
+### Step 1 — Confirm the test suite passes before touching anything
 
-Run both gates and confirm they are green before making any change:
-
-```bash
-npm run typecheck   # must exit 0
-npm run lint        # must exit 0
-```
-
-If either is failing before the refactor starts, stop and report. Never start a refactor
-on a broken baseline.
+Run the test command from CLAUDE.md Section 3. If it fails, surface the failures to the user before proceeding. Never start a refactor on a broken baseline.
 
 ### Step 2 — Make one change at a time
 
-Do not batch unrelated changes in a single pass. Each discrete change must be small enough
-to read in isolation. If a second refactor becomes apparent while executing the first, note
-it as a follow-up — do not expand scope mid-execution.
+Do not batch unrelated refactors in a single pass. Each discrete change must be small enough to review in isolation and validated by re-running the test suite.
 
 ### Step 3 — Keep interfaces stable
 
-Unless the proposal explicitly says a public API or hook return shape is changing, external
-interfaces must be identical after the refactor. Components that consume a hook must not need
-to change.
+Unless the proposal explicitly changes a public API or function signature, external interfaces must remain identical after the refactor.
 
-### Step 4 — Respect the router split
+### Step 4 — Update documentation
 
-Every refactor must preserve:
-- All page components in `app/` (App Router)
-- All API handlers in `pages/api/` (Pages Router, `NextApiRequest`/`NextApiResponse`)
-- No API logic added to React Server Components
-- No page rendering added to API handlers
+After the refactor, update any affected:
 
-The router split is an architectural constraint, not a convention. Violations break the app.
+- Inline comments and docstrings
+- `docs/architecture.md` if a component's design changed
+- CLAUDE.md Section 7 if new sharp edges were discovered
 
-### Step 5 — Run verification
+### Step 5 — Report completion
 
-After completing the refactor:
+Produce a brief summary:
 
-```bash
-npm run typecheck
-npm run lint
-```
-
-Then run the manual checklist sections identified in the proposal's Verification field.
-
-### Step 6 — Report completion
-
-State:
 - What changed and why
-- Typecheck result: PASS / FAIL
-- Lint result: PASS / FAIL
-- Manual checklist sections run and their results
-- Any follow-up items identified during the refactor (do not act on them — list them)
+- Test results before → after
+- Any follow-up tasks identified
 
 ---
 
-## When to Stop and Report
+## When to Stop and Start Over
 
-Stop execution and write a new proposal if:
+Stop and write a new proposal if:
 
-- The scope grows beyond what was approved (more files need changing than listed)
-- A type error requires changes to `lib/sports/types.ts` that were not in the proposal
+- The scope grows beyond what was approved
+- A test failure requires structural changes not in the original plan
 - A dependency needs to be added or removed
-- A shared hook or type that other components depend on needs to change signature
-- Any protected file (`lib/auth.ts`, `lib/supabase.ts`, `components/ui/`, `supabase/migrations/`)
-  turns out to be necessary to touch
-
-**Do not silently expand scope.** Report the blocker and wait for explicit re-approval.
-
----
-
-## SportsChatPlus-V2 Protected Areas (Quick Reference)
-
-These files require explicit user approval before any change, even during a refactor:
-
-| File/Directory | Why Protected |
-|----------------|--------------|
-| `lib/supabase.ts` | Auth + DB client — wrong changes break all DB access |
-| `lib/auth.ts` | NextAuth config — wrong changes break login for all users |
-| `lib/database.types.ts` | Auto-generated — hand-editing is overwritten by `supabase gen types` |
-| `components/ui/` | shadcn/ui primitives — auto-generated, must not be hand-edited |
-| `supabase/migrations/` | Applied DDL — irreversible without rollback scripts |
-| `app/(auth)/` layouts | Session gating — changes can expose authenticated routes |
-| `.env.local` | Real secrets — never read aloud, never modify |
-
----
-
-*Last updated: 2026-03-16*
+- A public API needs to change
